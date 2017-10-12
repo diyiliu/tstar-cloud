@@ -2,7 +2,25 @@
 <root>
     <sql id="selectVehicleInfo" description="查询车辆信息">
         <![CDATA[
-            SELECT t.id, t.vin, t.iccid FROM bs_vehicle t
+            SELECT
+                t.id, t.vin, t.iccid
+             FROM bs_vehicle t
+        ]]>
+    </sql>
+
+    <sql id="selectVehicleFault" description="查询车辆故障">
+        <![CDATA[
+            SELECT
+                t.vehicleid, t.faultunit, t.faultvalue, t.starttime, t.endtime
+             FROM bs_vehiclefault t
+        ]]>
+    </sql>
+
+    <sql id="selectFaultCode" description="查询故障代码库">
+        <![CDATA[
+            SELECT
+                t.id, t.factoryid, t.faultunit, t.faultvalue, t.name, t.description
+             FROM bs_vehiclefaultcode t;
         ]]>
     </sql>
 </root>

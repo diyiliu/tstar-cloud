@@ -6,4 +6,10 @@
     <bean id="cmdCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
 
     <bean id="vehicleCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
+
+    <!-- 车辆故障缓存 -->
+    <bean id="vehicleFaultCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
+
+    <!-- 故障代码库缓存 -->
+    <bean id="faultCodeCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
 </beans>

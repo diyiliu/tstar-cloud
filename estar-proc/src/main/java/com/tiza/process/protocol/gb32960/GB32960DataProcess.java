@@ -96,7 +96,7 @@ public class GB32960DataProcess implements IDataProcess {
 
         String vin = header.getVin();
         if (!vehicleCacheProvider.containsKey(vin)){
-            logger.warn("[{}] is not in the list of vehicles", vin);
+            logger.warn("[{}] 车辆列表不存在!", vin);
             return;
         }
         VehicleInfo vehicleInfo = (VehicleInfo) vehicleCacheProvider.get(vin);
@@ -175,7 +175,7 @@ public class GB32960DataProcess implements IDataProcess {
         rpTuple.setMsgBody(msgBody.getBytes(Charset.forName(EStarConstant.JSON_CHARSET)));
         rpTuple.setTime(position.getDateTime().getTime());
 
-        //
+        // 获取上下文中的配置信息
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 

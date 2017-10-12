@@ -12,7 +12,14 @@ public final class EStarConstant extends ConstantUtil {
     public enum Kafka {
         ;
         public final static String TRACK_TOPIC = "trackTopic";
+        public final static String FAULT_TOPIC = "faultTopic";
     }
+
+    public enum FlowKey {
+        ;
+        public final static String VEHICLE_FAULT = "vehicleFault";
+    }
+
 
     public enum Location{
         ;
@@ -27,9 +34,23 @@ public final class EStarConstant extends ConstantUtil {
         public final static String VEHICLE_ID = "vehicleId";
     }
 
+    public enum Fault{
+        ;
+        public final static String FAULT_UNIT = "faultUnit";
+        public final static String FAULT_VALUE = "faultValue";
+        public final static String START_TIME = "startTime";
+        public final static String END_TIME = "endTime";
+        public final static String FAULT_NAME = "faultName";
+        public final static String FAULT_DESC = "faultDesc";
+
+        public final static String VEHICLE_ID = "vehicleId";
+    }
+
 
     public enum SQL{
         ;
         public final static String SELECT_VEHICLE_INFO = "selectVehicleInfo";
+        public final static String SELECT_VEHICLE_FAULT = "selectVehicleFault";
+        public final static String SELECT_FAULT_CODE = "selectFaultCode";
     }
 }

@@ -1,7 +1,10 @@
 package com.tiza.process.protocol.gb32960.cmd;
 
+import cn.com.tiza.tstar.common.process.RPTuple;
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.util.CommonUtil;
+import com.diyiliu.common.util.JacksonUtil;
+import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.model.Position;
 import com.tiza.process.protocol.bean.GB32960Header;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
@@ -25,20 +28,34 @@ public class CMD_02 extends GB32960DataProcess {
         this.cmd = 0x02;
     }
 
+    /** 当前位置表参数*/
     private List<Map> paramValues;
+
+    /** 指令中的当前时间*/
+    private Date currentTime;
+
+    /** 处理流上下文*/
+    private Map<String, String> context;
 
     @Override
     public void parse(byte[] content, Header header) {
+        GB32960Header gb32960Header = (GB32960Header) header;
+        RPTuple tuple = (RPTuple) gb32960Header.gettStarData();
+        context = tuple.getContext();
+
         ByteBuf buf = Unpooled.copiedBuffer(content);
         paramValues = new ArrayList<>();
 
         byte[] dateBytes = new byte[6];
         buf.readBytes(dateBytes);
-        Date date = CommonUtil.bytesToDate(dateBytes);
+        currentTime= CommonUtil.bytesToDate(dateBytes);
+
+        //
+        tuple.setTime(currentTime.getTime());
 
         Map map = new HashMap();
         map.put("SYSTEMTIME", new Date());
-        map.put("GPSTIME", date);
+        map.put("GPSTIME", currentTime);
         paramValues.add(map);
 
         // 中断标识
@@ -85,7 +102,7 @@ public class CMD_02 extends GB32960DataProcess {
                     interrupt = parseStorageTemp(buf);
                     break;
                 default:
-                    if (buf.readableBytes() > 2){
+                    if (buf.readableBytes() > 2) {
 
                         int length = buf.readUnsignedShort();
                         buf.readBytes(new byte[length]);
@@ -104,6 +121,7 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 整车数据
+     *
      * @param byteBuf
      * @return
      */
@@ -139,26 +157,26 @@ public class CMD_02 extends GB32960DataProcess {
         map.put("DRIVINGMODE", runMode);
 
         // 速度
-        if (0xFFFF == speed){
+        if (0xFFFF == speed) {
 
             map.put("SPEEDSTATUS", 255);
-        }else if (0xFFFE == speed){
+        } else if (0xFFFE == speed) {
 
             map.put("SPEEDSTATUS", 254);
-        }else {
+        } else {
 
             map.put("SPEEDSTATUS", 1);
             map.put("SPEED", speed);
         }
 
         // 里程
-        if (0xFFFFFFFFl == mile){
+        if (0xFFFFFFFFl == mile) {
 
             map.put("ODOSTATUS", 255);
-        }else if (0xFFFFFFFEl == mile){
+        } else if (0xFFFFFFFEl == mile) {
 
             map.put("ODOSTATUS", 254);
-        }else {
+        } else {
 
             map.put("ODOSTATUS", 1);
             map.put("ODO", mileage);
@@ -166,36 +184,36 @@ public class CMD_02 extends GB32960DataProcess {
 
 
         // 电压
-        if (0xFFFF == voltage){
+        if (0xFFFF == voltage) {
 
             map.put("VOLTAGESTATUS", 255);
-        }else if (0xFFFE == voltage){
+        } else if (0xFFFE == voltage) {
 
             map.put("VOLTAGESTATUS", 254);
-        }else {
+        } else {
 
             map.put("VOLTAGESTATUS", 1);
             map.put("VOLTAGE", voltage);
         }
 
         // 电流
-        if (0xFFFF == electricity){
+        if (0xFFFF == electricity) {
 
             map.put("AMPSTATUS", 255);
-        }else if (0xFFFE == electricity){
+        } else if (0xFFFE == electricity) {
 
             map.put("AMPSTATUS", 254);
-        }else {
+        } else {
 
             map.put("AMPSTATUS", 1);
             map.put("AMP", electricity);
         }
 
         // SOC
-        if (0xFF == soc || 0xFE == soc){
+        if (0xFF == soc || 0xFE == soc) {
 
             map.put("SOCSTATUS", soc);
-        }else {
+        } else {
 
             map.put("SOCSTATUS", 1);
             map.put("SOC", soc);
@@ -215,6 +233,7 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 驱动电机数据
+     *
      * @param byteBuf
      * @return
      */
@@ -246,6 +265,7 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 燃料电池数据
+     *
      * @param byteBuf
      * @return
      */
@@ -262,7 +282,7 @@ public class CMD_02 extends GB32960DataProcess {
 
         int count = byteBuf.readUnsignedShort();
         // 数量无效
-        if (0xFFFE == count || 0xFFFF == count){
+        if (0xFFFE == count || 0xFFFF == count) {
 
             return false;
         }
@@ -291,12 +311,13 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 发动机数据
+     *
      * @param byteBuf
      * @return
      */
     private boolean parseEngine(ByteBuf byteBuf) {
 
-        if (byteBuf.readableBytes() < 5){
+        if (byteBuf.readableBytes() < 5) {
 
             return true;
         }
@@ -310,11 +331,12 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 车辆位置数据
+     *
      * @param byteBuf
      * @return
      */
     private boolean parsePosition(ByteBuf byteBuf) {
-        if (byteBuf.readableBytes() < 9){
+        if (byteBuf.readableBytes() < 9) {
 
             return true;
         }
@@ -331,8 +353,8 @@ public class CMD_02 extends GB32960DataProcess {
 
         Position position = new Position();
         position.setStatus(effective);
-        position.setLng(lng * (lngDir == 0? 1: -1));
-        position.setLat(lat * (latDir == 0? 1: -1));
+        position.setLng(lng * (lngDir == 0 ? 1 : -1));
+        position.setLat(lat * (latDir == 0 ? 1 : -1));
 
         Map map = new HashMap();
         map.put("position", position);
@@ -343,6 +365,7 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 极值数据
+     *
      * @param byteBuf
      * @return
      */
@@ -354,57 +377,83 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 报警数据
+     *
      * @param byteBuf
      * @return
      */
     private boolean parseAlarm(ByteBuf byteBuf) {
         int level = byteBuf.readUnsignedByte();
-
         long flag = byteBuf.readUnsignedInt();
 
+        Map alarm = new HashMap();
+        alarm.put("ALARMLEVEL", level);
+        if (level > 0 && level < 4){
+            alarm.put("ALARMTIME", currentTime);
+        }
+        paramValues.add(alarm);
+
+        Map commonAlarm = toCommonAlarm(flag);
+        paramValues.add(commonAlarm);
+
+        Map faultMap = new HashMap();
         int chargeFault = byteBuf.readUnsignedByte();
-        if (0xFE != chargeFault && 0xFF != chargeFault){
-            if (byteBuf.readableBytes() < chargeFault * 4 + 3){
+        if (0xFE != chargeFault && 0xFF != chargeFault) {
+            if (byteBuf.readableBytes() < chargeFault * 4 + 3) {
                 return true;
             }
-            for (int i = 0; i < chargeFault; i++){
+            List list = new ArrayList();
+            for (int i = 0; i < chargeFault; i++) {
 
-                byteBuf.readUnsignedInt();
+               long l =  byteBuf.readUnsignedInt();
+               list.add(l);
             }
+            faultMap.put(1, list);
         }
 
         int motorFault = byteBuf.readUnsignedByte();
-        if (0xFE != motorFault && 0xFF != motorFault){
-            if (byteBuf.readableBytes() < chargeFault * 4 + 2){
+        if (0xFE != motorFault && 0xFF != motorFault) {
+            if (byteBuf.readableBytes() < chargeFault * 4 + 2) {
                 return true;
             }
-            for (int i = 0; i < motorFault; i++){
+            List list = new ArrayList();
+            for (int i = 0; i < motorFault; i++) {
 
-                byteBuf.readUnsignedInt();
+               long l = byteBuf.readUnsignedInt();
+               list.add(l);
             }
+            faultMap.put(2, list);
         }
 
         int engineFault = byteBuf.readUnsignedByte();
-        if (0xFE != engineFault && 0xFF != engineFault){
-            if (byteBuf.readableBytes() < chargeFault * 4 + 1){
+        if (0xFE != engineFault && 0xFF != engineFault) {
+            if (byteBuf.readableBytes() < chargeFault * 4 + 1) {
                 return true;
             }
-            for (int i = 0; i < engineFault; i++){
+            List list = new ArrayList();
+            for (int i = 0; i < engineFault; i++) {
 
-                byteBuf.readUnsignedInt();
+               long l = byteBuf.readUnsignedInt();
+               list.add(l);
             }
+            faultMap.put(3, list);
         }
 
         int otherFault = byteBuf.readUnsignedByte();
-        if (0xFE != otherFault && 0xFF != otherFault){
-            if (byteBuf.readableBytes() < chargeFault * 4){
+        if (0xFE != otherFault && 0xFF != otherFault) {
+            if (byteBuf.readableBytes() < chargeFault * 4) {
                 return true;
             }
-            for (int i = 0; i < otherFault; i++){
+            List list = new ArrayList();
+            for (int i = 0; i < otherFault; i++) {
 
-                byteBuf.readUnsignedInt();
+               long l = byteBuf.readUnsignedInt();
+               list.add(l);
             }
+            //faultMap.put(4, list);
         }
+
+        // 报警数据加入上下文中，交给下一个流程处理
+        context.put(EStarConstant.FlowKey.VEHICLE_FAULT, JacksonUtil.toJson(faultMap));
 
         return false;
     }
@@ -412,21 +461,22 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 可充电储能电压数据
+     *
      * @param byteBuf
      * @return
      */
-    private boolean parseStorageVoltage(ByteBuf byteBuf){
+    private boolean parseStorageVoltage(ByteBuf byteBuf) {
 
         int count = byteBuf.readUnsignedByte();
-        if (0xFE == count || 0xFF == count){
+        if (0xFE == count || 0xFF == count) {
 
             return false;
         }
-        if (byteBuf.readableBytes() < count * 10){
+        if (byteBuf.readableBytes() < count * 10) {
 
             return true;
         }
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
 
             int number = byteBuf.readByte();
             int voltage = byteBuf.readUnsignedShort();
@@ -436,12 +486,12 @@ public class CMD_02 extends GB32960DataProcess {
             int serial = byteBuf.readUnsignedShort();
 
             int m = byteBuf.readByte();
-            if (byteBuf.readableBytes() < m * 2){
+            if (byteBuf.readableBytes() < m * 2) {
 
                 return true;
             }
 
-            for (int j = 0; j < m; j++){
+            for (int j = 0; j < m; j++) {
 
                 int kv = byteBuf.readUnsignedShort();
             }
@@ -453,39 +503,70 @@ public class CMD_02 extends GB32960DataProcess {
 
     /**
      * 可充电储能温度数据
+     *
      * @param byteBuf
      * @return
      */
-    private boolean parseStorageTemp(ByteBuf byteBuf){
+    private boolean parseStorageTemp(ByteBuf byteBuf) {
 
         int count = byteBuf.readUnsignedByte();
-        if (0xFE == count || 0xFF == count){
+        if (0xFE == count || 0xFF == count) {
 
             return false;
         }
-        if (byteBuf.readableBytes() < count * 3){
+        if (byteBuf.readableBytes() < count * 3) {
 
             return true;
         }
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
 
             int number = byteBuf.readByte();
             int n = byteBuf.readUnsignedShort();
 
-            if (0xFE == count || 0xFF == count){
+            if (0xFE == count || 0xFF == count) {
 
                 return false;
             }
-            if (byteBuf.readableBytes() < n){
+            if (byteBuf.readableBytes() < n) {
 
                 return true;
             }
-            for (int j = 0; j < n; j++){
+            for (int j = 0; j < n; j++) {
 
                 int temp = byteBuf.readUnsignedByte();
             }
         }
 
         return false;
+    }
+
+
+    /**
+     * 解析通用报警标志位
+     *
+     * @param flag
+     * @return
+     */
+    private Map toCommonAlarm(long flag) {
+        String[] alarmArray = new String[]{"TEMPDIFFALARM", "BATTERYHIGHTEMPALARM",
+                "HIGHPRESSUREALARM", "LOWPRESSUREALARM",
+                "SOCLOWALARM", "BATTERYUNITHIGHVOLTAGEALARM",
+                "BATTERYUNITLOWVOLTAGEALARM", "SOCHIGHALARM",
+                "SOCJUMPALARM", "BATTERYMISMATCHALARM",
+                "BATTERYUNITUNIFORMITYALARM", "INSULATIONALARM",
+                "DCDCTEMPALARM", "BRAKEALARM",
+                "DCDCSTATUSALARM", "MOTORCUTEMPALARM",
+                "HIGHPRESSURELOCKALARM", "MOTORTEMPALARM", "BATTERYOVERCHARGEALARM"};
+
+        Map alarmMap = new HashMap();
+
+        for (int i = 0; i < alarmArray.length; i++) {
+            String column = alarmArray[i];
+            long value = flag & (0x01 << i);
+
+            alarmMap.put(column, value);
+        }
+
+        return alarmMap;
     }
 }
