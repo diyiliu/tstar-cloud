@@ -29,7 +29,7 @@
              SELECT t.vehicleid, t.unitid, t.gpstime
               FROM bs_warehouseoutin t
              WHERE t.gpstime IS NOT NULL
-               AND t.gpstime =
+               AND t.gpstime IN
                    (SELECT MAX(gpstime) FROM bs_warehouseoutin GROUP BY vehicleid)
         ]]>
     </sql>

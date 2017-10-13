@@ -4,6 +4,7 @@ import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
 import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.model.Point;
+import com.diyiliu.common.util.DateUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import com.diyiliu.common.util.SpringUtil;
 import com.tiza.process.common.config.MStarConstant;
@@ -71,18 +72,19 @@ public class StrategyAlarmModule extends BaseHandle {
                         InOutRecord oldRecord = (InOutRecord) recordMap.get(vehicleId);
                         long interval = (position.getDateTime().getTime() - oldRecord.getGpsTime().getTime()) / (1000 * 60);
 
-                        //logger.info("车辆[{}]在仓库[{}]外, 数据间隔[{}]...", vehicleId, storehouse.getId(), interval);
+                        logger.info("车辆[{}], 频率[{}], 时间记录[{}-{}], 间隔[{}]分钟...", vehicleId, storehouse.getRate(),
+                                DateUtil.dateToString(position.getDateTime()), DateUtil.dateToString(oldRecord.getGpsTime()), interval);
 
                         if (interval > storehouse.getRate()) {
 
-                            toCreate(position, vehicleId, oldRecord.getStorehouseId());
+                            toCreate(position, vehicleId, sid);
                         }
                     } else {
 
                         toCreate(position, vehicleId, sid);
                     }
                 }
-            }else {
+            } else {
                 //logger.warn("无效定位数据!");
             }
         }
@@ -104,14 +106,17 @@ public class StrategyAlarmModule extends BaseHandle {
                 position.getDateTime(), position.getEnLngD(), position.getEnLatD(), new Date()};
 
         VehicleDao vehicleDao = SpringUtil.getBean("vehicleDao");
-        if (!vehicleDao.update(sql, paramValues)) {
+        if (vehicleDao.update(sql, paramValues)) {
 
+            InOutRecord record = new InOutRecord();
+            record.setStorehouseId(storehouseId);
+            record.setVehicleId(Integer.parseInt(vehicleId));
+            record.setGpsTime(position.getDateTime());
+
+            logger.info("记录车辆[{}]出库时间[{}]", vehicleId, DateUtil.dateToString(position.getDateTime()));
+            recordMap.put(vehicleId, record);
+        } else {
             logger.error("新增车辆策略报警失败!");
         }
-
-        InOutRecord record = new InOutRecord();
-        record.setGpsTime(position.getDateTime());
-
-        recordMap.put(vehicleId, record);
     }
 }
