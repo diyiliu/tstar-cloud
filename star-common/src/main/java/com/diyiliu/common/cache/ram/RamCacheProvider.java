@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Update: 2016-03-17 16:39
  */
 public class RamCacheProvider implements ICache {
-    private Map<Object, Object> cacheMap = new ConcurrentHashMap<Object, Object>();
+    private Map<Object, Object> cacheMap = new ConcurrentHashMap();
 
     public void clear() {
         cacheMap.clear();

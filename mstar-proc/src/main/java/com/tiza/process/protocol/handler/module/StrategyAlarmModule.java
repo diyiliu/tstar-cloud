@@ -43,6 +43,7 @@ public class StrategyAlarmModule extends BaseHandle {
             // 有状态位
             if (MapUtils.isEmpty(position.getStatusMap())) {
 
+                //logger.warn("无状态位数据!");
                 return rpTuple;
             }
             Map<String, String> statusMap = position.getStatusMap();
@@ -56,14 +57,22 @@ public class StrategyAlarmModule extends BaseHandle {
                 Storehouse storehouse = (Storehouse) vehicleStorehouseMap.get(vehicleId);
                 int sid = storehouse.getId();
 
+                if (storehouse.getArea() == null) {
+
+                    logger.warn("车辆仓库数据异常!");
+                    return rpTuple;
+                }
+
                 if (storehouse.getArea().isPointInArea(point) == 1) {
 
+                    logger.info("车辆[{}]在仓库[{}]内...", vehicleId, storehouse.getId());
                 } else {
                     if (recordMap.containsKey(vehicleId)) {
                         InOutRecord oldRecord = (InOutRecord) recordMap.get(vehicleId);
-
-
                         long interval = (position.getDateTime().getTime() - oldRecord.getGpsTime().getTime()) / (1000 * 60);
+
+                        //logger.info("车辆[{}]在仓库[{}]外, 数据间隔[{}]...", vehicleId, storehouse.getId(), interval);
+
                         if (interval > storehouse.getRate()) {
 
                             toCreate(position, vehicleId, oldRecord.getStorehouseId());
@@ -73,6 +82,8 @@ public class StrategyAlarmModule extends BaseHandle {
                         toCreate(position, vehicleId, sid);
                     }
                 }
+            }else {
+                //logger.warn("无效定位数据!");
             }
         }
 

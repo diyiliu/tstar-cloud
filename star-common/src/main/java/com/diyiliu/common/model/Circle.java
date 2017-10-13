@@ -67,7 +67,7 @@ public class Circle implements Area {
             point = new Point(lng, lat);
         }
 
-        double distance = GisUtil.distanceP2P(point, this.center) * 1000;
+        double distance = GisUtil.distanceP2P(point, getCenter()) * 1000;
         return ((distance > this.radius) ? 0 : 1);
     }
 
