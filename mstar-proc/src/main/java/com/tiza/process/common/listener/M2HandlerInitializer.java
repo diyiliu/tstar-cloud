@@ -45,7 +45,7 @@ public class M2HandlerInitializer implements Initializer {
         // 车辆最近一条和仓库之间的位置信息
         List<InOutRecord> list = vehicleDao.selectInOutRecord();
         for (InOutRecord record : list) {
-            vehicleOutInCacheProvider.put(record.getVehicleId(), record);
+            vehicleOutInCacheProvider.put(String.valueOf(record.getVehicleId()), record);
         }
     }
 }

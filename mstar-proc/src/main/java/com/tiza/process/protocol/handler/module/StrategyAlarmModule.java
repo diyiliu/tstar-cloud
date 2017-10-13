@@ -10,13 +10,12 @@ import com.tiza.process.common.config.MStarConstant;
 import com.tiza.process.common.dao.VehicleDao;
 import com.tiza.process.common.model.InOutRecord;
 import com.tiza.process.common.model.Position;
-import com.tiza.process.common.model.Status;
 import com.tiza.process.common.model.Storehouse;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,56 +34,43 @@ public class StrategyAlarmModule extends BaseHandle {
         recordMap = SpringUtil.getBean("vehicleOutInCacheProvider");
         vehicleStorehouseMap = SpringUtil.getBean("vehicleStorehouseCacheProvider");
 
-
         Map<String, String> context = rpTuple.getContext();
-
         String vehicleId = rpTuple.getTerminalID();
-        if (context.containsKey(MStarConstant.FlowKey.POSITION) && context.containsKey(MStarConstant.FlowKey.STATUS)) {
+
+        if (context.containsKey(MStarConstant.FlowKey.POSITION)) {
             Position position = JacksonUtil.toObject(context.get(MStarConstant.FlowKey.POSITION), Position.class);
-            Status status = JacksonUtil.toObject(context.get(MStarConstant.FlowKey.STATUS), Status.class);
 
+            // 有状态位
+            if (MapUtils.isEmpty(position.getStatusMap())) {
+
+                return rpTuple;
+            }
+            Map<String, String> statusMap = position.getStatusMap();
+
+            int locationStatus = Double.valueOf(statusMap.get("LOCATIONSTATUS")).intValue();
             // 有效定位 并且 车辆有仓库
-            if (status.getLocation() == 1 && vehicleStorehouseMap.containsKey(vehicleId)) {
-
-                int vehId = Integer.parseInt(vehicleId);
-
+            if (locationStatus == 1 && vehicleStorehouseMap.containsKey(vehicleId)) {
                 // 当前位置
                 Point point = new Point(position.getLng(), position.getLat());
-                List<Storehouse> storehouseList = (List<Storehouse>) vehicleStorehouseMap.get(vehicleId);
 
-                Storehouse storehouse = null;
-                for (Storehouse sh : storehouseList) {
-                    if (sh.getArea().isPointInArea(point) == 1) {
+                Storehouse storehouse = (Storehouse) vehicleStorehouseMap.get(vehicleId);
+                int sid = storehouse.getId();
 
-                        storehouse = sh;
-                        break;
-                    }
-                }
+                if (storehouse.getArea().isPointInArea(point) == 1) {
 
-                if (recordMap.containsKey(vehId)) {
-                    InOutRecord oldRecord = (InOutRecord) recordMap.get(vehicleId);
-
-                    if (storehouse == null){
-
-                        // 出库
-                        if (oldRecord.getStatus() == 1){
-
-                            toUpdate(position, vehId, oldRecord.getStorehouseId(), 0);
-                        }
-                    }else{
-
-                        // 入库
-                        if (storehouse.getId() != oldRecord.getStorehouseId() || oldRecord.getStatus() == 0){
-
-                            toUpdate(position, vehId, storehouse.getId(), 1);
-                        }
-                    }
                 } else {
+                    if (recordMap.containsKey(vehicleId)) {
+                        InOutRecord oldRecord = (InOutRecord) recordMap.get(vehicleId);
 
-                    // 新增入库信息
-                    if (storehouse != null){
 
-                        toUpdate(position, vehId, storehouse.getId(),1);
+                        long interval = (position.getDateTime().getTime() - oldRecord.getGpsTime().getTime()) / (1000 * 60);
+                        if (interval > storehouse.getRate()) {
+
+                            toCreate(position, vehicleId, oldRecord.getStorehouseId());
+                        }
+                    } else {
+
+                        toCreate(position, vehicleId, sid);
                     }
                 }
             }
@@ -98,25 +84,22 @@ public class StrategyAlarmModule extends BaseHandle {
 
     }
 
-    private void toUpdate(Position position, int vehicleId, int storehouseId, int status) {
+    private void toCreate(Position position, String vehicleId, int storehouseId) {
         String sql = "INSERT INTO bs_warehouseoutin" +
-                "(vehicleid, unitid, gpstime, encryptlng, encryptlat, systemtime, status) " +
-                "VALUES(?,?,?,?,?,?,?)";
+                "(vehicleid, unitid, gpstime, encryptlng, encryptlat, systemtime) " +
+                "VALUES(?,?,?,?,?,?)";
 
         Object[] paramValues = new Object[]{vehicleId, storehouseId,
-                position.getDateTime(), position.getEnLngD(), position.getEnLatD(),
-                new Date(), status};
+                position.getDateTime(), position.getEnLngD(), position.getEnLatD(), new Date()};
 
         VehicleDao vehicleDao = SpringUtil.getBean("vehicleDao");
-        if (vehicleDao.update(sql, paramValues)){
-            //logger.info("新增车辆策略报警成功...");
-        }else {
-            logger.error("新增车辆策略报警失败！");
+        if (!vehicleDao.update(sql, paramValues)) {
+
+            logger.error("新增车辆策略报警失败!");
         }
 
         InOutRecord record = new InOutRecord();
-        record.setStatus(status);
-        record.setStorehouseId(storehouseId);
+        record.setGpsTime(position.getDateTime());
 
         recordMap.put(vehicleId, record);
     }

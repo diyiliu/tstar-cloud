@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -65,4 +67,14 @@ public class MainTest {
 
         System.out.println(new Date(0));
     }
+
+
+    @Test
+    public void testJs() throws Exception{
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+
+        System.out.println(engine.eval(1 + "*1").toString());
+    }
+
 }

@@ -10,17 +10,16 @@ import com.tiza.process.common.config.MStarConstant;
 import com.tiza.process.common.model.InOutRecord;
 import com.tiza.process.common.model.Storehouse;
 import com.tiza.process.common.model.VehicleInfo;
+import com.tiza.process.common.model.VehicleStorehouse;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description: VehicleDao
@@ -56,7 +55,7 @@ public class VehicleDao extends BaseDao {
         });
     }
 
-    public Map selectVehicleStorehouse() {
+    public List<VehicleStorehouse> selectVehicleStorehouse() {
         String sql = MStarConstant.getSQL(MStarConstant.SQL.SELECT_VEHICLE_STOREHOUSE);
 
         if (jdbcTemplate == null) {
@@ -64,52 +63,44 @@ public class VehicleDao extends BaseDao {
             return null;
         }
 
-        Map map = new HashMap();
-        try {
-            SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
-            while (rs.next()) {
-                int vehicleId = rs.getInt("vehicleid");
-                int id = rs.getInt("id");
-                int shape = rs.getInt("fencesharp");
+        return jdbcTemplate.query(sql, new RowMapper<VehicleStorehouse>() {
+            @Override
+            public VehicleStorehouse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                VehicleStorehouse  vehicleStorehouse = new VehicleStorehouse();
+                vehicleStorehouse.setVehicleId(rs.getLong("vehicleid"));
+
+                Storehouse storehouse = new Storehouse();
+                storehouse.setId(rs.getInt("id"));
+                storehouse.setRate(rs.getInt("uploadminute"));
 
                 Clob content = (Clob) rs.getObject("fencegeoinfo");
                 String str = content.getSubString(1, (int) content.length());
 
+                int shape = rs.getInt("fencesharp");
                 Area area = null;
-                switch (shape) {
+                try {
+                    switch (shape) {
 
-                    // 圆形
-                    case 1:
-                        List<Circle> list = JacksonUtil.toList(str, Circle.class);
-                        area = list.get(0);
-                        break;
-                    case 2:
-                        List<Point> points = JacksonUtil.toList(str, Point.class);
-                        area = new Region(points.toArray(new Point[points.size()]));
-                        break;
-                    default:
+                        // 圆形
+                        case 1:
+                            List<Circle> list = JacksonUtil.toList(str, Circle.class);
+                            area = list.get(0);
+                            break;
+                        case 2:
+                            List<Point> points = JacksonUtil.toList(str, Point.class);
+                            area = new Region(points.toArray(new Point[points.size()]));
+                            break;
+                        default:
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                Storehouse storehouse = new Storehouse();
                 storehouse.setArea(area);
-                storehouse.setId(id);
-                if (map.containsKey(vehicleId)) {
+                vehicleStorehouse.setStorehouse(storehouse);
 
-                    List list = (List) map.get(vehicleId);
-                    list.add(storehouse);
-                } else {
-
-                    List list = new ArrayList();
-                    list.add(storehouse);
-
-                    map.put(vehicleId, list);
-                }
+                return vehicleStorehouse;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return map;
+        });
     }
 
     public List<InOutRecord> selectInOutRecord(){
@@ -126,7 +117,7 @@ public class VehicleDao extends BaseDao {
                 InOutRecord record = new InOutRecord();
                 record.setVehicleId(rs.getInt("vehicleid"));
                 record.setStorehouseId(rs.getInt("unitid"));
-                record.setStatus(rs.getInt("status"));
+                record.setGpsTime(new Date(rs.getTimestamp("gpstime").getTime()));
 
                 return record;
             }

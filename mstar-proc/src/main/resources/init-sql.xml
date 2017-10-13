@@ -26,21 +26,23 @@
 
     <sql id="selectVehicleOutIn" description="查询车辆出入库记录">
         <![CDATA[
-            SELECT t.vehicleid, t.unitid, t.status
+             SELECT t.vehicleid, t.unitid, t.gpstime
               FROM bs_warehouseoutin t
-             WHERE t.id IN (SELECT MAX(id) FROM bs_warehouseoutin GROUP BY vehicleid)
+             WHERE t.gpstime IS NOT NULL
+               AND t.gpstime =
+                   (SELECT MAX(gpstime) FROM bs_warehouseoutin GROUP BY vehicleid)
         ]]>
     </sql>
 
     <sql id="selectStorehouse" description="查询车辆仓库信息">
         <![CDATA[
-            SELECT t.id, t.fencesharp, t.fencegeoinfo, v.vehicleid
-              FROM bs_orgunit t
-             INNER JOIN bs_vehicleorgunitrelation v
-                ON t.id = v.orgunitid
-             WHERE t.orgunittypeid = 3
-               AND t.fencesharp IN (1, 2)
-               AND t.fencegeoinfo IS NOT NULL
+            SELECT t.vehicleid, o.id, o.fencesharp, o.fencegeoinfo, o.uploadminute
+              FROM bs_vehicleorgunitrelation t
+             INNER JOIN bs_orgunit o
+                ON o.id = t.orgunitid
+               AND o.orgunittypeid = 3
+               AND o.fencesharp IN (1, 2)
+               AND o.fencegeoinfo IS NOT NULL
         ]]>
     </sql>
 </root>

@@ -12,6 +12,9 @@ public class Storehouse {
     private int id;
     private Area area;
 
+    /** 检测车辆位置频率 (单位:分钟)*/
+    private int rate;
+
     public int getId() {
         return id;
     }
@@ -26,5 +29,13 @@ public class Storehouse {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 }

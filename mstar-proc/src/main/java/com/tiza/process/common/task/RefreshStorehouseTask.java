@@ -3,6 +3,7 @@ package com.tiza.process.common.task;
 import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.task.ITask;
 import com.tiza.process.common.dao.VehicleDao;
+import com.tiza.process.common.model.VehicleStorehouse;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,24 +29,23 @@ public class RefreshStorehouseTask implements ITask {
     public void execute() {
         logger.info("刷新车辆仓库信息...");
 
-        Map map = vehicleDao.selectVehicleStorehouse();
-        refresh(map, vehicleStorehouseCacheProvider);
+        List<VehicleStorehouse> vehicleStorehouses = vehicleDao.selectVehicleStorehouse();
+        refresh(vehicleStorehouses, vehicleStorehouseCacheProvider);
     }
 
-    public void refresh(Map map, ICache provider){
-        if (map.isEmpty()){
+    public void refresh(List<VehicleStorehouse> list, ICache provider){
+        if (CollectionUtils.isEmpty(list)){
             logger.warn("无仓库信息！");
             return;
         }
 
         Set oldKeys = provider.getKeys();
-        Set tempKeys = new HashSet(map.size());
+        Set tempKeys = new HashSet(list.size());
 
-        for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();){
-
-            int id = (int) iterator.next();
-            List list = (List) map.get(id);
-            provider.put(id, list);
+        for (VehicleStorehouse vehicleStorehouse: list){
+            String vehicleId = String.valueOf(vehicleStorehouse.getVehicleId());
+            provider.put(vehicleId, vehicleStorehouse.getStorehouse());
+            tempKeys.add(vehicleId);
         }
 
         // 被删除的
