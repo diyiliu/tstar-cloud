@@ -20,7 +20,30 @@
         <![CDATA[
             SELECT
                 t.id, t.factoryid, t.faultunit, t.faultvalue, t.name, t.description
-             FROM bs_vehiclefaultcode t;
+             FROM bs_vehiclefaultcode t
+        ]]>
+    </sql>
+
+    <sql id="selectAlarmStrategy" description="查询报警策略">
+        <![CDATA[
+            SELECT t.vehicleid,
+                   s.id alarmid,
+                   s.name,
+                   s.alarmlevel,
+                   s.batterymaxvoltage,
+                   s.batteryminvoltage,
+                   s.batterymaxtemp,
+                   s.batterymintemp,
+                   n.userid,
+                   n.sms,
+                   n.email,
+                   n.site
+              FROM rel_alarmstrategy_vehicle t
+             INNER JOIN bs_vehiclealarmstrategy s
+                ON s.id = t.alarmid
+             INNER JOIN bs_vehiclealarmnotice n
+                ON n.alarmid = s.id
+             ORDER BY t.vehicleid
         ]]>
     </sql>
 </root>

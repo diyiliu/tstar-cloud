@@ -10,7 +10,6 @@ import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.dao.FaultDao;
 import com.tiza.process.common.model.FaultCode;
 import com.tiza.process.common.model.VehicleFault;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +17,8 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 /**
+ * 车辆通用故障报警
+ *
  * Description: VehicleFaultModule
  * Author: DIYILIU
  * Update: 2017-10-12 14:19
@@ -205,6 +206,5 @@ public class VehicleFaultModule extends BaseHandle {
 
         logger.info("终端[{}]写入Kafka故障信息...", vehicleFault.getVehicleId());
         storeInKafka(tuple, context.get(EStarConstant.Kafka.FAULT_TOPIC));
-
     }
 }

@@ -3,7 +3,9 @@ package com.tiza.process.common.listener;
 import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.listener.Initializer;
 import com.diyiliu.common.task.ITask;
+import com.tiza.process.common.dao.AlarmDao;
 import com.tiza.process.common.dao.FaultDao;
+import com.tiza.process.common.model.AlarmStrategy;
 import com.tiza.process.common.model.FaultCode;
 import com.tiza.process.common.model.VehicleFault;
 
@@ -28,7 +30,13 @@ public class GB32960HandlerInitializer implements Initializer {
     private ICache vehicleFaultCacheProvider;
 
     @Resource
+    private ICache alarmStrategyCacheProvider;
+
+    @Resource
     private FaultDao faultDao;
+
+    @Resource
+    private AlarmDao alarmDao;
 
     @Override
     public void init() {
@@ -36,9 +44,14 @@ public class GB32960HandlerInitializer implements Initializer {
         // 刷新车辆列表
         refreshVehicleInfoTask.execute();
 
+        // 初始化故障代码库
         initFaultCode();
 
+        // 初始化车辆当前故障
         initVehicleFault();
+
+        // 初始化车辆报警策略
+        initVehicleAlarmStrategy();
     }
 
     /**
@@ -63,15 +76,38 @@ public class GB32960HandlerInitializer implements Initializer {
         for (VehicleFault fault: vehicleFaults){
             String vehicleId = String.valueOf(fault.getVehicleId());
 
-            if (vehicleFaultCacheProvider.containsKey(vehicleId)){
-                List list = (List) vehicleFaultCacheProvider.get(vehicleId);
-                list.add(fault);
-            }else {
-                List list = new ArrayList();
-                list.add(fault);
+            putList(vehicleId, vehicleFaultCacheProvider, fault);
+        }
+    }
 
-                vehicleFaultCacheProvider.put(vehicleId, list);
-            }
+    /**
+     * 获取车辆报警策略
+     */
+    public void initVehicleAlarmStrategy(){
+        List<AlarmStrategy> alarmStrategies = alarmDao.selectAlarmStrategy();
+        for (AlarmStrategy strategy: alarmStrategies){
+            String vehicleId = String.valueOf(strategy.getVehicleId());
+
+            putList(vehicleId, alarmStrategyCacheProvider, strategy);
+        }
+    }
+
+    /**
+     * 缓存中添加列表
+     * @param key
+     * @param cache
+     * @param object
+     */
+    public void putList(String key, ICache cache, Object object){
+        if (cache.containsKey(key)){
+
+            List  list = (List) cache.get(key);
+            list.add(object);
+        }else {
+            List list = new ArrayList();
+            list.add(object);
+
+            cache.put(key, list);
         }
     }
 }

@@ -17,7 +17,10 @@ public final class EStarConstant extends ConstantUtil {
 
     public enum FlowKey {
         ;
+        // 报警数据
         public final static String VEHICLE_FAULT = "vehicleFault";
+        // 极值数据
+        public final static String VEHICLE_EXTREME = "vehicleExtreme";
     }
 
 
@@ -52,5 +55,6 @@ public final class EStarConstant extends ConstantUtil {
         public final static String SELECT_VEHICLE_INFO = "selectVehicleInfo";
         public final static String SELECT_VEHICLE_FAULT = "selectVehicleFault";
         public final static String SELECT_FAULT_CODE = "selectFaultCode";
+        public final static String SELECT_ALARM_STRATEGY = "selectAlarmStrategy";
     }
 }

@@ -370,8 +370,107 @@ public class CMD_02 extends GB32960DataProcess {
      * @return
      */
     private boolean parseExtreme(ByteBuf byteBuf) {
-        byteBuf.readBytes(new byte[14]);
+        if (byteBuf.readableBytes() < 14) {
 
+            return true;
+        }
+
+        Map map = new HashMap();
+        // 最高电压
+        int maxVoltageSysNo = byteBuf.readUnsignedByte();
+        if (0xFF == maxVoltageSysNo || 0xFE == maxVoltageSysNo){
+            map.put("MAXVOLTAGEBATTERYSUBSYSSTATUS", maxVoltageSysNo);
+        }else {
+            map.put("MAXVOLTAGEBATTERYSUBSYSSTATUS", 1);
+            map.put("MAXVOLTAGEBATTERYSUBSYS", maxVoltageSysNo);
+        }
+        int maxVoltageCellNo = byteBuf.readUnsignedByte();
+        if (0xFF == maxVoltageCellNo || 0xFE == maxVoltageCellNo){
+            map.put("MAXVOLTAGEBATTERYUNITSTATUS", maxVoltageCellNo);
+        }else {
+            map.put("MAXVOLTAGEBATTERYUNITSTATUS", 1);
+            map.put("MAXVOLTAGEBATTERYUNIT",maxVoltageCellNo );
+        }
+        int maxVoltageValue = byteBuf.readUnsignedShort();
+        if (0xFF == maxVoltageValue || 0xFE == maxVoltageValue){
+            map.put("BATTERYUNITMAXVOLTAGESTATUS", maxVoltageValue);
+        }else {
+            map.put("BATTERYUNITMAXVOLTAGESTATUS", 1);
+            map.put("BATTERYUNITMAXVOLTAGE", maxVoltageValue);
+        }
+
+        // 最低电压
+        int minVoltageSysNo = byteBuf.readUnsignedByte();
+        if (0xFF == minVoltageSysNo || 0xFE == minVoltageSysNo){
+            map.put("MINVOLTAGEBATTERYSUBSYSSTATUS", minVoltageSysNo);
+        }else {
+            map.put("MINVOLTAGEBATTERYSUBSYSSTATUS", 1);
+            map.put("MINVOLTAGEBATTERYSUBSYS", minVoltageSysNo);
+        }
+        int minVoltageCellNo = byteBuf.readUnsignedByte();
+        if (0xFF == minVoltageCellNo || 0xFE == minVoltageCellNo){
+            map.put("MINVOLTAGEBATTERYUNITSTATUS", minVoltageCellNo);
+        }else {
+            map.put("MINVOLTAGEBATTERYUNITSTATUS", 1);
+            map.put("MINVOLTAGEBATTERYUNIT", minVoltageCellNo);
+        }
+        int minVoltageValue = byteBuf.readUnsignedShort();
+        if (0xFF == minVoltageValue || 0xFE == minVoltageValue){
+            map.put("BATTERYUNITMINVOLTAGESTATUS", minVoltageValue);
+        }else {
+            map.put("BATTERYUNITMINVOLTAGESTATUS", 1);
+            map.put("BATTERYUNITMINVOLTAGE", minVoltageValue);
+        }
+
+        // 最高温度
+        int maxTempSysNo = byteBuf.readUnsignedByte();
+        if (0xFF == maxTempSysNo || 0xFE == maxTempSysNo){
+            map.put("MAXTEMPBATTERYSUBSYSSTATUS", maxTempSysNo);
+        }else {
+            map.put("MAXTEMPBATTERYSUBSYSSTATUS", 1);
+            map.put("MAXTEMPBATTERYSUBSYS",maxTempSysNo);
+        }
+        int maxTempCellNo = byteBuf.readUnsignedByte();
+        if (0xFF == maxTempCellNo || 0xFE == maxTempCellNo){
+            map.put("MAXTEMPBATTERYSENSORSTATUS", maxTempCellNo);
+        }else {
+            map.put("MAXTEMPBATTERYSENSORSTATUS", 1);
+            map.put("MAXTEMPBATTERYSENSOR", maxTempCellNo);
+        }
+        int maxTempValue = byteBuf.readUnsignedByte();
+        if (0xFF == maxTempValue || 0xFE == maxTempValue){
+            map.put("BATTERYMAXTEMPSTATUS", maxTempValue);
+        }else {
+            map.put("BATTERYMAXTEMPSTATUS", 1);
+            map.put("BATTERYMAXTEMP", maxTempValue);
+        }
+
+        // 最低温度
+        int minTempSysNo = byteBuf.readUnsignedByte();
+        if (0xFF == minTempSysNo || 0xFE == minTempSysNo){
+            map.put("MINTEMPBATTERYSUBSYSSTATUS", minTempSysNo);
+        }else {
+            map.put("MINTEMPBATTERYSUBSYSSTATUS", 1);
+            map.put("MINTEMPBATTERYSUBSYS", minTempSysNo);
+        }
+        int minTempCellNo = byteBuf.readUnsignedByte();
+        if (0xFF == minTempCellNo || 0xFE == minTempCellNo){
+            map.put("MINTEMPBATTERYSENSORSTATUS", minTempCellNo);
+        }else {
+            map.put("MINTEMPBATTERYSENSORSTATUS", 1);
+            map.put("MINTEMPBATTERYSENSOR", minTempCellNo);
+        }
+        int minTempValue = byteBuf.readUnsignedByte();
+        if (0xFF == minTempValue || 0xFE == minTempValue){
+            map.put("BATTERYMINTEMPSTATUS", minTempValue);
+        }else {
+            map.put("BATTERYMINTEMPSTATUS", 1);
+            map.put("BATTERYMINTEMP", minTempValue);
+        }
+
+        paramValues.add(map);
+        // 报警数据加入上下文中，交给下一个流程处理
+        context.put(EStarConstant.FlowKey.VEHICLE_EXTREME, JacksonUtil.toJson(map));
         return false;
     }
 

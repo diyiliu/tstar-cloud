@@ -28,7 +28,7 @@ public class RefreshVehicleInfoTask implements ITask {
 
     @Override
     public void execute() {
-        logger.info("refresh vehicle list...");
+        logger.info("刷新车辆列表...");
 
         List<VehicleInfo> list = vehicleDao.selectVehicleInfo();
         refresh(list, vehicleCacheProvider);
@@ -36,7 +36,7 @@ public class RefreshVehicleInfoTask implements ITask {
 
     private void refresh(List<VehicleInfo> vehicleList, ICache vehicleCache) {
         if (vehicleList == null || vehicleList.size() < 1){
-            logger.warn("no vehicles!");
+            logger.warn("无车辆!");
             return;
         }
 

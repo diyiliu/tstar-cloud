@@ -3,8 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- 指令缓存 -->
     <bean id="cmdCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
 
+    <!-- 车辆列表缓存 -->
     <bean id="vehicleCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
 
     <!-- 车辆故障缓存 -->
@@ -12,4 +14,7 @@
 
     <!-- 故障代码库缓存 -->
     <bean id="faultCodeCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
+
+    <!-- 车辆报警策略缓存 -->
+    <bean id="alarmStrategyCacheProvider" class="com.diyiliu.common.cache.ram.RamCacheProvider"/>
 </beans>

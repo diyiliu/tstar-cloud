@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Description: FaultDao
  * 车辆故障
+ * Description: FaultDao
  * Author: DIYILIU
  * Update: 2017-10-12 14:33
  */
@@ -75,5 +75,4 @@ public class FaultDao extends BaseDao{
             }
         });
     }
-
 }

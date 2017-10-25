@@ -181,7 +181,6 @@ public class GB32960DataProcess implements IDataProcess {
 
         logger.info("终端[{}]写入Kafka位置信息...", header.getVin());
         handler.storeInKafka(rpTuple, context.get(EStarConstant.Kafka.TRACK_TOPIC));
-
     }
 
     @Override
