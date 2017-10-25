@@ -10,6 +10,7 @@ import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.dao.FaultDao;
 import com.tiza.process.common.model.FaultCode;
 import com.tiza.process.common.model.VehicleFault;
+import com.tiza.process.common.model.VehicleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +46,16 @@ public class VehicleFaultModule extends BaseHandle {
 
     @Override
     public RPTuple handle(RPTuple rpTuple) throws Exception {
-        this.rpTuple = rpTuple;
         Map<String, String> context = rpTuple.getContext();
-        if (context.containsKey(EStarConstant.FlowKey.VEHICLE_FAULT)) {
-            String vehicleId = rpTuple.getTerminalID();
+
+        String terminalId = rpTuple.getTerminalID();
+        ICache vehicleCache = SpringUtil.getBean("vehicleCacheProvider");
+        if (context.containsKey(EStarConstant.FlowKey.VEHICLE_FAULT) && vehicleCache.containsKey(terminalId)) {
+            this.rpTuple = rpTuple;
             gpsTime = rpTuple.getTime();
+
+            VehicleInfo vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
+            String vehicleId = String.valueOf(vehicleInfo.getId());
 
             faultCodeCache = SpringUtil.getBean("faultCodeCacheProvider");
             vehicleFaultCache = SpringUtil.getBean("vehicleFaultCacheProvider");

@@ -13,6 +13,9 @@ public final class EStarConstant extends ConstantUtil {
         ;
         public final static String TRACK_TOPIC = "trackTopic";
         public final static String FAULT_TOPIC = "faultTopic";
+
+        public final static String EMAIL_TOPIC = "emailTopic";
+        public final static String SMS_TOPIC = "smsTopic";
     }
 
     public enum FlowKey {
@@ -21,6 +24,8 @@ public final class EStarConstant extends ConstantUtil {
         public final static String VEHICLE_FAULT = "vehicleFault";
         // 极值数据
         public final static String VEHICLE_EXTREME = "vehicleExtreme";
+        // 报警等级
+        public final static String ALARM_LEVEL = "alarmLevel";
     }
 
 

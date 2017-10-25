@@ -486,8 +486,11 @@ public class CMD_02 extends GB32960DataProcess {
 
         Map alarm = new HashMap();
         alarm.put("ALARMLEVEL", level);
-        if (level > 0 && level < 4){
+        // 有效报警值[0, 3]
+        if (level > -1 && level < 4){
             alarm.put("ALARMTIME", currentTime);
+
+            context.put(EStarConstant.FlowKey.ALARM_LEVEL, JacksonUtil.toJson(alarm));
         }
         paramValues.add(alarm);
 

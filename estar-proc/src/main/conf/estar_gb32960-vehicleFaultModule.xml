@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property>
-        <name>trackTopic</name>
-        <value>estar_gb32960_trackdata</value>
-        <description>ESTAR轨迹表</description>
+        <name>faultTopic</name>
+        <value>estar_gb32960_faultdata</value>
+        <description>ESTAR故障表</description>
     </property>
     <property>
         <name>business.database.driver</name>

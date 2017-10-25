@@ -47,6 +47,9 @@ public class AlarmDao extends BaseDao{
                 notice.setSms(rs.getInt("sms"));
                 notice.setEmail(rs.getInt("email"));
                 notice.setSite(rs.getInt("site"));
+                notice.setUsername(rs.getString("fullname"));
+                notice.setMobile(rs.getString("mobile"));
+                notice.setMailAddress(rs.getString("mailaddress"));
 
                 alarmStrategy.setAlarmNotice(notice);
 

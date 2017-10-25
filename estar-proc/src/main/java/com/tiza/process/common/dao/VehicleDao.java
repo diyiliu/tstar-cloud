@@ -35,6 +35,7 @@ public class VehicleDao extends BaseDao {
                 vehicleInfo.setId(rs.getInt("id"));
                 vehicleInfo.setVin(rs.getString("vin"));
                 vehicleInfo.setIccid(rs.getString("iccid"));
+                vehicleInfo.setLicense(rs.getString("license"));
 
                 return vehicleInfo;
             }

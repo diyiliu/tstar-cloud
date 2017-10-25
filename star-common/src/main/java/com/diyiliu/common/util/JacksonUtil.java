@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +18,14 @@ public class JacksonUtil {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
+    private final static  SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    static {
+        // 设置日期格式
+        mapper.setDateFormat(DEFAULT_DATE_FORMAT);
+    }
+
     public static String toJson(Object obj){
-
         String rs = null;
-
         try {
             rs = mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {

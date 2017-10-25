@@ -3,7 +3,7 @@
     <sql id="selectVehicleInfo" description="查询车辆信息">
         <![CDATA[
             SELECT
-                t.id, t.vin, t.iccid
+                t.id, t.vin, t.iccid, t.license
              FROM bs_vehicle t
         ]]>
     </sql>
@@ -35,6 +35,9 @@
                    s.batterymaxtemp,
                    s.batterymintemp,
                    n.userid,
+                   u.fullname,
+                   u.mobile,
+                   u.email mailaddress,
                    n.sms,
                    n.email,
                    n.site
@@ -43,6 +46,8 @@
                 ON s.id = t.alarmid
              INNER JOIN bs_vehiclealarmnotice n
                 ON n.alarmid = s.id
+             INNER JOIN bs_user u
+                ON u.id = n.userid
              ORDER BY t.vehicleid
         ]]>
     </sql>

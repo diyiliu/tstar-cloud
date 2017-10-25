@@ -12,6 +12,10 @@ public class AlarmNotice {
     private int email;
     private int site;
 
+    private String username;
+    private String mobile;
+    private String mailAddress;
+
     public long getAlarmId() {
         return alarmId;
     }
@@ -50,5 +54,29 @@ public class AlarmNotice {
 
     public void setSite(int site) {
         this.site = site;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getMailAddress() {
+        return mailAddress;
+    }
+
+    public void setMailAddress(String mailAddress) {
+        this.mailAddress = mailAddress;
     }
 }

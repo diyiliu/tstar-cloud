@@ -136,9 +136,6 @@ public class M2DataProcess implements IDataProcess{
 
         // 将解析的位置和状态信息放入流中
         RPTuple tuple = (RPTuple) header.gettStarData();
-        // 修改ID(原来是SIM)为车辆ID
-        tuple.setTerminalID(String.valueOf(vehicle.getId()));
-
         Map<String, String> context = tuple.getContext();
         context.put(MStarConstant.FlowKey.POSITION, JacksonUtil.toJson(position));
 
@@ -186,9 +183,6 @@ public class M2DataProcess implements IDataProcess{
 
         // 将解析的位置和状态信息放入流中
         RPTuple tuple = (RPTuple) header.gettStarData();
-        // 修改ID(原来是SIM)为车辆ID
-        tuple.setTerminalID(String.valueOf(vehicle.getId()));
-
         Map<String, String> context = tuple.getContext();
         context.put(MStarConstant.FlowKey.POSITION, JacksonUtil.toJson(position));
         context.put(MStarConstant.FlowKey.STATUS, JacksonUtil.toJson(status));
@@ -229,7 +223,7 @@ public class M2DataProcess implements IDataProcess{
             wtMap.put(MStarConstant.WorkTime.END_TIME, DateUtil.dateToString(endTime));
             wtMap.put(MStarConstant.WorkTime.VEHICLE_ID, vehicle.getId());
 
-            //hbase相同rowkey数据执行update操作
+            // hbase相同rowkey数据执行update操作
             RPTuple rpTuple = new RPTuple();
             rpTuple.setCmdID(header.getCmd());
             rpTuple.setTerminalID(String.valueOf(vehicle.getId()));

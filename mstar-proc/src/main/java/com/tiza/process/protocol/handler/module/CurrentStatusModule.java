@@ -2,12 +2,14 @@ package com.tiza.process.protocol.handler.module;
 
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
+import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.util.JacksonUtil;
 import com.diyiliu.common.util.SpringUtil;
 import com.tiza.process.common.config.MStarConstant;
 import com.tiza.process.common.dao.VehicleDao;
 import com.tiza.process.common.model.Parameter;
 import com.tiza.process.common.model.Position;
+import com.tiza.process.common.model.VehicleInfo;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +28,13 @@ public class CurrentStatusModule  extends BaseHandle {
     @Override
     public RPTuple handle(RPTuple rpTuple) throws Exception {
         Map<String, String> context = rpTuple.getContext();
+        String terminalId = rpTuple.getTerminalID();
 
-        String vehicleId = rpTuple.getTerminalID();
-        if (context.containsKey(MStarConstant.FlowKey.POSITION)) {
+        ICache vehicleCache = SpringUtil.getBean("vehicleCacheProvider");
+        if (context.containsKey(MStarConstant.FlowKey.POSITION) && vehicleCache.containsKey(terminalId)) {
+            VehicleInfo vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
+            String vehicleId = String.valueOf(vehicleInfo.getId());
+
             Position position = JacksonUtil.toObject(context.get(MStarConstant.FlowKey.POSITION), Position.class);
 
             Map canValue = null;

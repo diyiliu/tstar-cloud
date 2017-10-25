@@ -15,6 +15,7 @@ public class VehicleInfo {
     private String sim;
     private String vin;
     private String iccid;
+    private String license;
 
     private String protocolType;
 
@@ -80,5 +81,13 @@ public class VehicleInfo {
 
     public void setProtocolType(String protocolType) {
         this.protocolType = protocolType;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
     }
 }

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property>
-        <name>trackTopic</name>
-        <value>estar_gb32960_trackdata</value>
-        <description>ESTAR轨迹表</description>
+        <name>emailTopic</name>
+        <value>estar_notice_email</value>
+        <description>ESTAR邮件通知</description>
+    </property>
+    <property>
+        <name>smsTopic</name>
+        <value>estar_notice_sms</value>
+        <description>ESTAR短信通知</description>
     </property>
     <property>
         <name>business.database.driver</name>
@@ -32,5 +37,21 @@
     <property>
         <name>business.database.pool.incremental</name>
         <value>1</value>
+    </property>
+    <property>
+        <name>redis.ip</name>
+        <value>192.168.1.156</value>
+    </property>
+    <property>
+        <name>redis.port</name>
+        <value>6379</value>
+    </property>
+    <property>
+        <name>redis.database</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>redis.password</name>
+        <value></value>
     </property>
 </configuration>

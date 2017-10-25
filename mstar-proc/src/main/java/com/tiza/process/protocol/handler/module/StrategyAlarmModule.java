@@ -12,6 +12,7 @@ import com.tiza.process.common.dao.VehicleDao;
 import com.tiza.process.common.model.InOutRecord;
 import com.tiza.process.common.model.Position;
 import com.tiza.process.common.model.Storehouse;
+import com.tiza.process.common.model.VehicleInfo;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +37,13 @@ public class StrategyAlarmModule extends BaseHandle {
         vehicleStorehouseMap = SpringUtil.getBean("vehicleStorehouseCacheProvider");
 
         Map<String, String> context = rpTuple.getContext();
-        String vehicleId = rpTuple.getTerminalID();
+        String terminalId = rpTuple.getTerminalID();
 
-        if (context.containsKey(MStarConstant.FlowKey.POSITION)) {
+        ICache vehicleCache = SpringUtil.getBean("vehicleCacheProvider");
+        if (context.containsKey(MStarConstant.FlowKey.POSITION) && vehicleCache.containsKey(terminalId)) {
+            VehicleInfo vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
+            String vehicleId = String.valueOf(vehicleInfo.getId());
+
             Position position = JacksonUtil.toObject(context.get(MStarConstant.FlowKey.POSITION), Position.class);
 
             // 有状态位
