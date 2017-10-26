@@ -18,6 +18,7 @@ public class VehicleInfo {
     private String license;
 
     private String protocolType;
+    private Long dateTime;
 
     public long getId() {
         return id;
@@ -89,5 +90,13 @@ public class VehicleInfo {
 
     public void setLicense(String license) {
         this.license = license;
+    }
+
+    public Long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Long dateTime) {
+        this.dateTime = dateTime;
     }
 }

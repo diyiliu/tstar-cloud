@@ -10,6 +10,7 @@ import com.tiza.process.protocol.bean.GB32960Header;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,6 +38,8 @@ public class CMD_02 extends GB32960DataProcess {
     /** 处理流上下文*/
     private Map<String, String> context;
 
+    private Map realMode;
+
     @Override
     public void parse(byte[] content, Header header) {
         GB32960Header gb32960Header = (GB32960Header) header;
@@ -50,7 +53,6 @@ public class CMD_02 extends GB32960DataProcess {
         buf.readBytes(dateBytes);
         currentTime= CommonUtil.bytesToDate(dateBytes);
 
-        //
         tuple.setTime(currentTime.getTime());
 
         Map map = new HashMap();
@@ -58,6 +60,7 @@ public class CMD_02 extends GB32960DataProcess {
         map.put("GPSTIME", currentTime);
         paramValues.add(map);
 
+        realMode = new HashMap();
         // 中断标识
         boolean interrupt = false;
         while (buf.readableBytes() > 0) {
@@ -117,6 +120,11 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         updateGpsInfo((GB32960Header) header, paramValues);
+
+        // 车辆实时状态
+        if (MapUtils.isNotEmpty(realMode)){
+            context.put(EStarConstant.FlowKey.REAL_MODE, JacksonUtil.toJson(realMode));
+        }
     }
 
     /**
@@ -132,7 +140,13 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         int vehStatus = byteBuf.readUnsignedByte();
+        if (0x01 == vehStatus || 0x02 == vehStatus){
+            realMode.put(EStarConstant.RealMode.ON_OFF, vehStatus);
+        }
         int charge = byteBuf.readUnsignedByte();
+        if (0x01 == charge || 0x04 == charge){
+            realMode.put(EStarConstant.RealMode.TOP_OFF, charge);
+        }
         int runMode = byteBuf.readUnsignedByte();
 
         int speed = byteBuf.readUnsignedShort();
@@ -489,7 +503,7 @@ public class CMD_02 extends GB32960DataProcess {
         // 有效报警值[0, 3]
         if (level > -1 && level < 4){
             alarm.put("ALARMTIME", currentTime);
-
+            realMode.put(EStarConstant.RealMode.ALARM_LEVEL, level);
             context.put(EStarConstant.FlowKey.ALARM_LEVEL, JacksonUtil.toJson(alarm));
         }
         paramValues.add(alarm);

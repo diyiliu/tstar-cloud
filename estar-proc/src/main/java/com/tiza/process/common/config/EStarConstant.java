@@ -26,6 +26,20 @@ public final class EStarConstant extends ConstantUtil {
         public final static String VEHICLE_EXTREME = "vehicleExtreme";
         // 报警等级
         public final static String ALARM_LEVEL = "alarmLevel";
+        // 实时状态
+        public final static String REAL_MODE = "realMode";
+    }
+
+    public enum RealMode{
+        ;
+        // 登陆 登出
+        public final static String IN_OUT = "inOut";
+        // 开关机
+        public final static String ON_OFF = "onOff";
+        // 报警等级
+        public final static String ALARM_LEVEL = "alarmLevel";
+        // 充电状态
+        public final static String TOP_OFF = "topOff";
     }
 
 
