@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * 车辆实时状态
+ *
  * Description: CurrentStatusModule
  * Author: DIYILIU
  * Update: 2017-10-26 18:52

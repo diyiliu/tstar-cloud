@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * 自定义策略报警
- * <p>
+ *
  * Description: StrategyAlarmModule
  * Author: DIYILIU
  * Update: 2017-10-23 16:09
@@ -117,7 +117,7 @@ public class StrategyAlarmModule extends BaseHandle {
 
             if (maxTemp > alarmStrategy.getMaxTemperature()) {
 
-                content.append("最高温度值[").append(maxTemp / 1000).append("]报警。");
+                content.append("最高温度值[").append(maxTemp).append("]报警。");
                 redisKey.append(":maxTemperature");
             }
         }
@@ -127,7 +127,7 @@ public class StrategyAlarmModule extends BaseHandle {
 
             if (minTemp < alarmStrategy.getMinTemperature()) {
 
-                content.append("最低温度值[").append(minTemp / 1000).append("]报警。");
+                content.append("最低温度值[").append(minTemp).append("]报警。");
                 redisKey.append(":minTemperature");
             }
         }
@@ -137,7 +137,7 @@ public class StrategyAlarmModule extends BaseHandle {
 
         String key = redisKey.toString();
         Jedis jedis = getJedis();
-        if (jedis.exists(key)){
+        if (jedis.exists(key)) {
             String alarmJson = jedis.get(key);
 
             HashMap old = JacksonUtil.toObject(alarmJson, HashMap.class);
@@ -149,7 +149,7 @@ public class StrategyAlarmModule extends BaseHandle {
             Calendar nowCal = Calendar.getInstance();
             nowCal.setTime(now);
 
-            if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1){
+            if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1) {
 
                 return;
             }
@@ -161,11 +161,11 @@ public class StrategyAlarmModule extends BaseHandle {
         jedis.set(key, JacksonUtil.toJson(redisMap));
 
         AlarmNotice notice = alarmStrategy.getAlarmNotice();
-        if (notice.getSite() == 1){
+        if (notice.getSite() == 1) {
             String sql = "INSERT INTO bs_message(userid,title,content,createtime,status) VALUES(?,?,?,?,0)";
             Object[] params = new Object[]{notice.getUserId(), title, content, now};
 
-            if (!alarmDao.update(sql, params)){
+            if (!alarmDao.update(sql, params)) {
                 logger.error("新增车辆报警信息失败！");
             }
         }
@@ -173,7 +173,7 @@ public class StrategyAlarmModule extends BaseHandle {
         // 获取上下文中的配置信息
         Map<String, String> context = rpTuple.getContext();
 
-        if (notice.getEmail() == 1){
+        if (notice.getEmail() == 1) {
             Map map = new HashMap();
             map.put("address", notice.getMailAddress());
             map.put("subject", title);
@@ -191,7 +191,7 @@ public class StrategyAlarmModule extends BaseHandle {
             storeInKafka(tuple, context.get(EStarConstant.Kafka.EMAIL_TOPIC));
         }
 
-        if (notice.getSms() == 1){
+        if (notice.getSms() == 1) {
             Map map = new HashMap();
             map.put("mobile", notice.getMobile());
             map.put("content", content);

@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 /**
- * 车辆通用故障报警
+ * 车辆通用故障
  *
  * Description: VehicleFaultModule
  * Author: DIYILIU
