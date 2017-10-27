@@ -21,7 +21,7 @@ public class AlarmDao extends BaseDao{
 
 
     public List<AlarmStrategy> selectAlarmStrategy(){
-        String sql = EStarConstant.SQL.SELECT_ALARM_STRATEGY;
+        String sql = EStarConstant.getSQL(EStarConstant.SQL.SELECT_ALARM_STRATEGY);
 
         if (jdbcTemplate == null){
             logger.warn("尚未装载数据源，无法连接数据库!");
