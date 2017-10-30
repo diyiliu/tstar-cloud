@@ -120,22 +120,26 @@ public class GB32960DataProcess implements IDataProcess {
                 }
 
                 if (key.equalsIgnoreCase("position")){
-                    //logger.info("处理终端[{}]位置信息...", vin);
-
                     Position position = (Position) value;
                     position.setDateTime(gpsTime);
 
                     strb.append("LOCATIONSTATUS").append("=?, ");
                     strb.append("WGS84LAT").append("=?, ");
                     strb.append("WGS84LNG").append("=?, ");
-                    strb.append("GCJ02LAT").append("=?, ");
-                    strb.append("GCJ02LNG").append("=?, ");
+
 
                     list.add(position.getStatus());
                     list.add(position.getLatD());
                     list.add(position.getLngD());
-                    list.add(position.getEnLatD());
-                    list.add(position.getEnLngD());
+
+                    // 有效定位
+                    if (position.getStatus() == 0){
+                        strb.append("GCJ02LAT").append("=?, ");
+                        strb.append("GCJ02LNG").append("=?, ");
+
+                        list.add(position.getEnLatD());
+                        list.add(position.getEnLngD());
+                    }
 
                     position.setMileage(mileage);
                     toKafka(header, vehicleInfo, position);

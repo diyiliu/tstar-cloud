@@ -1,5 +1,6 @@
 package com.diyiliu.common.dao;
 
+import com.diyiliu.common.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,7 @@ public class BaseDao {
             return false;
         }
 
+        //logger.info("sql:[{}], 值:[{}]", sql, JacksonUtil.toJson(values));
         int result = jdbcTemplate.update(sql, values);
 
         if (result > 0) {

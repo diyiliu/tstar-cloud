@@ -21,12 +21,12 @@ public class GB32960ParseHandler extends BaseHandle {
 
     @Override
     public RPTuple handle(RPTuple rpTuple) throws Exception {
-        logger.info("terminal[{}], cmd[{}]...", rpTuple.getTerminalID(), CommonUtil.toHex(rpTuple.getCmdID()));
+        logger.info("终端[{}], 指令[{}]...", rpTuple.getTerminalID(), CommonUtil.toHex(rpTuple.getCmdID()));
 
         ICache cmdCacheProvider = SpringUtil.getBean("cmdCacheProvider");
         GB32960DataProcess process = (GB32960DataProcess) cmdCacheProvider.get(rpTuple.getCmdID());
         if (process == null) {
-            logger.error("can't find [{}] cmd parser!", CommonUtil.toHex(rpTuple.getCmdID()));
+            logger.error("找不到指令[{}]解析器!", CommonUtil.toHex(rpTuple.getCmdID()));
             return null;
         }
 

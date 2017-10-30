@@ -1,5 +1,6 @@
 package com.tiza.process.common.model;
 
+import com.diyiliu.common.model.Point;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.GpsCorrectUtil;
 
@@ -49,11 +50,19 @@ public class Position {
     }
 
     public Double getEnLngD() {
-        return CommonUtil.keepDecimal(GpsCorrectUtil.transform(latD, lngD).getLng(), 6);
+        Point point = GpsCorrectUtil.transform(latD, lngD);
+        if (point == null) {
+            return null;
+        }
+        return CommonUtil.keepDecimal(point.getLng(), 6);
     }
 
     public Double getEnLatD() {
-        return CommonUtil.keepDecimal(GpsCorrectUtil.transform(latD, lngD).getLat(), 6);
+        Point point = GpsCorrectUtil.transform(latD, lngD);
+        if (point == null) {
+            return null;
+        }
+        return CommonUtil.keepDecimal(point.getLat(), 6);
     }
 
 

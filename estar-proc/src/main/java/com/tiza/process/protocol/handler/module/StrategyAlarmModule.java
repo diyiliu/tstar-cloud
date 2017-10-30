@@ -94,9 +94,9 @@ public class StrategyAlarmModule extends BaseHandle {
         if (alarmMap.containsKey("BATTERYUNITMAXVOLTAGE")) {
             int maxVoltage = (int) alarmMap.get("BATTERYUNITMAXVOLTAGE");
 
-            if (maxVoltage > alarmStrategy.getMaxVoltage() * 1000) {
+            if (maxVoltage > alarmStrategy.getMaxVoltage()) {
 
-                content.append("最高电压值[").append(maxVoltage / 1000).append("]报警。");
+                content.append("最高电压值[").append(maxVoltage).append("]报警。");
                 redisKey.append(":maxVoltage");
             }
         }
@@ -105,15 +105,15 @@ public class StrategyAlarmModule extends BaseHandle {
         if (alarmMap.containsKey("BATTERYUNITMINVOLTAGE")) {
             int minVoltage = (int) alarmMap.get("BATTERYUNITMINVOLTAGE");
 
-            if (minVoltage < alarmStrategy.getMinVoltage() * 1000) {
+            if (minVoltage < alarmStrategy.getMinVoltage()) {
 
-                content.append("最低电压值[").append(minVoltage / 1000).append("]报警。");
+                content.append("最低电压值[").append(minVoltage).append("]报警。");
                 redisKey.append(":minVoltage");
             }
         }
 
         if (alarmMap.containsKey("BATTERYMAXTEMP")) {
-            int maxTemp = (int) alarmMap.get("BATTERYMAXTEMP") - 40;
+            int maxTemp = (int) alarmMap.get("BATTERYMAXTEMP");
 
             if (maxTemp > alarmStrategy.getMaxTemperature()) {
 
@@ -123,7 +123,7 @@ public class StrategyAlarmModule extends BaseHandle {
         }
 
         if (alarmMap.containsKey("BATTERYMINTEMP")) {
-            int minTemp = (int) alarmMap.get("BATTERYMINTEMP") - 40;
+            int minTemp = (int) alarmMap.get("BATTERYMINTEMP");
 
             if (minTemp < alarmStrategy.getMinTemperature()) {
 
