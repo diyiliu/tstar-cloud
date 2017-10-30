@@ -18,13 +18,21 @@ public class JacksonUtil {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    private final static  SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     static {
         // 设置日期格式
         mapper.setDateFormat(DEFAULT_DATE_FORMAT);
     }
 
-    public static String toJson(Object obj){
+    /**
+     * 如果为HashMap(key-value)格式;
+     * key自动转为字符串类型
+     *
+     * @param obj
+     * @return
+     */
+    public static String toJson(Object obj) {
         String rs = null;
         try {
             rs = mapper.writeValueAsString(obj);
@@ -35,12 +43,12 @@ public class JacksonUtil {
         return rs;
     }
 
-    public static <T> T  toObject(String content, Class<T> clazz) throws IOException {
+    public static <T> T toObject(String content, Class<T> clazz) throws IOException {
 
-        return (T) mapper.readValue(content, clazz);
+        return mapper.readValue(content, clazz);
     }
 
-    public static List toList(String content, Class clazz) throws IOException{
+    public static List toList(String content, Class clazz) throws IOException {
         JavaType javaType = getCollectionType(ArrayList.class, clazz);
 
         return mapper.readValue(content, javaType);
@@ -48,8 +56,9 @@ public class JacksonUtil {
 
     /**
      * 获取泛型的Collection Type
+     *
      * @param collectionClass 泛型的Collection
-     * @param elementClasses 元素类
+     * @param elementClasses  元素类
      * @return JavaType Java类型
      * @since 1.0
      */

@@ -63,10 +63,10 @@ public class VehicleFaultModule extends BaseHandle {
 
             Map faultMap = JacksonUtil.toObject(context.get(EStarConstant.FlowKey.VEHICLE_FAULT), HashMap.class);
             for (Iterator iterator = faultMap.keySet().iterator(); iterator.hasNext(); ) {
-                long key = (long) iterator.next();
+                String key = String.valueOf(iterator.next());
                 List value = (List) faultMap.get(key);
 
-                dealFault(vehicleId, String.valueOf(key), value);
+                dealFault(vehicleId, key, value);
             }
         }
 

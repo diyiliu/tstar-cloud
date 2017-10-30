@@ -518,7 +518,7 @@ public class CMD_02 extends GB32960DataProcess {
 
         Map faultMap = new HashMap();
         int chargeFault = byteBuf.readUnsignedByte();
-        if (0xFE != chargeFault && 0xFF != chargeFault) {
+        if (0xFE != chargeFault && 0xFF != chargeFault && chargeFault > 0) {
             if (byteBuf.readableBytes() < chargeFault * 4 + 3) {
                 return true;
             }
@@ -532,7 +532,7 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         int motorFault = byteBuf.readUnsignedByte();
-        if (0xFE != motorFault && 0xFF != motorFault) {
+        if (0xFE != motorFault && 0xFF != motorFault && motorFault > 0) {
             if (byteBuf.readableBytes() < chargeFault * 4 + 2) {
                 return true;
             }
@@ -546,7 +546,7 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         int engineFault = byteBuf.readUnsignedByte();
-        if (0xFE != engineFault && 0xFF != engineFault) {
+        if (0xFE != engineFault && 0xFF != engineFault && engineFault > 0) {
             if (byteBuf.readableBytes() < chargeFault * 4 + 1) {
                 return true;
             }
@@ -560,7 +560,7 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         int otherFault = byteBuf.readUnsignedByte();
-        if (0xFE != otherFault && 0xFF != otherFault) {
+        if (0xFE != otherFault && 0xFF != otherFault && otherFault > 0) {
             if (byteBuf.readableBytes() < chargeFault * 4) {
                 return true;
             }
