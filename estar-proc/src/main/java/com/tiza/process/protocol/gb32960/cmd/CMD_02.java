@@ -44,6 +44,7 @@ public class CMD_02 extends GB32960DataProcess {
      */
     private Map<String, String> context;
 
+
     private Map realMode;
 
     @Override

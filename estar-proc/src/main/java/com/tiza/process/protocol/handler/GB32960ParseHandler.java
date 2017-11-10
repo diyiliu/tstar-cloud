@@ -32,6 +32,7 @@ public class GB32960ParseHandler extends BaseHandle {
 
         // 将conf配置信息放入上下文中
         rpTuple.getContext().put(EStarConstant.Kafka.TRACK_TOPIC, processorConf.get("trackTopic"));
+        rpTuple.getContext().put(EStarConstant.Redis.VEHICLE_MOVE, processorConf.get("vehicleMove"));
 
         GB32960Header header = (GB32960Header) process.dealHeader(rpTuple.getMsgBody());
         header.settStarData(rpTuple);

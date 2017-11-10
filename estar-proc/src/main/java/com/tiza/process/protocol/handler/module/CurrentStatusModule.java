@@ -125,7 +125,7 @@ public class CurrentStatusModule extends BaseHandle {
 
         // 消息发布到redis
         Jedis jedis = getJedis();
-        String channel = processorConf.get("vehicleEvent");
+        String channel = processorConf.get(EStarConstant.Redis.VEHICLE_EVENT);
         jedis.publish(channel, JacksonUtil.toJson(message));
     }
 }

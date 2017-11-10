@@ -18,6 +18,13 @@ public final class EStarConstant extends ConstantUtil {
         public final static String SMS_TOPIC = "smsTopic";
     }
 
+    public enum Redis {
+        ;
+        public final static String VEHICLE_MOVE = "vehicleMove ";
+        public final static String VEHICLE_EVENT = "vehicleEvent";
+    }
+
+
     public enum FlowKey {
         ;
         // 报警数据
@@ -53,6 +60,7 @@ public final class EStarConstant extends ConstantUtil {
         public final static String LAT = "lat";
         public final static String MILEAGE = "mileage";
 
+        public final static String STATUS = "status";
         public final static String VEHICLE_ID = "vehicleId";
     }
 

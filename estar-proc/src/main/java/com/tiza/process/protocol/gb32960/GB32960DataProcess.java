@@ -17,6 +17,7 @@ import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
@@ -90,12 +91,11 @@ public class GB32960DataProcess implements IDataProcess {
      *
      * @param header
      * @param paramValues
-     *
      */
-    protected void updateGpsInfo(GB32960Header header, List<Map> paramValues){
+    protected void updateGpsInfo(GB32960Header header, List<Map> paramValues) {
 
         String vin = header.getVin();
-        if (!vehicleCacheProvider.containsKey(vin)){
+        if (!vehicleCacheProvider.containsKey(vin)) {
             logger.warn("[{}] 车辆列表不存在!", vin);
             return;
         }
@@ -105,21 +105,25 @@ public class GB32960DataProcess implements IDataProcess {
         Double mileage = null;
         List list = new ArrayList();
         StringBuilder strb = new StringBuilder("update BS_VEHICLEGPSINFO set ");
-        for (Map map: paramValues){
+        for (Map map : paramValues) {
 
-            for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();){
+            for (Iterator iterator = map.keySet().iterator(); iterator.hasNext(); ) {
                 String key = (String) iterator.next();
                 Object value = map.get(key);
 
-                if (key.equalsIgnoreCase("GPSTIME")){
+                if (key.equalsIgnoreCase("GPSTIME")) {
                     gpsTime = (Date) value;
                 }
 
-                if (key.equalsIgnoreCase("ODO")){
+                if (key.equalsIgnoreCase("ODO")) {
                     mileage = (Double) value;
                 }
 
-                if (key.equalsIgnoreCase("position")){
+                if (key.equalsIgnoreCase("VEHICLESTATUS")) {
+                    vehicleInfo.setStatus((Integer) value);
+                }
+
+                if (key.equalsIgnoreCase("position")) {
                     Position position = (Position) value;
                     position.setDateTime(gpsTime);
 
@@ -133,7 +137,7 @@ public class GB32960DataProcess implements IDataProcess {
                     list.add(position.getLngD());
 
                     // 有效定位
-                    if (position.getStatus() == 0){
+                    if (position.getStatus() == 0) {
                         strb.append("GCJ02LAT").append("=?, ");
                         strb.append("GCJ02LNG").append("=?, ");
 
@@ -142,7 +146,10 @@ public class GB32960DataProcess implements IDataProcess {
                     }
 
                     position.setMileage(mileage);
+
                     toKafka(header, vehicleInfo, position);
+                    toRedis(header, vehicleInfo, position);
+
                     continue;
                 }
 
@@ -156,7 +163,7 @@ public class GB32960DataProcess implements IDataProcess {
     }
 
 
-    private void toKafka(GB32960Header header, VehicleInfo vehicle, Position position){
+    private void toKafka(GB32960Header header, VehicleInfo vehicle, Position position) {
 
         Map posMap = new HashMap();
         posMap.put(EStarConstant.Location.GPS_TIME, DateUtil.dateToString(position.getDateTime()));
@@ -185,6 +192,26 @@ public class GB32960DataProcess implements IDataProcess {
 
         logger.info("终端[{}]写入Kafka位置信息...", header.getVin());
         handler.storeInKafka(rpTuple, context.get(EStarConstant.Kafka.TRACK_TOPIC));
+    }
+
+    private void toRedis(GB32960Header header, VehicleInfo vehicle, Position position) {
+
+        Map posMap = new HashMap();
+        posMap.put(EStarConstant.Location.GPS_TIME, DateUtil.dateToString(position.getDateTime()));
+        posMap.put(EStarConstant.Location.LAT, position.getEnLatD());
+        posMap.put(EStarConstant.Location.LNG, position.getEnLngD());
+        posMap.put(EStarConstant.Location.VEHICLE_ID, vehicle.getId());
+
+        posMap.put(EStarConstant.Location.STATUS, vehicle.getStatus() == null ? "" : vehicle.getStatus());
+
+        // 获取上下文中的配置信息
+        RPTuple tuple = (RPTuple) header.gettStarData();
+        Map<String, String> context = tuple.getContext();
+
+        logger.info("终端[{}]发布Redis位置信息...", header.getVin());
+        Jedis jedis = handler.getJedis();
+        String channel = context.get(EStarConstant.Redis.VEHICLE_EVENT);
+        jedis.publish(channel, JacksonUtil.toJson(posMap));
     }
 
     @Override

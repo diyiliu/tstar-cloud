@@ -19,6 +19,8 @@ public class VehicleInfo {
 
     private String protocolType;
     private Long dateTime;
+    /** 整车数据中的车辆状态*/
+    private Integer status;
 
     public long getId() {
         return id;
@@ -98,5 +100,13 @@ public class VehicleInfo {
 
     public void setDateTime(Long dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

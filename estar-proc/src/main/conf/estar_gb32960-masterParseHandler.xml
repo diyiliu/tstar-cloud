@@ -33,4 +33,25 @@
         <name>business.database.pool.incremental</name>
         <value>1</value>
     </property>
+    <property>
+        <name>redis.ip</name>
+        <value>192.168.1.156</value>
+    </property>
+    <property>
+        <name>redis.port</name>
+        <value>6379</value>
+    </property>
+    <property>
+        <name>redis.database</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>redis.password</name>
+        <value></value>
+    </property>
+    <property>
+        <name>vehicleMove</name>
+        <value>EStar:VehicleMove</value>
+        <description>ESTAR车辆状态发布Redis频道</description>
+    </property>
 </configuration>
