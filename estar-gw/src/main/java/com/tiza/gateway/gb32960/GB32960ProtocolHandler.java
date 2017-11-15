@@ -53,13 +53,13 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
 
         // 验证校验位
         if (last != check){
-            logger.error("check code error!");
+            logger.error("校验位错误!");
             // 数据错误
             doResponse(channelHandlerContext, tStarData, 0x02);
 
             return null;
         }
-        logger.info("Receive: Terminal[{}] CMD[{}], Content[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
+        logger.info("上行: 终端[{}] CMD[{}]...", vin, String.format("%02X", cmd));
 
         // 需要应答
         if (resp == 0xFE){
@@ -129,7 +129,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         respData.setMsgBody(buf.array());
         respData.setTime(System.currentTimeMillis());
 
-        logger.info("Response, Terminal[{}], Content[{}]...", respData.getTerminalID(), CommonUtil.bytesToStr(respData.getMsgBody()));
+        logger.info("下行, 终端[{}], 指令[{}]...", respData.getTerminalID(), String.format("%02X", respData.getCmdID()));
         ctx.channel().writeAndFlush(respData);
     }
 
