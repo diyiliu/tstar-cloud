@@ -37,12 +37,12 @@ public class FaultDao extends BaseDao{
                 fault.setVehicleId(rs.getLong("vehicleid"));
                 fault.setFaultUnit(rs.getString("faultunit"));
                 fault.setFaultValue(rs.getString("faultvalue"));
-                fault.setStartTime(new Date(rs.getTimestamp(rs.getString("starttime")).getTime()));
+                fault.setStartTime(new Date(rs.getTimestamp("starttime").getTime()));
 
                 fault.setOver(false);
                 if (rs.getTimestamp("endtime") != null){
 
-                    fault.setEndTime(new Date(rs.getTimestamp(rs.getString("endtime")).getTime()));
+                    fault.setEndTime(new Date(rs.getTimestamp("endtime").getTime()));
                     fault.setOver(true);
                 }
 

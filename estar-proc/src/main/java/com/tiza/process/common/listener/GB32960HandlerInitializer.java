@@ -40,7 +40,6 @@ public class GB32960HandlerInitializer implements Initializer {
 
     @Override
     public void init() {
-
         // 刷新车辆列表
         refreshVehicleInfoTask.execute();
 

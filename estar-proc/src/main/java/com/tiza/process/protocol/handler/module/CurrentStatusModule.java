@@ -56,25 +56,32 @@ public class CurrentStatusModule extends BaseHandle {
     public void dealRealModel(Map modelMap) {
         String prefix = "model:gb32960:";
         Jedis jedis = getJedis();
+        try {
+            for (Iterator iterator = modelMap.keySet().iterator(); iterator.hasNext(); ) {
+                String key = (String) iterator.next();
+                int value = (int) modelMap.get(key);
 
-        for (Iterator iterator = modelMap.keySet().iterator(); iterator.hasNext(); ) {
-            String key = (String) iterator.next();
-            int value = (int) modelMap.get(key);
-
-            String redisKey = prefix + key;
-            if (!jedis.exists(redisKey)) {
-
-                createMessage(key, value);
-                jedis.set(redisKey, String.valueOf(value));
-            } else {
-                int last = Integer.valueOf(jedis.get(redisKey));
-
-                // 状态发生变化
-                if (value != last) {
+                String redisKey = prefix + key;
+                if (!jedis.exists(redisKey)) {
 
                     createMessage(key, value);
                     jedis.set(redisKey, String.valueOf(value));
+                } else {
+                    int last = Integer.valueOf(jedis.get(redisKey));
+
+                    // 状态发生变化
+                    if (value != last) {
+
+                        createMessage(key, value);
+                        jedis.set(redisKey, String.valueOf(value));
+                    }
                 }
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } finally {
+            if(jedis != null){
+                jedis.close();
             }
         }
     }
@@ -125,7 +132,15 @@ public class CurrentStatusModule extends BaseHandle {
 
         // 消息发布到redis
         Jedis jedis = getJedis();
-        String channel = processorConf.get(EStarConstant.Redis.VEHICLE_EVENT);
-        jedis.publish(channel, JacksonUtil.toJson(message));
+        try {
+            String channel = processorConf.get(EStarConstant.Redis.VEHICLE_EVENT);
+            jedis.publish(channel, JacksonUtil.toJson(message));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(jedis != null){
+                jedis.close();
+            }
+        }
     }
 }

@@ -112,15 +112,18 @@ public class CMD_02 extends GB32960DataProcess {
                     break;
                 default:
                     if (buf.readableBytes() > 2) {
-
                         int length = buf.readUnsignedShort();
+                        if (buf.readableBytes() < length){
+                            interrupt = true;
+                            break;
+                        }
                         buf.readBytes(new byte[length]);
                     }
                     break;
 
             }
             if (interrupt) {
-                logger.error("指令cmd[{}], 解析中断错误!", flag);
+                logger.error("指令cmd[{}], 解析中断错误!", CommonUtil.toHex(flag));
                 break;
             }
         }

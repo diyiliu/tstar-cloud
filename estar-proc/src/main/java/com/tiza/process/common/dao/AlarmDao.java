@@ -33,7 +33,7 @@ public class AlarmDao extends BaseDao{
             public AlarmStrategy mapRow(ResultSet rs, int rowNum) throws SQLException {
                 AlarmStrategy alarmStrategy = new AlarmStrategy();
                 alarmStrategy.setVehicleId(rs.getLong("vehicleid"));
-                alarmStrategy.setId(rs.getInt("id"));
+                alarmStrategy.setId(rs.getInt("alarmid"));
                 alarmStrategy.setName(rs.getString("name"));
                 alarmStrategy.setAlarmLevel(rs.getInt("alarmlevel"));
                 alarmStrategy.setMaxVoltage(rs.getDouble("batterymaxvoltage"));

@@ -137,28 +137,36 @@ public class StrategyAlarmModule extends BaseHandle {
 
         String key = redisKey.toString();
         Jedis jedis = getJedis();
-        if (jedis.exists(key)) {
-            String alarmJson = jedis.get(key);
+        try {
+            if (jedis.exists(key)) {
+                String alarmJson = jedis.get(key);
 
-            HashMap old = JacksonUtil.toObject(alarmJson, HashMap.class);
-            Date oldDate = DateUtil.stringToDate((String) old.get("time"));
+                HashMap old = JacksonUtil.toObject(alarmJson, HashMap.class);
+                Date oldDate = DateUtil.stringToDate((String) old.get("time"));
 
-            Calendar oldCal = Calendar.getInstance();
-            oldCal.setTime(oldDate);
+                Calendar oldCal = Calendar.getInstance();
+                oldCal.setTime(oldDate);
 
-            Calendar nowCal = Calendar.getInstance();
-            nowCal.setTime(now);
+                Calendar nowCal = Calendar.getInstance();
+                nowCal.setTime(now);
 
-            if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1) {
+                if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1) {
 
-                return;
+                    return;
+                }
+            }
+
+            Map redisMap = new HashMap();
+            redisMap.put("title", title);
+            redisMap.put("time", now);
+            jedis.set(key, JacksonUtil.toJson(redisMap));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(jedis != null){
+                jedis.close();
             }
         }
-
-        Map redisMap = new HashMap();
-        redisMap.put("title", title);
-        redisMap.put("time", now);
-        jedis.set(key, JacksonUtil.toJson(redisMap));
 
         AlarmNotice notice = alarmStrategy.getAlarmNotice();
         if (notice.getSite() == 1) {

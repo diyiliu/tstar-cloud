@@ -2,12 +2,14 @@ import com.diyiliu.common.dao.BaseDao;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.dao.AlarmDao;
+import com.tiza.process.common.dao.FaultDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Description: TestJdbc
@@ -22,6 +24,9 @@ public class TestJdbc {
     @Resource
     private AlarmDao alarmDao;
 
+    @Resource
+    private FaultDao faultDao;
+
     @Test
     public void test() throws Exception {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
@@ -33,6 +38,11 @@ public class TestJdbc {
         BaseDao.initDataSource(dataSource);
 
         EStarConstant.initSqlCache("init-sql.xml");
-        alarmDao.selectAlarmStrategy();
+
+        List l1 =  alarmDao.selectAlarmStrategy();
+        List l2 =  faultDao.selectVehicleFault();
+        List l3 =  faultDao.selectFaultCode();
+
+        System.out.println(2);
     }
 }

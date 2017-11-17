@@ -210,8 +210,16 @@ public class GB32960DataProcess implements IDataProcess {
 
         logger.info("终端[{}]发布Redis位置信息...", header.getVin());
         Jedis jedis = handler.getJedis();
-        String channel = context.get(EStarConstant.Redis.VEHICLE_EVENT);
-        jedis.publish(channel, JacksonUtil.toJson(posMap));
+        try {
+            String channel = context.get(EStarConstant.Redis.VEHICLE_MOVE);
+            jedis.publish(channel, JacksonUtil.toJson(posMap));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(jedis != null){
+                jedis.close();
+            }
+        }
     }
 
     @Override
