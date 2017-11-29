@@ -62,8 +62,8 @@ public class CMD_02 extends GB32960DataProcess {
         tuple.setTime(currentTime.getTime());
 
         Map map = new HashMap();
-        map.put("SYSTEMTIME", new Date());
-        map.put("GPSTIME", currentTime);
+        map.put("SystemTime", new Date());
+        map.put("GpsTime", currentTime);
         paramValues.add(map);
 
         realMode = new HashMap();
@@ -175,79 +175,78 @@ public class CMD_02 extends GB32960DataProcess {
 
 
         Map map = new HashMap();
-        map.put("VEHICLESTATUS", vehStatus);
-        map.put("CHARGESTATUS", charge);
-        map.put("DRIVINGMODE", runMode);
+        map.put("VehicleStatus", vehStatus);
+        map.put("ChargeStatus", charge);
+        map.put("DrivingMode", runMode);
 
         // 速度
         if (0xFFFF == speed) {
 
-            map.put("SPEEDSTATUS", 255);
+            map.put("SpeedStatus", 255);
         } else if (0xFFFE == speed) {
 
-            map.put("SPEEDSTATUS", 254);
+            map.put("SpeedStatus", 254);
         } else {
 
-            map.put("SPEEDSTATUS", 1);
-            map.put("SPEED", speed);
+            map.put("SpeedStatus", 1);
+            map.put("Speed", speed * 0.1);
         }
 
         // 里程
         if (0xFFFFFFFFl == mile) {
 
-            map.put("ODOSTATUS", 255);
+            map.put("ODOStatus", 255);
         } else if (0xFFFFFFFEl == mile) {
 
-            map.put("ODOSTATUS", 254);
+            map.put("ODOStatus", 254);
         } else {
 
-            map.put("ODOSTATUS", 1);
-            map.put("ODO", mileage);
+            map.put("ODOStatus", 1);
+            map.put("ODO", mileage * 0.1);
         }
-
 
         // 电压
         if (0xFFFF == voltage) {
 
-            map.put("VOLTAGESTATUS", 255);
+            map.put("VoltageStatus", 255);
         } else if (0xFFFE == voltage) {
 
-            map.put("VOLTAGESTATUS", 254);
+            map.put("VoltageStatus", 254);
         } else {
 
-            map.put("VOLTAGESTATUS", 1);
-            map.put("VOLTAGE", voltage * 0.1);
+            map.put("VoltageStatus", 1);
+            map.put("Voltage", voltage * 0.1);
         }
 
         // 电流
         if (0xFFFF == electricity) {
 
-            map.put("AMPSTATUS", 255);
+            map.put("AmpStatus", 255);
         } else if (0xFFFE == electricity) {
 
-            map.put("AMPSTATUS", 254);
+            map.put("AmpStatus", 254);
         } else {
 
-            map.put("AMPSTATUS", 1);
-            map.put("AMP", electricity * 0.1 - 1000);
+            map.put("AmpStatus", 1);
+            map.put("Amp", electricity * 0.1 - 1000);
         }
 
         // SOC
         if (0xFF == soc || 0xFE == soc) {
 
-            map.put("SOCSTATUS", soc);
+            map.put("SOCStatus", soc);
         } else {
 
-            map.put("SOCSTATUS", 1);
+            map.put("SOCStatus", 1);
             map.put("SOC", soc);
         }
 
         // DC-DC
         map.put("DCDC", dcStatus);
 
-        map.put("GEARS", gears);
+        map.put("Gears", gears);
 
-        map.put("RESISTANCE", ohm);
+        map.put("Resistance", ohm);
 
         paramValues.add(map);
 
@@ -402,93 +401,93 @@ public class CMD_02 extends GB32960DataProcess {
         // 最高电压
         int maxVoltageSysNo = byteBuf.readUnsignedByte();
         if (0xFF == maxVoltageSysNo || 0xFE == maxVoltageSysNo) {
-            map.put("MAXVOLTAGEBATTERYSUBSYSSTATUS", maxVoltageSysNo);
+            map.put("MaxVoltageBatterySubSysStatus", maxVoltageSysNo);
         } else {
-            map.put("MAXVOLTAGEBATTERYSUBSYSSTATUS", 1);
-            map.put("MAXVOLTAGEBATTERYSUBSYS", maxVoltageSysNo);
+            map.put("MaxVoltageBatterySubSysStatus", 1);
+            map.put("MaxVoltageBatterySubSys", maxVoltageSysNo);
         }
         int maxVoltageCellNo = byteBuf.readUnsignedByte();
         if (0xFF == maxVoltageCellNo || 0xFE == maxVoltageCellNo) {
-            map.put("MAXVOLTAGEBATTERYUNITSTATUS", maxVoltageCellNo);
+            map.put("MaxVoltageBatteryUnitStatus", maxVoltageCellNo);
         } else {
-            map.put("MAXVOLTAGEBATTERYUNITSTATUS", 1);
-            map.put("MAXVOLTAGEBATTERYUNIT", maxVoltageCellNo);
+            map.put("MaxVoltageBatteryUnitStatus", 1);
+            map.put("MaxVoltageBatteryUnit", maxVoltageCellNo);
         }
         int maxVoltageValue = byteBuf.readUnsignedShort();
         if (0xFF == maxVoltageValue || 0xFE == maxVoltageValue) {
-            map.put("BATTERYUNITMAXVOLTAGESTATUS", maxVoltageValue);
+            map.put("BatteryUnitMaxVoltageStatus", maxVoltageValue);
         } else {
-            map.put("BATTERYUNITMAXVOLTAGESTATUS", 1);
-            map.put("BATTERYUNITMAXVOLTAGE", maxVoltageValue * 0.001);
+            map.put("BatteryUnitMaxVoltageStatus", 1);
+            map.put("BatteryUnitMaxVoltage", maxVoltageValue * 0.001);
         }
 
         // 最低电压
         int minVoltageSysNo = byteBuf.readUnsignedByte();
         if (0xFF == minVoltageSysNo || 0xFE == minVoltageSysNo) {
-            map.put("MINVOLTAGEBATTERYSUBSYSSTATUS", minVoltageSysNo);
+            map.put("MinVoltageBatterySubSysStatus", minVoltageSysNo);
         } else {
-            map.put("MINVOLTAGEBATTERYSUBSYSSTATUS", 1);
-            map.put("MINVOLTAGEBATTERYSUBSYS", minVoltageSysNo);
+            map.put("MinVoltageBatterySubSysStatus", 1);
+            map.put("MinVoltageBatterySubSys", minVoltageSysNo);
         }
         int minVoltageCellNo = byteBuf.readUnsignedByte();
         if (0xFF == minVoltageCellNo || 0xFE == minVoltageCellNo) {
-            map.put("MINVOLTAGEBATTERYUNITSTATUS", minVoltageCellNo);
+            map.put("MinVoltageBatteryUnitStatus", minVoltageCellNo);
         } else {
-            map.put("MINVOLTAGEBATTERYUNITSTATUS", 1);
-            map.put("MINVOLTAGEBATTERYUNIT", minVoltageCellNo);
+            map.put("MinVoltageBatteryUnitStatus", 1);
+            map.put("MinVoltageBatteryUnit", minVoltageCellNo);
         }
         int minVoltageValue = byteBuf.readUnsignedShort();
         if (0xFF == minVoltageValue || 0xFE == minVoltageValue) {
-            map.put("BATTERYUNITMINVOLTAGESTATUS", minVoltageValue);
+            map.put("BatteryUnitMinVoltageStatus", minVoltageValue);
         } else {
-            map.put("BATTERYUNITMINVOLTAGESTATUS", 1);
-            map.put("BATTERYUNITMINVOLTAGE", minVoltageValue * 0.001);
+            map.put("BatteryUnitMinVoltageStatus", 1);
+            map.put("BatteryUnitMinVoltage", minVoltageValue * 0.001);
         }
 
         // 最高温度
         int maxTempSysNo = byteBuf.readUnsignedByte();
         if (0xFF == maxTempSysNo || 0xFE == maxTempSysNo) {
-            map.put("MAXTEMPBATTERYSUBSYSSTATUS", maxTempSysNo);
+            map.put("MaxTempBatterySubSysStatus", maxTempSysNo);
         } else {
-            map.put("MAXTEMPBATTERYSUBSYSSTATUS", 1);
-            map.put("MAXTEMPBATTERYSUBSYS", maxTempSysNo);
+            map.put("MaxTempBatterySubSysStatus", 1);
+            map.put("MaxTempBatterySubSys", maxTempSysNo);
         }
         int maxTempCellNo = byteBuf.readUnsignedByte();
         if (0xFF == maxTempCellNo || 0xFE == maxTempCellNo) {
-            map.put("MAXTEMPBATTERYSENSORSTATUS", maxTempCellNo);
+            map.put("MaxTempBatterySensorStatus", maxTempCellNo);
         } else {
-            map.put("MAXTEMPBATTERYSENSORSTATUS", 1);
-            map.put("MAXTEMPBATTERYSENSOR", maxTempCellNo);
+            map.put("MaxTempBatterySensorStatus", 1);
+            map.put("MaxTempBatterySensor", maxTempCellNo);
         }
         int maxTempValue = byteBuf.readUnsignedByte();
         if (0xFF == maxTempValue || 0xFE == maxTempValue) {
-            map.put("BATTERYMAXTEMPSTATUS", maxTempValue);
+            map.put("BatteryMaxTempStatus", maxTempValue);
         } else {
-            map.put("BATTERYMAXTEMPSTATUS", 1);
-            map.put("BATTERYMAXTEMP", maxTempValue - 40);
+            map.put("BatteryMaxTempStatus", 1);
+            map.put("BatteryMaxTemp", maxTempValue - 40);
         }
 
         // 最低温度
         int minTempSysNo = byteBuf.readUnsignedByte();
         if (0xFF == minTempSysNo || 0xFE == minTempSysNo) {
-            map.put("MINTEMPBATTERYSUBSYSSTATUS", minTempSysNo);
+            map.put("MinTempBatterySubSysStatus", minTempSysNo);
         } else {
-            map.put("MINTEMPBATTERYSUBSYSSTATUS", 1);
-            map.put("MINTEMPBATTERYSUBSYS", minTempSysNo);
+            map.put("MinTempBatterySubSysStatus", 1);
+            map.put("MinTempBatterySubSys", minTempSysNo);
         }
         int minTempCellNo = byteBuf.readUnsignedByte();
         if (0xFF == minTempCellNo || 0xFE == minTempCellNo) {
-            map.put("MINTEMPBATTERYSENSORSTATUS", minTempCellNo);
+            map.put("MinTempBatterySensorStatus", minTempCellNo);
         } else {
-            map.put("MINTEMPBATTERYSENSORSTATUS", 1);
-            map.put("MINTEMPBATTERYSENSOR", minTempCellNo);
+            map.put("MinTempBatterySensorStatus", 1);
+            map.put("MinTempBatterySensor", minTempCellNo);
         }
         int minTempValue = byteBuf.readUnsignedByte();
         if (0xFF == minTempValue || 0xFE == minTempValue) {
-            map.put("BATTERYMINTEMPSTATUS", minTempValue);
+            map.put("BatteryMinTempStatus", minTempValue);
         } else {
-            map.put("BATTERYMINTEMPSTATUS", 1);
-            map.put("BATTERYMINTEMP", minTempValue - 40);
+            map.put("BatteryMinTempStatus", 1);
+            map.put("BatteryMinTemp", minTempValue - 40);
         }
 
         paramValues.add(map);
@@ -508,10 +507,10 @@ public class CMD_02 extends GB32960DataProcess {
         long flag = byteBuf.readUnsignedInt();
 
         Map alarm = new HashMap();
-        alarm.put("ALARMLEVEL", level);
+        alarm.put("AlarmLevel", level);
         // 有效报警值[0, 3]
         if (level > -1 && level < 4) {
-            alarm.put("ALARMTIME", currentTime);
+            alarm.put("AlarmTime", currentTime);
             realMode.put(EStarConstant.RealMode.ALARM_LEVEL, level);
             context.put(EStarConstant.FlowKey.ALARM_LEVEL, JacksonUtil.toJson(alarm));
         }
@@ -672,15 +671,15 @@ public class CMD_02 extends GB32960DataProcess {
      * @return
      */
     private Map toCommonAlarm(long flag) {
-        String[] alarmArray = new String[]{"TEMPDIFFALARM", "BATTERYHIGHTEMPALARM",
-                "HIGHPRESSUREALARM", "LOWPRESSUREALARM",
-                "SOCLOWALARM", "BATTERYUNITHIGHVOLTAGEALARM",
-                "BATTERYUNITLOWVOLTAGEALARM", "SOCHIGHALARM",
-                "SOCJUMPALARM", "BATTERYMISMATCHALARM",
-                "BATTERYUNITUNIFORMITYALARM", "INSULATIONALARM",
-                "DCDCTEMPALARM", "BRAKEALARM",
-                "DCDCSTATUSALARM", "MOTORCUTEMPALARM",
-                "HIGHPRESSURELOCKALARM", "MOTORTEMPALARM", "BATTERYOVERCHARGEALARM"};
+        String[] alarmArray = new String[]{"TempDiffAlarm", "BatteryHighTempAlarm",
+                "HighPressureAlarm", "LowPressureAlarm",
+                "SocLowAlarm", "BatteryUnitHighVoltageAlarm",
+                "BatteryUnitLowVoltageAlarm", "SocHighAlarm",
+                "SocJumpAlarm", "BatteryMismatchAlarm",
+                "BatteryUnitUniformityAlarm", "InsulationAlarm",
+                "DCDCTempAlarm", "BrakeAlarm",
+                "DCDCStatusAlarm", "MotorCUTempAlarm",
+                "HighPressureLockAlarm", "MotorTempAlarm", "BatteryOverChargeAlarm"};
 
         Map alarmMap = new HashMap();
 

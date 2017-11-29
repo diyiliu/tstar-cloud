@@ -28,6 +28,8 @@ public class Position {
 
     // 里程
     private Double mileage;
+    // 速度
+    private Double speed;
 
     public int getStatus() {
         return status;
@@ -106,5 +108,13 @@ public class Position {
 
     public void setMileage(Double mileage) {
         this.mileage = mileage;
+    }
+
+    public Double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(Double speed) {
+        this.speed = speed;
     }
 }
