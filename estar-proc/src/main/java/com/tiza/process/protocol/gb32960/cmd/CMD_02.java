@@ -160,8 +160,6 @@ public class CMD_02 extends GB32960DataProcess {
 
         int speed = byteBuf.readUnsignedShort();
         long mile = byteBuf.readUnsignedInt();
-        // 单元：0.1 km
-        double mileage = new BigDecimal(mile).divide(new BigDecimal(10)).doubleValue();
 
         int voltage = byteBuf.readUnsignedShort();
         int electricity = byteBuf.readUnsignedShort();
@@ -202,7 +200,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("ODOStatus", 1);
-            map.put("ODO", mileage * 0.1);
+            map.put("ODO", mile * 0.1);
         }
 
         // 电压
@@ -685,7 +683,7 @@ public class CMD_02 extends GB32960DataProcess {
 
         for (int i = 0; i < alarmArray.length; i++) {
             String column = alarmArray[i];
-            long value = flag & (0x01 << i);
+            long value = (flag >> i) & 0x01;
 
             alarmMap.put(column, value);
         }

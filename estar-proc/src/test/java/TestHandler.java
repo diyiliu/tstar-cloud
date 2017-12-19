@@ -9,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Description: TestHandler
@@ -16,8 +18,6 @@ import javax.annotation.Resource;
  * Update: 2017-10-30 11:31
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:applicationContext.xml"})
 public class TestHandler {
 
 
@@ -40,5 +40,41 @@ public class TestHandler {
         byte[] content = CommonUtil.hexStringToBytes("9C");
         ByteBuf buffer = Unpooled.copiedBuffer(content);
         System.out.println(buffer.readByte());
+    }
+
+    @Test
+    public void test2(){
+        String str = "AAAAA000";
+        byte[] content = CommonUtil.hexStringToBytes(str);
+        ByteBuf buffer = Unpooled.copiedBuffer(content);
+
+        long flag = buffer.readUnsignedInt();
+
+        String[] alarmArray = new String[]{"TempDiffAlarm", "BatteryHighTempAlarm",
+                "HighPressureAlarm", "LowPressureAlarm",
+                "SocLowAlarm", "BatteryUnitHighVoltageAlarm",
+                "BatteryUnitLowVoltageAlarm", "SocHighAlarm",
+                "SocJumpAlarm", "BatteryMismatchAlarm",
+                "BatteryUnitUniformityAlarm", "InsulationAlarm",
+                "DCDCTempAlarm", "BrakeAlarm",
+                "DCDCStatusAlarm", "MotorCUTempAlarm",
+                "HighPressureLockAlarm", "MotorTempAlarm", "BatteryOverChargeAlarm"};
+
+        Map alarmMap = new HashMap();
+
+        for (int i = 0; i < alarmArray.length; i++) {
+            String column = alarmArray[i];
+            long value =  (flag >> i) & 0x01;
+
+            alarmMap.put(column, value);
+        }
+
+        System.out.println(alarmMap);
+    }
+
+    @Test
+    public void test3(){
+
+        System.out.println(1 << 13);
     }
 }

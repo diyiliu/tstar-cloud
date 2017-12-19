@@ -1,5 +1,6 @@
 package com.diyiliu.common.dao;
 
+import com.diyiliu.common.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,13 +26,18 @@ public class BaseDao {
     }
 
     public boolean update(String sql, Object[] values) {
-        if (jdbcTemplate == null){
-            logger.warn("未装载数据源，无法连接数据库!");
+        if (jdbcTemplate == null) {
+            logger.info("未装载数据源，无法连接数据库!");
             return false;
         }
 
-        //logger.info("sql:[{}], 值:[{}]", sql, JacksonUtil.toJson(values));
-        int result = jdbcTemplate.update(sql, values);
+        int result = 0;
+        try {
+            result = jdbcTemplate.update(sql, values);
+        } catch (Exception e) {
+            logger.error("msg:[{}], sql:[{}], 值:[{}]", e.getMessage(), sql, JacksonUtil.toJson(values));
+            e.printStackTrace();
+        }
 
         if (result > 0) {
 
@@ -42,8 +48,8 @@ public class BaseDao {
     }
 
     public boolean update(String sql) {
-        if (jdbcTemplate == null){
-            logger.warn("未装载数据源，无法连接数据库!");
+        if (jdbcTemplate == null) {
+            logger.info("未装载数据源，无法连接数据库!");
             return false;
         }
 

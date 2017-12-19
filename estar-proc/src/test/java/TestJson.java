@@ -1,4 +1,5 @@
 import com.alibaba.fastjson.JSON;
+import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import org.junit.Test;
 
@@ -21,5 +22,11 @@ public class TestJson {
         System.out.println(JacksonUtil.toJson(map));
 
         System.out.println(JSON.toJSONString(map));
+    }
+
+    @Test
+    public void test1(){
+
+        System.out.println(CommonUtil.toHex(-51));
     }
 }

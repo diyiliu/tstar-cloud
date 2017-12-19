@@ -52,13 +52,13 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         byte check = CommonUtil.getCheck(content);
 
         // 验证校验位
-        if (last != check){
+        /*if (last != check){
             logger.error("校验位错误!");
             // 数据错误
             doResponse(channelHandlerContext, tStarData, 0x02);
 
             return null;
-        }
+        }*/
         logger.info("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
 
         // 需要应答

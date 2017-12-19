@@ -156,11 +156,11 @@ public class GB32960DataProcess implements IDataProcess {
                 kafkaMap.putAll(map);
             }
         }
+        // 写入kafka
+        toKafka(header, vehicleInfo, kafkaMap);
 
         String sql = strb.substring(0, strb.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
         vehicleDao.update(sql, list.toArray());
-
-        toKafka(header, vehicleInfo, kafkaMap);
     }
 
     private void toKafka(GB32960Header header, VehicleInfo vehicle, Map paramValues) {
@@ -174,8 +174,6 @@ public class GB32960DataProcess implements IDataProcess {
         String msgBody = JacksonUtil.toJson(paramValues);
         rpTuple.setMsgBody(msgBody.getBytes(Charset.forName(EStarConstant.JSON_CHARSET)));
         rpTuple.setTime(vehicle.getDateTime());
-
-        logger.info(msgBody);
 
         // 获取上下文中的配置信息
         RPTuple tuple = (RPTuple) header.gettStarData();
