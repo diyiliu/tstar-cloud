@@ -13,7 +13,6 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -113,7 +112,7 @@ public class CMD_02 extends GB32960DataProcess {
                 default:
                     if (buf.readableBytes() > 2) {
                         int length = buf.readUnsignedShort();
-                        if (buf.readableBytes() < length){
+                        if (buf.readableBytes() < length) {
                             interrupt = true;
                             break;
                         }
@@ -167,7 +166,7 @@ public class CMD_02 extends GB32960DataProcess {
         int soc = byteBuf.readUnsignedByte();
         int dcStatus = byteBuf.readUnsignedByte();
 
-        int gears = byteBuf.readUnsignedByte();
+        int gears = byteBuf.readUnsignedByte() & 0x0F;
         int ohm = byteBuf.readUnsignedShort();
         byteBuf.readShort();
 
@@ -260,11 +259,12 @@ public class CMD_02 extends GB32960DataProcess {
     private boolean parseMotor(ByteBuf byteBuf) {
 
         int count = byteBuf.readUnsignedByte();
-        if (byteBuf.readableBytes() < count * 12) {
+        if (count > 253 || byteBuf.readableBytes() < count * 12) {
 
             return true;
         }
 
+        List list = new ArrayList();
         for (int i = 0; i < count; i++) {
 
             int serial = byteBuf.readUnsignedByte();
@@ -278,7 +278,53 @@ public class CMD_02 extends GB32960DataProcess {
             int temp = byteBuf.readUnsignedByte();
             int voltage = byteBuf.readUnsignedShort();
             int electricity = byteBuf.readUnsignedShort();
+
+            Map m = new HashMap();
+            m.put("sn", serial);
+            m.put("status", status);
+
+            if (0xFE == controlTemp || 0xFF == controlTemp) {
+                m.put("cuTemp", controlTemp);
+            } else {
+                m.put("cuTemp", controlTemp - 40);
+            }
+
+            if (0xFFFE == rpm || 0xFFFF == rpm) {
+                m.put("rpm", rpm);
+            } else {
+                m.put("rpm", rpm - 20000);
+            }
+
+            if (0xFFFE == torque || 0xFFFF == torque) {
+                m.put("torque", torque);
+            } else {
+                m.put("torque", (torque - 20000) * 0.1);
+            }
+
+            if (0xFE == temp || 0xFF == temp) {
+                m.put("temp", temp);
+            } else {
+                m.put("temp", temp - 40);
+            }
+
+            if (0xFFFE == voltage || 0xFFFF == voltage) {
+                m.put("cuVoltage", voltage);
+            } else {
+                m.put("cuVoltage", voltage * 0.1);
+            }
+
+            if (0xFFFE == electricity || 0xFFFF == electricity) {
+                m.put("dcBusCurrent", electricity);
+            } else {
+                m.put("dcBusCurrent", electricity * 0.1 - 1000);
+            }
+
+            list.add(m);
         }
+        Map map = new HashMap();
+        map.put("MOTORNUMBER", count);
+        map.put("MOTORSINFO", JacksonUtil.toJson(list));
+        paramValues.add(map);
 
         return false;
     }
@@ -295,10 +341,46 @@ public class CMD_02 extends GB32960DataProcess {
 
             return true;
         }
+        Map map = new HashMap();
+
         int voltage = byteBuf.readUnsignedShort();
+        if (0xFFFE == voltage) {
+
+            map.put("BATTERYVOLTAGESTATUS", 254);
+        } else if (0xFFFF == voltage) {
+
+            map.put("BATTERYVOLTAGESTATUS", 255);
+        } else {
+
+            map.put("BATTERYVOLTAGESTATUS", 1);
+            map.put("BATTERYVOLTAGE", voltage * 0.1);
+        }
+
         int electricity = byteBuf.readUnsignedShort();
+        if (0xFFFE == electricity) {
+
+            map.put("BATTERYAMPSTATUS", 254);
+        } else if (0xFFFF == electricity) {
+
+            map.put("BATTERYAMPSTATUS", 255);
+        } else {
+
+            map.put("BATTERYAMPSTATUS", 1);
+            map.put("BATTERYAMP", electricity * 0.1);
+        }
 
         int drain = byteBuf.readUnsignedShort();
+        if (0xFFFE == drain) {
+
+            map.put("BATTERYFUELCONSUMESTATUS", 254);
+        } else if (0xFFFF == drain) {
+
+            map.put("BATTERYFUELCONSUMESTATUS", 255);
+        } else {
+
+            map.put("BATTERYFUELCONSUMESTATUS", 1);
+            map.put("BATTERYFUELCONSUME", drain * 0.01);
+        }
 
         int count = byteBuf.readUnsignedShort();
         // 数量无效
@@ -307,24 +389,88 @@ public class CMD_02 extends GB32960DataProcess {
             return false;
         }
 
-        if (byteBuf.readableBytes() < count * 10) {
+        if (byteBuf.readableBytes() < count * 1 + 10) {
 
             return true;
         }
 
+        int sum = 0;
         for (int i = 0; i < count; i++) {
 
-            int maxTemp = byteBuf.readUnsignedShort();
-            int tempNumber = byteBuf.readUnsignedByte();
-
-            int maxPPM = byteBuf.readUnsignedShort();
-            int ppmNumber = byteBuf.readUnsignedByte();
-
-            int maxPressure = byteBuf.readShort();
-            int pressureNumber = byteBuf.readUnsignedByte();
-
-            int dcStatus = byteBuf.readUnsignedByte();
+            sum += byteBuf.readUnsignedByte() - 40;
         }
+
+        // 平均温度
+        int avgTem = count > 0 ? sum / count : 0;
+        map.put("BATTERYTEMP", avgTem);
+
+        int maxTemp = byteBuf.readUnsignedShort();
+        if (0xFFFE == maxTemp) {
+
+            map.put("H2MAXTEMPSTATUS", 254);
+        } else if (0xFFFF == maxTemp) {
+
+            map.put("H2MAXTEMPSTATUS", 255);
+        } else {
+
+            map.put("H2MAXTEMPSTATUS", 1);
+            map.put("H2MAXTEMP", maxTemp * 0.1 - 40);
+        }
+
+        int tempNumber = byteBuf.readUnsignedByte();
+        if (0xFE == tempNumber || 0xFF == tempNumber) {
+            map.put("H2MAXTEMPSENSORSTATUS", tempNumber);
+        } else {
+            map.put("H2MAXTEMPSENSORSTATUS", 1);
+            map.put("H2MAXTEMPSENSOR", tempNumber);
+        }
+
+        int maxPPM = byteBuf.readUnsignedShort();
+        if (0xFFFE == maxPPM) {
+
+            map.put("H2MAXDENSITYSTATUS", 254);
+        } else if (0xFFFF == maxPPM) {
+
+            map.put("H2MAXDENSITYSTATUS", 255);
+        } else {
+
+            map.put("H2MAXDENSITYSTATUS", 1);
+            map.put("H2MAXDENSITY", maxPPM);
+        }
+
+        int ppmNumber = byteBuf.readUnsignedByte();
+        if (0xFE == ppmNumber || 0xFF == ppmNumber) {
+            map.put("H2MAXDENSITYSENSORSTATUS", ppmNumber);
+        } else {
+            map.put("H2MAXDENSITYSENSORSTATUS", 1);
+            map.put("H2MAXDENSITYSENSOR", ppmNumber);
+        }
+
+        int maxPressure = byteBuf.readShort();
+        if (0xFFFE == maxPressure) {
+
+            map.put("H2MAXPRESSURESTATUS", 254);
+        } else if (0xFFFF == maxPressure) {
+
+            map.put("H2MAXPRESSURESTATUS", 255);
+        } else {
+
+            map.put("H2MAXPRESSURESTATUS", 1);
+            map.put("H2MAXPRESSURE", maxPressure * 0.1);
+        }
+
+        int pressureNumber = byteBuf.readUnsignedByte();
+        if (0xFE == pressureNumber || 0xFF == pressureNumber) {
+            map.put("H2MAXPRESSURESENSORSTATUS", pressureNumber);
+        } else {
+            map.put("H2MAXPRESSURESENSORSTATUS", 1);
+            map.put("H2MAXPRESSURESENSOR", pressureNumber);
+        }
+
+        int dcStatus = byteBuf.readUnsignedByte();
+        map.put("HIGHPRESSUREDCDC", dcStatus);
+
+        paramValues.add(map);
 
         return false;
     }
@@ -346,6 +492,28 @@ public class CMD_02 extends GB32960DataProcess {
         int speed = byteBuf.readUnsignedShort();
         int drain = byteBuf.readUnsignedShort();
 
+        Map map = new HashMap();
+        map.put("ENGINESTATUS", status);
+
+        if (0xFFFE == speed) {
+            map.put("ENGINERPMSTATUS", 254);
+        } else if (0xFFFF == speed) {
+            map.put("ENGINERPMSTATUS", 255);
+        } else {
+            map.put("ENGINERPMSTATUS", 1);
+            map.put("ENGINERPM", speed);
+        }
+
+        if (0xFFFE == drain) {
+            map.put("ENGINEFUELCONSUMESTATUS", 254);
+        } else if (0xFFFF == drain) {
+            map.put("ENGINEFUELCONSUMESTATUS", 255);
+        } else {
+            map.put("ENGINEFUELCONSUMESTATUS", 1);
+            map.put("ENGINEFUELCONSUME", drain * 0.01);
+        }
+
+        paramValues.add(map);
         return false;
     }
 
@@ -571,7 +739,7 @@ public class CMD_02 extends GB32960DataProcess {
                 long l = byteBuf.readUnsignedInt();
                 list.add(l);
             }
-            //faultMap.put(4, list);
+            faultMap.put(4, list);
         }
 
         // 报警数据加入上下文中，交给下一个流程处理
@@ -588,17 +756,26 @@ public class CMD_02 extends GB32960DataProcess {
      * @return
      */
     private boolean parseStorageVoltage(ByteBuf byteBuf) {
+        Map map = new HashMap();
+        paramValues.add(map);
 
         int count = byteBuf.readUnsignedByte();
         if (0xFE == count || 0xFF == count) {
+            map.put("BATTERYSUBSYSNUMBERSTATUS", count);
 
             return false;
         }
+        map.put("BATTERYSUBSYSNUMBERSTATUS", 1);
+        map.put("BATTERYSUBSYSNUMBER", count);
+
         if (byteBuf.readableBytes() < count * 10) {
 
             return true;
         }
+
+        List list = new ArrayList();
         for (int i = 0; i < count; i++) {
+            Map m = new HashMap();
 
             int sumSysNo = byteBuf.readUnsignedByte();
             int voltage = byteBuf.readUnsignedShort();
@@ -607,13 +784,14 @@ public class CMD_02 extends GB32960DataProcess {
             int battery = byteBuf.readUnsignedShort();
             int serial = byteBuf.readUnsignedShort();
 
-            int m = byteBuf.readUnsignedByte();
-            if (byteBuf.readableBytes() < m * 2) {
+            int n = byteBuf.readUnsignedByte();
+            if (byteBuf.readableBytes() < n * 2) {
 
                 return true;
             }
 
-            for (int j = 0; j < m; j++) {
+
+            for (int j = 0; j < n; j++) {
 
                 int kv = byteBuf.readUnsignedShort();
             }
