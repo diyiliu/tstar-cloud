@@ -59,7 +59,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
 
             return null;
         }*/
-        logger.info("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
+        logger.debug("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
 
         // 需要应答
         if (resp == 0xFE){

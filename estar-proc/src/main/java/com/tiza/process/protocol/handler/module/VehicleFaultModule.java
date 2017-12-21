@@ -207,10 +207,7 @@ public class VehicleFaultModule extends BaseHandle {
         String msgBody = JacksonUtil.toJson(faultMap);
         tuple.setMsgBody(msgBody.getBytes(Charset.forName(EStarConstant.JSON_CHARSET)));
 
-        // 获取上下文中的配置信息
-        Map<String, String> context = rpTuple.getContext();
-
         logger.info("终端[{}]写入Kafka故障信息...", vehicleFault.getVehicleId());
-        storeInKafka(tuple, context.get(EStarConstant.Kafka.FAULT_TOPIC));
+        storeInKafka(tuple, processorConf.get(EStarConstant.Kafka.FAULT_TOPIC));
     }
 }

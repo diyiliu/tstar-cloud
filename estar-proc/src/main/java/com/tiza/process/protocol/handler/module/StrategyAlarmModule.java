@@ -178,9 +178,6 @@ public class StrategyAlarmModule extends BaseHandle {
             }
         }
 
-        // 获取上下文中的配置信息
-        Map<String, String> context = rpTuple.getContext();
-
         if (notice.getEmail() == 1) {
             Map map = new HashMap();
             map.put("address", notice.getMailAddress());
@@ -196,7 +193,7 @@ public class StrategyAlarmModule extends BaseHandle {
 
 
             logger.info("终端[{}]写入Kafka邮件报警信息...", vehicleInfo.getId());
-            storeInKafka(tuple, context.get(EStarConstant.Kafka.EMAIL_TOPIC));
+            storeInKafka(tuple, processorConf.get(EStarConstant.Kafka.EMAIL_TOPIC));
         }
 
         if (notice.getSms() == 1) {
@@ -212,7 +209,7 @@ public class StrategyAlarmModule extends BaseHandle {
             tuple.setMsgBody(msgBody.getBytes(Charset.forName(EStarConstant.JSON_CHARSET)));
 
             logger.info("终端[{}]写入Kafka短信报警信息...", vehicleInfo.getId());
-            storeInKafka(tuple, context.get(EStarConstant.Kafka.SMS_TOPIC));
+            storeInKafka(tuple, processorConf.get(EStarConstant.Kafka.SMS_TOPIC));
         }
     }
 }
