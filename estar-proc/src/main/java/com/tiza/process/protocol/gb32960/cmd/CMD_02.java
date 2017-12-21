@@ -761,12 +761,12 @@ public class CMD_02 extends GB32960DataProcess {
 
         int count = byteBuf.readUnsignedByte();
         if (0xFE == count || 0xFF == count) {
-            map.put("BATTERYSUBSYSNUMBERSTATUS", count);
+            map.put("BATTERYVOLTAGENUMSTATUS", count);
 
             return false;
         }
-        map.put("BATTERYSUBSYSNUMBERSTATUS", 1);
-        map.put("BATTERYSUBSYSNUMBER", count);
+        map.put("BATTERYVOLTAGENUMSTATUS", 1);
+        map.put("BATTERYVOLTAGENUM", count);
 
         if (byteBuf.readableBytes() < count * 10) {
 
@@ -776,26 +776,70 @@ public class CMD_02 extends GB32960DataProcess {
         List list = new ArrayList();
         for (int i = 0; i < count; i++) {
             Map m = new HashMap();
+            list.add(m);
 
             int sumSysNo = byteBuf.readUnsignedByte();
+            m.put("subNo", sumSysNo);
+
             int voltage = byteBuf.readUnsignedShort();
+            if (0xFFFE == voltage) {
+                m.put("voltageStatus", 254);
+            } else if (0xFFFF == voltage) {
+                m.put("voltageStatus", 255);
+            } else {
+                m.put("voltageStatus", 1);
+                m.put("voltage", voltage * 0.1);
+            }
+
             int electricity = byteBuf.readUnsignedShort();
+            if (0xFFFE == electricity) {
+                m.put("currentStatus", 254);
+            } else if (0xFFFF == electricity) {
+                m.put("currentStatus", 255);
+            } else {
+                m.put("currentStatus", 1);
+                m.put("current", electricity * 0.1 - 1000);
+            }
 
             int battery = byteBuf.readUnsignedShort();
+            if (0xFFFE == battery) {
+                m.put("batteryNumStatus", 254);
+            } else if (0xFFFF == battery) {
+                m.put("batteryNumStatus", 255);
+            } else {
+                m.put("batteryNumStatus", 1);
+                m.put("batteryNum", battery);
+            }
+
             int serial = byteBuf.readUnsignedShort();
+            m.put("frameBatteryIndex", serial);
 
             int n = byteBuf.readUnsignedByte();
+            m.put("framBatteryNum", n);
             if (byteBuf.readableBytes() < n * 2) {
 
                 return true;
             }
 
-
+            List vList = new ArrayList();
             for (int j = 0; j < n; j++) {
 
                 int kv = byteBuf.readUnsignedShort();
+
+                Map vm = new HashMap();
+                if (0xFFFE == kv) {
+                    vm.put("status", 254);
+                } else if (0xFFFF == kv) {
+                    vm.put("status", 255);
+                } else {
+                    vm.put("status", 1);
+                    vm.put("value", kv * 0.001);
+                }
+                vList.add(vm);
             }
+            m.put("batteryVoltages", vList);
         }
+        map.put("BATTERYVOLTAGEINFO", JacksonUtil.toJson(list));
 
         return false;
     }
@@ -808,33 +852,59 @@ public class CMD_02 extends GB32960DataProcess {
      * @return
      */
     private boolean parseStorageTemp(ByteBuf byteBuf) {
+        Map map = new HashMap();
+        paramValues.add(map);
 
         int count = byteBuf.readUnsignedByte();
         if (0xFE == count || 0xFF == count) {
+            map.put("BATTERYTEMPNUMSTATUS", count);
 
             return false;
         }
+        map.put("BATTERYTEMPNUMSTATUS", 1);
+        map.put("BATTERYTEMPNUM", count);
+
         if (byteBuf.readableBytes() < count * 3) {
 
             return true;
         }
+
+        List list = new ArrayList();
         for (int i = 0; i < count; i++) {
+            Map m = new HashMap();
+            list.add(m);
 
             int sumSysNo = byteBuf.readUnsignedByte();
-            int n = byteBuf.readUnsignedShort();
+            m.put("subNo", sumSysNo);
 
+            int n = byteBuf.readUnsignedShort();
+            m.put("sensorNum", n);
             if (0xFE == n || 0xFF == n) {
                 continue;
             }
+
             if (byteBuf.readableBytes() < n) {
 
                 return true;
             }
+
+            List l = new ArrayList();
             for (int j = 0; j < n; j++) {
+                Map t = new HashMap();
+                l.add(t);
 
                 int temp = byteBuf.readUnsignedByte();
+                if (0xFE == temp || 0xFF == temp){
+                    t.put("status", temp);
+                    continue;
+                }
+
+                t.put("status", 1);
+                t.put("value", temp);
             }
+            m.put("temps", l);
         }
+        map.put("BATTERYTEMPINFO", JacksonUtil.toJson(list));
 
         return false;
     }
