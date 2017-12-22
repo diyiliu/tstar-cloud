@@ -46,6 +46,7 @@ public class CMD_02 extends GB32960DataProcess {
 
     private Map realMode;
 
+
     @Override
     public void parse(byte[] content, Header header) {
         GB32960Header gb32960Header = (GB32960Header) header;
@@ -127,11 +128,14 @@ public class CMD_02 extends GB32960DataProcess {
             }
         }
 
-        updateGpsInfo((GB32960Header) header, paramValues);
+        // 0x02或0x03(补发数据)
+        if (0x02 == gb32960Header.getCmd()) {
+            updateGpsInfo(gb32960Header, paramValues);
 
-        // 车辆实时状态
-        if (MapUtils.isNotEmpty(realMode)) {
-            context.put(EStarConstant.FlowKey.REAL_MODE, JacksonUtil.toJson(realMode));
+            // 车辆实时状态
+            if (MapUtils.isNotEmpty(realMode)) {
+                context.put(EStarConstant.FlowKey.REAL_MODE, JacksonUtil.toJson(realMode));
+            }
         }
     }
 
@@ -894,7 +898,7 @@ public class CMD_02 extends GB32960DataProcess {
                 l.add(t);
 
                 int temp = byteBuf.readUnsignedByte();
-                if (0xFE == temp || 0xFF == temp){
+                if (0xFE == temp || 0xFF == temp) {
                     t.put("status", temp);
                     continue;
                 }

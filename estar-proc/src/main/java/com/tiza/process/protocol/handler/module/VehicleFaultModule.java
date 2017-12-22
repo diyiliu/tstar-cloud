@@ -79,6 +79,7 @@ public class VehicleFaultModule extends BaseHandle {
     }
 
     public void dealFault(String vehicleId, String faultUnit, List list) {
+        Date current = new Date(gpsTime);
 
         // 产生故障报警
         for (int i = 0; i < list.size(); i++) {
@@ -97,9 +98,10 @@ public class VehicleFaultModule extends BaseHandle {
                             faultValue.equals(fault.getFaultValue())) {
 
                         exist = true;
-                        if (fault.isOver()) {
+                        // 当前时间大于上次结束报警时间
+                        if (fault.isOver() && current.after(fault.getEndTime())) {
 
-                            fault.setStartTime(new Date(gpsTime));
+                            fault.setStartTime(current);
                             fault.setEndTime(null);
                             toUpdate(fault);
                         }
@@ -113,10 +115,9 @@ public class VehicleFaultModule extends BaseHandle {
                 vehicleFault.setVehicleId(Long.parseLong(vehicleId));
                 vehicleFault.setFaultUnit(faultUnit);
                 vehicleFault.setFaultValue(String.valueOf(faultValue));
-                vehicleFault.setStartTime(new Date(gpsTime));
+                vehicleFault.setStartTime(current);
 
                 toCreate(vehicleFault);
-
                 if (vehicleFaultCache.containsKey(vehicleId)) {
                     List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
                     faultList.add(vehicleFault);
@@ -143,9 +144,9 @@ public class VehicleFaultModule extends BaseHandle {
 
                 long value = Long.parseLong(fault.getFaultValue());
                 // 解除报警
-                if (!list.contains(value)){
+                if (!list.contains(value) && current.after(fault.getStartTime())){
 
-                    fault.setEndTime(new Date(gpsTime));
+                    fault.setEndTime(current);
                     fault.setOver(true);
                     toUpdate(fault);
                 }
@@ -156,7 +157,7 @@ public class VehicleFaultModule extends BaseHandle {
 
     public void toCreate(VehicleFault vehicleFault) {
 
-        String sql = "INSERT INTO bs_vehiclefault(vehicleid,faultunit,faultvalue,starttime) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO bs_vehiclefault(id,vehicleid,faultunit,faultvalue,starttime) VALUES(sq_bs_vehiclefault.nextval,?,?,?,?)";
 
         Object[] param = new Object[]{vehicleFault.getVehicleId(), vehicleFault.getFaultUnit(), vehicleFault.getFaultValue(), vehicleFault.getStartTime()};
 
