@@ -123,15 +123,16 @@ public class CMD_02 extends GB32960DataProcess {
 
             }
             if (interrupt) {
-                logger.error("指令cmd[{}], 解析中断错误!", CommonUtil.toHex(flag));
+                logger.error("终端[{}]指令cmd[{}], 解析中断错误[{}]!", gb32960Header.getVin(), CommonUtil.toHex(flag), CommonUtil.bytesToStr(content));
                 break;
             }
         }
 
-        // 0x02或0x03(补发数据)
-        if (0x02 == gb32960Header.getCmd()) {
-            updateGpsInfo(gb32960Header, paramValues);
+        // 处理位置信息
+        updateGpsInfo(gb32960Header, paramValues);
 
+        // 0x03为补发数据
+        if (0x02 == gb32960Header.getCmd()) {
             // 车辆实时状态
             if (MapUtils.isNotEmpty(realMode)) {
                 context.put(EStarConstant.FlowKey.REAL_MODE, JacksonUtil.toJson(realMode));
@@ -689,7 +690,7 @@ public class CMD_02 extends GB32960DataProcess {
         Map commonAlarm = toCommonAlarm(flag);
         paramValues.add(commonAlarm);
 
-        Map faultMap = new HashMap();
+        Map<String, List<Long>> faultMap = new HashMap();
         int chargeFault = byteBuf.readUnsignedByte();
         if (0xFE != chargeFault && 0xFF != chargeFault && chargeFault > 0) {
             if (byteBuf.readableBytes() < chargeFault * 4 + 3) {
@@ -701,7 +702,7 @@ public class CMD_02 extends GB32960DataProcess {
                 long l = byteBuf.readUnsignedInt();
                 list.add(l);
             }
-            faultMap.put(1, list);
+            faultMap.put("1", list);
         }
 
         int motorFault = byteBuf.readUnsignedByte();
@@ -715,7 +716,7 @@ public class CMD_02 extends GB32960DataProcess {
                 long l = byteBuf.readUnsignedInt();
                 list.add(l);
             }
-            faultMap.put(2, list);
+            faultMap.put("2", list);
         }
 
         int engineFault = byteBuf.readUnsignedByte();
@@ -729,7 +730,7 @@ public class CMD_02 extends GB32960DataProcess {
                 long l = byteBuf.readUnsignedInt();
                 list.add(l);
             }
-            faultMap.put(3, list);
+            faultMap.put("3", list);
         }
 
         int otherFault = byteBuf.readUnsignedByte();
@@ -743,11 +744,13 @@ public class CMD_02 extends GB32960DataProcess {
                 long l = byteBuf.readUnsignedInt();
                 list.add(l);
             }
-            faultMap.put(4, list);
+            faultMap.put("4", list);
         }
 
         // 报警数据加入上下文中，交给下一个流程处理
-        context.put(EStarConstant.FlowKey.VEHICLE_FAULT, JacksonUtil.toJson(faultMap));
+        if (!faultMap.isEmpty()) {
+            context.put(EStarConstant.FlowKey.VEHICLE_FAULT, JacksonUtil.toJson(faultMap));
+        }
 
         return false;
     }

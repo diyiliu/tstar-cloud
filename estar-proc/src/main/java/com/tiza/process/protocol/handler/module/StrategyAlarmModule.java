@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * 自定义策略报警
- *
+ * <p>
  * Description: StrategyAlarmModule
  * Author: DIYILIU
  * Update: 2017-10-23 16:09
@@ -81,8 +81,8 @@ public class StrategyAlarmModule extends BaseHandle {
         redisKey.append(vehicleInfo.getId());
 
         StringBuffer content = new StringBuffer();
-        if (alarmMap.containsKey("ALARMLEVEL")) {
-            int level = (int) alarmMap.get("ALARMLEVEL");
+        if (alarmMap.containsKey("AlarmLevel")) {
+            int level = (int) alarmMap.get("AlarmLevel");
 
             if (level > alarmStrategy.getAlarmLevel()) {
 
@@ -91,8 +91,8 @@ public class StrategyAlarmModule extends BaseHandle {
             }
         }
 
-        if (alarmMap.containsKey("BATTERYUNITMAXVOLTAGE")) {
-            int maxVoltage = (int) alarmMap.get("BATTERYUNITMAXVOLTAGE");
+        if (alarmMap.containsKey("BatteryUnitMaxVoltage")) {
+            double maxVoltage = (double) alarmMap.get("BatteryUnitMaxVoltage");
 
             if (maxVoltage > alarmStrategy.getMaxVoltage()) {
 
@@ -102,8 +102,8 @@ public class StrategyAlarmModule extends BaseHandle {
         }
 
 
-        if (alarmMap.containsKey("BATTERYUNITMINVOLTAGE")) {
-            int minVoltage = (int) alarmMap.get("BATTERYUNITMINVOLTAGE");
+        if (alarmMap.containsKey("BatteryUnitMinVoltage")) {
+            double minVoltage = (double) alarmMap.get("BatteryUnitMinVoltage");
 
             if (minVoltage < alarmStrategy.getMinVoltage()) {
 
@@ -112,8 +112,8 @@ public class StrategyAlarmModule extends BaseHandle {
             }
         }
 
-        if (alarmMap.containsKey("BATTERYMAXTEMP")) {
-            int maxTemp = (int) alarmMap.get("BATTERYMAXTEMP");
+        if (alarmMap.containsKey("BatteryMaxTemp")) {
+            int maxTemp = (int) alarmMap.get("BatteryMaxTemp");
 
             if (maxTemp > alarmStrategy.getMaxTemperature()) {
 
@@ -122,14 +122,20 @@ public class StrategyAlarmModule extends BaseHandle {
             }
         }
 
-        if (alarmMap.containsKey("BATTERYMINTEMP")) {
-            int minTemp = (int) alarmMap.get("BATTERYMINTEMP");
+        if (alarmMap.containsKey("BatteryMinTemp")) {
+            int minTemp = (int) alarmMap.get("BatteryMinTemp");
 
             if (minTemp < alarmStrategy.getMinTemperature()) {
 
                 content.append("最低温度值[").append(minTemp).append("]报警。");
                 redisKey.append(":minTemperature");
             }
+        }
+
+        if (content.length() < 1) {
+            logger.warn("无报警内容。车辆[{}], 策略[{}], 数据[{}]",
+                    vehicleInfo.getId(), JacksonUtil.toJson(alarmStrategy), JacksonUtil.toJson(alarmMap));
+            return;
         }
 
         String title = "车辆[" + vehicleInfo.getLicense() + "]报警";
@@ -150,10 +156,10 @@ public class StrategyAlarmModule extends BaseHandle {
                 Calendar nowCal = Calendar.getInstance();
                 nowCal.setTime(now);
 
-                if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1) {
+                /*if (nowCal.get(Calendar.DAY_OF_YEAR) - oldCal.get(Calendar.DAY_OF_YEAR) < 1) {
 
                     return;
-                }
+                }*/
             }
 
             Map redisMap = new HashMap();
@@ -163,18 +169,18 @@ public class StrategyAlarmModule extends BaseHandle {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(jedis != null){
+            if (jedis != null) {
                 jedis.close();
             }
         }
 
         AlarmNotice notice = alarmStrategy.getAlarmNotice();
         if (notice.getSite() == 1) {
-            String sql = "INSERT INTO bs_message(userid,title,content,createtime,status) VALUES(?,?,?,?,0)";
-            Object[] params = new Object[]{notice.getUserId(), title, content, now};
+            String sql = "INSERT INTO bs_message(id,userid,title,content,createtime,status) VALUES(sq_bs_message.nextval,?,?,?,?,0)";
+            Object[] param = new Object[]{notice.getUserId(), title, content, now};
 
-            if (!alarmDao.update(sql, params)) {
-                logger.error("新增车辆报警信息失败！");
+            if (!alarmDao.update(sql, param)) {
+                logger.error("新增车辆报警信息失败！SQL:[{}], 参数:[{}]", sql, param);
             }
         }
 

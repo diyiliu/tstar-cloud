@@ -19,7 +19,7 @@ import java.util.*;
 
 /**
  * 车辆通用故障
- *
+ * <p>
  * Description: VehicleFaultModule
  * Author: DIYILIU
  * Update: 2017-10-12 14:19
@@ -40,10 +40,6 @@ public class VehicleFaultModule extends BaseHandle {
 
     private FaultDao faultDao;
 
-    private long gpsTime;
-
-    private RPTuple rpTuple;
-
     @Override
     public RPTuple handle(RPTuple rpTuple) throws Exception {
         Map<String, String> context = rpTuple.getContext();
@@ -51,22 +47,17 @@ public class VehicleFaultModule extends BaseHandle {
         String terminalId = rpTuple.getTerminalID();
         ICache vehicleCache = SpringUtil.getBean("vehicleCacheProvider");
         if (context.containsKey(EStarConstant.FlowKey.VEHICLE_FAULT) && vehicleCache.containsKey(terminalId)) {
-            this.rpTuple = rpTuple;
-            gpsTime = rpTuple.getTime();
-
             VehicleInfo vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
-            String vehicleId = String.valueOf(vehicleInfo.getId());
+            vehicleInfo.setDateTime(rpTuple.getTime());
 
             faultCodeCache = SpringUtil.getBean("faultCodeCacheProvider");
             vehicleFaultCache = SpringUtil.getBean("vehicleFaultCacheProvider");
             faultDao = SpringUtil.getBean("faultDao");
-
             Map faultMap = JacksonUtil.toObject(context.get(EStarConstant.FlowKey.VEHICLE_FAULT), HashMap.class);
             for (Iterator iterator = faultMap.keySet().iterator(); iterator.hasNext(); ) {
                 String key = String.valueOf(iterator.next());
                 List value = (List) faultMap.get(key);
-
-                dealFault(vehicleId, key, value);
+                dealFault(vehicleInfo, key, value);
             }
         }
 
@@ -78,8 +69,30 @@ public class VehicleFaultModule extends BaseHandle {
 
     }
 
-    public void dealFault(String vehicleId, String faultUnit, List list) {
-        Date current = new Date(gpsTime);
+    public void dealFault(VehicleInfo vehicleInfo, String faultUnit, List list) {
+        String vehicleId = String.valueOf(vehicleInfo.getId());
+        Date current = new Date(vehicleInfo.getDateTime());
+
+        // 解除故障报警
+        if (vehicleFaultCache.containsKey(vehicleId)) {
+            List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
+            for (VehicleFault fault : faultList) {
+                String unit = fault.getFaultUnit();
+                if (fault.isOver() || !unit.equals(faultUnit)) {
+
+                    continue;
+                }
+
+                // 解除报警
+                if (!hasValue(list, fault.getFaultValue())
+                        && current.after(fault.getStartTime())) {
+
+                    fault.setEndTime(current);
+                    fault.setOver(true);
+                    toUpdate(fault);
+                }
+            }
+        }
 
         // 产生故障报警
         for (int i = 0; i < list.size(); i++) {
@@ -96,12 +109,14 @@ public class VehicleFaultModule extends BaseHandle {
                 for (VehicleFault fault : faultList) {
                     if (faultUnit.equals(fault.getFaultUnit()) &&
                             faultValue.equals(fault.getFaultValue())) {
-
                         exist = true;
-                        // 当前时间大于上次结束报警时间
-                        if (fault.isOver() && current.after(fault.getEndTime())) {
+
+                        // 更新报警
+                        if (fault.isOver() &&
+                                current.after(fault.getEndTime())) {
 
                             fault.setStartTime(current);
+                            fault.setOver(false);
                             fault.setEndTime(null);
                             toUpdate(fault);
                         }
@@ -117,11 +132,12 @@ public class VehicleFaultModule extends BaseHandle {
                 vehicleFault.setFaultValue(String.valueOf(faultValue));
                 vehicleFault.setStartTime(current);
 
+                logger.warn("新增报警:  fault[{}]", JacksonUtil.toJson(vehicleFault));
                 toCreate(vehicleFault);
                 if (vehicleFaultCache.containsKey(vehicleId)) {
                     List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
                     faultList.add(vehicleFault);
-                }else {
+                } else {
                     List<VehicleFault> faultList = new ArrayList();
                     faultList.add(vehicleFault);
 
@@ -129,30 +145,6 @@ public class VehicleFaultModule extends BaseHandle {
                 }
             }
         }
-
-        // 解除故障报警
-        if (vehicleFaultCache.containsKey(vehicleId)) {
-            List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
-
-            for (VehicleFault fault: faultList){
-
-                String unit = fault.getFaultUnit();
-                if (fault.isOver() || !unit.equals(faultUnit)){
-
-                    continue;
-                }
-
-                long value = Long.parseLong(fault.getFaultValue());
-                // 解除报警
-                if (!list.contains(value) && current.after(fault.getStartTime())){
-
-                    fault.setEndTime(current);
-                    fault.setOver(true);
-                    toUpdate(fault);
-                }
-            }
-        }
-
     }
 
     public void toCreate(VehicleFault vehicleFault) {
@@ -163,7 +155,7 @@ public class VehicleFaultModule extends BaseHandle {
 
         if (!faultDao.update(sql, param)) {
 
-            logger.error("新增车辆故障信息失败！");
+            logger.error("新增车辆故障信息失败！SQL:[{}], 参数:[{}]", sql, param);
         }
 
         toKafka(vehicleFault);
@@ -179,14 +171,14 @@ public class VehicleFaultModule extends BaseHandle {
 
         if (!faultDao.update(sql, param)) {
 
-            logger.error("更新车辆故障信息失败！");
+            logger.error("更新车辆故障信息失败！SQL:[{}], 参数:[{}]", sql, param);
         }
 
         toKafka(vehicleFault);
     }
 
 
-    public void toKafka(VehicleFault vehicleFault){
+    public void toKafka(VehicleFault vehicleFault) {
         String key = vehicleFault.getFaultUnit() + "_" + vehicleFault.getFaultValue();
         FaultCode faultCode = (FaultCode) faultCodeCache.get(key);
 
@@ -195,7 +187,7 @@ public class VehicleFaultModule extends BaseHandle {
         faultMap.put(EStarConstant.Fault.FAULT_VALUE, vehicleFault.getFaultValue());
         faultMap.put(EStarConstant.Fault.START_TIME, DateUtil.dateToString(vehicleFault.getStartTime()));
         faultMap.put(EStarConstant.Fault.END_TIME,
-                vehicleFault.getStartTime() == null? "": DateUtil.dateToString(vehicleFault.getEndTime()));
+                vehicleFault.getStartTime() == null ? "" : DateUtil.dateToString(vehicleFault.getEndTime()));
 
         faultMap.put(EStarConstant.Fault.FAULT_NAME, faultCode.getName());
         faultMap.put(EStarConstant.Fault.FAULT_DESC, faultCode.getDesc());
@@ -210,5 +202,25 @@ public class VehicleFaultModule extends BaseHandle {
 
         logger.info("终端[{}]写入Kafka故障信息...", vehicleFault.getVehicleId());
         storeInKafka(tuple, processorConf.get(EStarConstant.Kafka.FAULT_TOPIC));
+    }
+
+    /**
+     * 是否存在故障信息
+     *
+     * @param list
+     * @param value
+     * @return
+     */
+    private boolean hasValue(List list, String value) {
+
+        for (int i = 0; i < list.size(); i++) {
+
+            if (value.equalsIgnoreCase(String.valueOf(list.get(i)))) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

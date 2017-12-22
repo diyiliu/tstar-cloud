@@ -16,7 +16,7 @@ public class VehicleFault {
     private Date endTime;
 
     /** 是否解除故障 (false:报警中;true:解除报警。)*/
-    private boolean isOver;
+    private boolean isOver = false;
 
     public Long getVehicleId() {
         return vehicleId;

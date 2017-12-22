@@ -1,16 +1,18 @@
 import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.util.CommonUtil;
+import com.diyiliu.common.util.JacksonUtil;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Description: TestHandler
@@ -76,5 +78,53 @@ public class TestHandler {
     public void test3(){
 
         System.out.println(1 << 13);
+    }
+
+
+    @Test
+    public void test4(){
+
+        //System.out.println(new Date().after(null));
+
+        Date date1=new Date(1513836023964l);
+        Date date2=new Date(1513836023963l);
+
+        System.out.println(date1.after(date2));
+    }
+
+    @Test
+    public void test5(){
+
+        List l = new ArrayList();
+        l.add(1l);
+        l.add(2l);
+        l.add(3l);
+
+        System.out.println(l.contains(2l));
+
+        System.out.println(l.contains(5l));
+    }
+
+    @Test
+    public void test6() throws IOException {
+
+        List<Long> list = new ArrayList();
+        list.add(101l);
+
+        Map map = new HashMap();
+        map.put(1, list);
+
+        String json = JacksonUtil.toJson(map);
+
+        System.out.println(json);
+
+        Map m = JacksonUtil.toObject(json, HashMap.class);
+        List l = (List) m.get("1");
+
+        System.out.println(l.contains(101l));
+
+        System.out.println(l.contains(Long.parseLong("101")));
+
+        System.out.println(CollectionUtils.containsAny(l, Arrays.asList(new Object[]{101})));
     }
 }

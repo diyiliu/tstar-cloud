@@ -144,7 +144,10 @@ public class GB32960DataProcess implements IDataProcess {
                         kafkaMap.put("GCJ02LAT", position.getEnLatD());
                         kafkaMap.put("GCJ02LNG", position.getEnLngD());
 
-                        toRedis(header, vehicleInfo, position);
+                        // 发布redis
+                        if (0x02 == header.getCmd()){
+                            toRedis(header, vehicleInfo, position);
+                        }
                     }
                     continue;
                 }
@@ -156,11 +159,15 @@ public class GB32960DataProcess implements IDataProcess {
                 kafkaMap.putAll(map);
             }
         }
+
         // 写入kafka
         toKafka(header, vehicleInfo, kafkaMap);
 
-        String sql = strb.substring(0, strb.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
-        vehicleDao.update(sql, list.toArray());
+        // 更新当前位置信息
+        if (0x02 == header.getCmd()) {
+            String sql = strb.substring(0, strb.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
+            vehicleDao.update(sql, list.toArray());
+        }
     }
 
     private void toKafka(GB32960Header header, VehicleInfo vehicle, Map paramValues) {

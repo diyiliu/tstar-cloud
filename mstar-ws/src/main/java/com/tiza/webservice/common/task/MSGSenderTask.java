@@ -60,12 +60,13 @@ public class MSGSenderTask implements ITask {
                 msg.setSendResult(sendResult);
 
                 // 指令下发成功
+                Integer errorCode = null;
                 if (sendResult.getIsSuccess()) {
                     status = Constant.SendStatus.SENT;
                     waitRespCacheProvider.put(msg.getSerial(), msg);
                 } else {
                     status = Constant.SendStatus.FAIL;
-                    int errorCode = sendResult.getErrorCode();
+                    errorCode = sendResult.getErrorCode();
                     if (errorCode == 1905){
                         status = Constant.SendStatus.OFFLINE;
                     }
@@ -73,10 +74,10 @@ public class MSGSenderTask implements ITask {
                 }
 
                 String sql = "UPDATE bs_instructionlog t" +
-                        " SET t.sendstatus = ?, t.sendtime = ?" +
+                        " SET t.sendstatus = ?, t.sendtime = ?, t.errorcode = ?" +
                         " WHERE t.id = ?";
 
-                jdbcTemplate.update(sql, new Object[]{status, new Date(), msg.getId()});
+                jdbcTemplate.update(sql, new Object[]{status, new Date(), errorCode, msg.getId()});
             } catch (ServerException e) {
                 e.printStackTrace();
             }
