@@ -131,9 +131,8 @@ public class VehicleFaultModule extends BaseHandle {
                 vehicleFault.setFaultUnit(faultUnit);
                 vehicleFault.setFaultValue(String.valueOf(faultValue));
                 vehicleFault.setStartTime(current);
-
-                logger.warn("新增报警:  fault[{}]", JacksonUtil.toJson(vehicleFault));
                 toCreate(vehicleFault);
+
                 if (vehicleFaultCache.containsKey(vehicleId)) {
                     List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
                     faultList.add(vehicleFault);
