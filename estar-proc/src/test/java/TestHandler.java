@@ -1,5 +1,6 @@
 import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.util.CommonUtil;
+import com.diyiliu.common.util.DateUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import io.netty.buffer.ByteBuf;
@@ -126,5 +127,14 @@ public class TestHandler {
         System.out.println(l.contains(Long.parseLong("101")));
 
         System.out.println(CollectionUtils.containsAny(l, Arrays.asList(new Object[]{101})));
+    }
+
+
+    @Test
+    public void test7(){
+
+        Date d1 = DateUtil.stringToDate("");
+        Date d2 = DateUtil.stringToDate("");
+
     }
 }

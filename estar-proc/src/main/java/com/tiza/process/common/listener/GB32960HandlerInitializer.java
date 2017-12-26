@@ -56,10 +56,10 @@ public class GB32960HandlerInitializer implements Initializer {
     /**
      * 获取故障代码库
      */
-    public void initFaultCode(){
+    public void initFaultCode() {
 
         List<FaultCode> faultCodes = faultDao.selectFaultCode();
-        for (FaultCode code: faultCodes){
+        for (FaultCode code : faultCodes) {
 
             String key = code.getFaultUnit() + "_" + code.getFaultValue();
             faultCodeCacheProvider.put(key, code);
@@ -70,9 +70,9 @@ public class GB32960HandlerInitializer implements Initializer {
     /**
      * 获取车辆当前故障
      */
-    public void initVehicleFault(){
+    public void initVehicleFault() {
         List<VehicleFault> vehicleFaults = faultDao.selectVehicleFault();
-        for (VehicleFault fault: vehicleFaults){
+        for (VehicleFault fault : vehicleFaults) {
             String vehicleId = String.valueOf(fault.getVehicleId());
 
             putList(vehicleId, vehicleFaultCacheProvider, fault);
@@ -82,9 +82,9 @@ public class GB32960HandlerInitializer implements Initializer {
     /**
      * 获取车辆报警策略
      */
-    public void initVehicleAlarmStrategy(){
+    public void initVehicleAlarmStrategy() {
         List<AlarmStrategy> alarmStrategies = alarmDao.selectAlarmStrategy();
-        for (AlarmStrategy strategy: alarmStrategies){
+        for (AlarmStrategy strategy : alarmStrategies) {
             String vehicleId = String.valueOf(strategy.getVehicleId());
 
             putList(vehicleId, alarmStrategyCacheProvider, strategy);
@@ -93,16 +93,17 @@ public class GB32960HandlerInitializer implements Initializer {
 
     /**
      * 缓存中添加列表
+     *
      * @param key
      * @param cache
      * @param object
      */
-    public void putList(String key, ICache cache, Object object){
-        if (cache.containsKey(key)){
+    public void putList(String key, ICache cache, Object object) {
+        if (cache.containsKey(key)) {
 
-            List  list = (List) cache.get(key);
+            List list = (List) cache.get(key);
             list.add(object);
-        }else {
+        } else {
             List list = new ArrayList();
             list.add(object);
 

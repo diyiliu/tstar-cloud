@@ -748,9 +748,7 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         // 报警数据加入上下文中，交给下一个流程处理
-        if (!faultMap.isEmpty()) {
-            context.put(EStarConstant.FlowKey.VEHICLE_FAULT, JacksonUtil.toJson(faultMap));
-        }
+        context.put(EStarConstant.FlowKey.VEHICLE_FAULT, JacksonUtil.toJson(faultMap));
 
         return false;
     }

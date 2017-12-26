@@ -15,7 +15,9 @@ public class VehicleFault {
     private Date startTime;
     private Date endTime;
 
-    /** 是否解除故障 (false:报警中;true:解除报警。)*/
+    /**
+     * 是否解除故障 (false:报警中;true:解除报警。)
+     */
     private boolean isOver = false;
 
     public Long getVehicleId() {
@@ -64,5 +66,19 @@ public class VehicleFault {
 
     public void setOver(boolean over) {
         isOver = over;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VehicleFault) {
+            VehicleFault o = (VehicleFault) obj;
+            if (o.getFaultUnit().equals(faultUnit) &&
+                    o.getFaultValue().equals(faultValue)) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

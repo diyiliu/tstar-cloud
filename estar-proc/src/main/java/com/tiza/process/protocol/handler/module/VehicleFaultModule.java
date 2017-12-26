@@ -11,6 +11,8 @@ import com.tiza.process.common.dao.FaultDao;
 import com.tiza.process.common.model.FaultCode;
 import com.tiza.process.common.model.VehicleFault;
 import com.tiza.process.common.model.VehicleInfo;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +55,11 @@ public class VehicleFaultModule extends BaseHandle {
             faultCodeCache = SpringUtil.getBean("faultCodeCacheProvider");
             vehicleFaultCache = SpringUtil.getBean("vehicleFaultCacheProvider");
             faultDao = SpringUtil.getBean("faultDao");
+
             Map faultMap = JacksonUtil.toObject(context.get(EStarConstant.FlowKey.VEHICLE_FAULT), HashMap.class);
-            for (Iterator iterator = faultMap.keySet().iterator(); iterator.hasNext(); ) {
-                String key = String.valueOf(iterator.next());
-                List value = (List) faultMap.get(key);
-                dealFault(vehicleInfo, key, value);
-            }
+            List hisList = (List) vehicleFaultCache.get(String.valueOf(vehicleInfo.getId()));
+
+            dealFault(vehicleInfo, hisList, faultMap);
         }
 
         return rpTuple;
@@ -69,47 +70,57 @@ public class VehicleFaultModule extends BaseHandle {
 
     }
 
-    public void dealFault(VehicleInfo vehicleInfo, String faultUnit, List list) {
-        String vehicleId = String.valueOf(vehicleInfo.getId());
+
+    public void dealFault(VehicleInfo vehicleInfo, List<VehicleFault> hisList, Map<String, List> faultMap) {
         Date current = new Date(vehicleInfo.getDateTime());
+        Map<String, List<VehicleFault>> unitMap = toUnitMap(hisList);
 
         // 解除故障报警
-        if (vehicleFaultCache.containsKey(vehicleId)) {
-            List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
-            for (VehicleFault fault : faultList) {
-                String unit = fault.getFaultUnit();
-                if (fault.isOver() || !unit.equals(faultUnit)) {
+        if (CollectionUtils.isNotEmpty(hisList)) {
+            Set hisKeys = unitMap.keySet();
+            Set currKeys = faultMap.keySet();
 
-                    continue;
-                }
+            Collection subKeys = CollectionUtils.subtract(hisKeys, currKeys);
+            for (Iterator iterator = subKeys.iterator(); iterator.hasNext();){
+                String key = (String) iterator.next();
 
-                // 解除报警
-                if (!hasValue(list, fault.getFaultValue())
-                        && current.after(fault.getStartTime())) {
+                List<VehicleFault> subList = unitMap.get(key);
+                for (VehicleFault fault : subList) {
+                    if (fault.isOver()) {
+                        continue;
+                    }
 
-                    fault.setEndTime(current);
-                    fault.setOver(true);
-                    toUpdate(fault);
+                    if (current.after(fault.getStartTime())) {
+                        fault.setEndTime(current);
+                        fault.setOver(true);
+                        toUpdate(fault);
+
+                    }
                 }
             }
         }
 
         // 产生故障报警
-        for (int i = 0; i < list.size(); i++) {
-            String faultValue = String.valueOf(list.get(i));
+        if (MapUtils.isNotEmpty(faultMap)) {
+            Map<String, VehicleFault> hisMap = toHisMap(hisList);
 
-            String key = faultUnit + "_" + faultValue;
-            if (!faultCodeCache.containsKey(key)) {
-                continue;
-            }
+            long vehicleId = vehicleInfo.getId();
+            for (Iterator iterator = faultMap.keySet().iterator(); iterator.hasNext(); ) {
+                String faultUnit = String.valueOf(iterator.next());
+                List list = faultMap.get(faultUnit);
 
-            boolean exist = false;
-            if (vehicleFaultCache.containsKey(vehicleId)) {
-                List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
-                for (VehicleFault fault : faultList) {
-                    if (faultUnit.equals(fault.getFaultUnit()) &&
-                            faultValue.equals(fault.getFaultValue())) {
+                for (int i = 0; i < list.size(); i++) {
+                    String faultValue = String.valueOf(list.get(i));
+
+                    String key = faultUnit + "_" + faultValue;
+                    if (!faultCodeCache.containsKey(key)) {
+                        continue;
+                    }
+
+                    boolean exist = false;
+                    if (hisMap.containsKey(key)) {
                         exist = true;
+                        VehicleFault fault = hisMap.get(key);
 
                         // 更新报警
                         if (fault.isOver() &&
@@ -119,28 +130,46 @@ public class VehicleFaultModule extends BaseHandle {
                             fault.setOver(false);
                             fault.setEndTime(null);
                             toUpdate(fault);
+
                         }
-                        break;
+                    }
+
+                    if (!exist) {
+                        VehicleFault vehicleFault = new VehicleFault();
+                        vehicleFault.setVehicleId(vehicleId);
+                        vehicleFault.setFaultUnit(faultUnit);
+                        vehicleFault.setFaultValue(String.valueOf(faultValue));
+                        vehicleFault.setStartTime(current);
+
+                        // 新增报警
+                        toCreate(vehicleFault);
+
+                        if (vehicleFaultCache.containsKey(vehicleId)) {
+                            List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
+                            faultList.add(vehicleFault);
+                        } else {
+                            List<VehicleFault> faultList = new ArrayList();
+                            faultList.add(vehicleFault);
+
+                            vehicleFaultCache.put(vehicleId, faultList);
+                        }
                     }
                 }
-            }
 
-            if (!exist) {
-                VehicleFault vehicleFault = new VehicleFault();
-                vehicleFault.setVehicleId(Long.parseLong(vehicleId));
-                vehicleFault.setFaultUnit(faultUnit);
-                vehicleFault.setFaultValue(String.valueOf(faultValue));
-                vehicleFault.setStartTime(current);
-                toCreate(vehicleFault);
+                // 解除故障报警
+                if (unitMap.containsKey(faultUnit)) {
+                    List<VehicleFault> l = unitMap.get(faultUnit);
+                    Collection<VehicleFault> sumList = CollectionUtils.subtract(l, toFaultList(faultUnit, list));
+                    for (VehicleFault fault : sumList) {
 
-                if (vehicleFaultCache.containsKey(vehicleId)) {
-                    List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
-                    faultList.add(vehicleFault);
-                } else {
-                    List<VehicleFault> faultList = new ArrayList();
-                    faultList.add(vehicleFault);
+                        // 解除报警
+                        if (current.after(fault.getStartTime())) {
 
-                    vehicleFaultCache.put(vehicleId, faultList);
+                            fault.setEndTime(current);
+                            fault.setOver(true);
+                            toUpdate(fault);
+                        }
+                    }
                 }
             }
         }
@@ -203,23 +232,61 @@ public class VehicleFaultModule extends BaseHandle {
         storeInKafka(tuple, processorConf.get(EStarConstant.Kafka.FAULT_TOPIC));
     }
 
-    /**
-     * 是否存在故障信息
-     *
-     * @param list
-     * @param value
-     * @return
-     */
-    private boolean hasValue(List list, String value) {
 
-        for (int i = 0; i < list.size(); i++) {
-
-            if (value.equalsIgnoreCase(String.valueOf(list.get(i)))) {
-
-                return true;
+    private Map<String, VehicleFault> toHisMap(List<VehicleFault> list) {
+        Map<String, VehicleFault> map = new HashMap();
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (VehicleFault fault : list) {
+                String key = fault.getFaultUnit() + "_" + fault.getFaultValue();
+                map.put(key, fault);
             }
         }
 
-        return false;
+        return map;
+    }
+
+
+    private Map<String, List<VehicleFault>> toUnitMap(List<VehicleFault> list) {
+        Map<String, List<VehicleFault>> map = new HashMap();
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (VehicleFault fault : list) {
+                String unit = fault.getFaultUnit();
+                if (map.containsKey(unit)) {
+
+                    List l = map.get(unit);
+                    l.add(fault);
+                } else {
+                    List l = new ArrayList();
+                    l.add(fault);
+
+                    map.put(unit, l);
+                }
+            }
+        }
+
+        return map;
+    }
+
+    /**
+     * 构建故障单元
+     *
+     * @param faultUnit
+     * @param list
+     * @return
+     */
+    private List<VehicleFault> toFaultList(String faultUnit, List list){
+        List<VehicleFault> faultList = new ArrayList();
+        if (CollectionUtils.isNotEmpty(list)){
+            for (int i = 0 ; i < list.size(); i++){
+
+                VehicleFault fault = new VehicleFault();
+                fault.setFaultUnit(faultUnit);
+                fault.setFaultValue(String.valueOf(list.get(i)));
+
+                faultList.add(fault);
+            }
+        }
+
+        return faultList;
     }
 }

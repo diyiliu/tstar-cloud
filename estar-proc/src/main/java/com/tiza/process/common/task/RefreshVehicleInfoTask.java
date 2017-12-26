@@ -41,7 +41,7 @@ public class RefreshVehicleInfoTask implements ITask {
         }
 
         Set oldKeys = vehicleCache.getKeys();
-        Set tempKeys = new HashSet<>(vehicleList.size());
+        Set tempKeys = new HashSet(vehicleList.size());
 
         for (VehicleInfo vehicle : vehicleList) {
             vehicleCache.put(vehicle.getVin(), vehicle);
