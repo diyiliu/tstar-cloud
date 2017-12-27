@@ -104,7 +104,6 @@ public class VehicleFaultModule extends BaseHandle {
         if (MapUtils.isNotEmpty(faultMap)) {
             Map<String, VehicleFault> hisMap = toHisMap(hisList);
 
-            long vehicleId = vehicleInfo.getId();
             for (Iterator iterator = faultMap.keySet().iterator(); iterator.hasNext(); ) {
                 String faultUnit = String.valueOf(iterator.next());
                 List list = faultMap.get(faultUnit);
@@ -136,7 +135,7 @@ public class VehicleFaultModule extends BaseHandle {
 
                     if (!exist) {
                         VehicleFault vehicleFault = new VehicleFault();
-                        vehicleFault.setVehicleId(vehicleId);
+                        vehicleFault.setVehicleId(vehicleInfo.getId());
                         vehicleFault.setFaultUnit(faultUnit);
                         vehicleFault.setFaultValue(String.valueOf(faultValue));
                         vehicleFault.setStartTime(current);
@@ -144,6 +143,7 @@ public class VehicleFaultModule extends BaseHandle {
                         // 新增报警
                         toCreate(vehicleFault);
 
+                        String vehicleId = String.valueOf(vehicleInfo.getId());
                         if (vehicleFaultCache.containsKey(vehicleId)) {
                             List<VehicleFault> faultList = (List<VehicleFault>) vehicleFaultCache.get(vehicleId);
                             faultList.add(vehicleFault);
