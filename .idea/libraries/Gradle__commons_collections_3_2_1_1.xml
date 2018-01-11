@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: commons-collections-3.2.1_1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/commons-collections-3.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

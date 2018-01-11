@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: jedis-2.7.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/process/jedis-2.7.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

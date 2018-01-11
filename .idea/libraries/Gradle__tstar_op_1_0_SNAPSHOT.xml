@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: tstar-op-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/op/tstar-op-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

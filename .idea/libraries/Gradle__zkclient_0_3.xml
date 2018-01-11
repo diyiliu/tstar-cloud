@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: zkclient-0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/zkclient-0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

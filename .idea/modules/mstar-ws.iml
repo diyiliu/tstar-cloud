@@ -142,41 +142,9 @@
     <orderEntry type="library" name="Gradle: org.apache.directory.server:apacheds-i18n:2.0.0-M15" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.directory.api:api-asn1-api:1.0.0-M20" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.directory.api:api-util:1.0.0-M20" level="project" />
-    <orderEntry type="module-library">
-      <library name="Gradle: ojdbc6-11.2.0.3">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/ws/ojdbc6-11.2.0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: tstar-common-1.0.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/ws/tstar-common-1.0.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: tstar-datainterface-client-1.0.1-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/ws/tstar-datainterface-client-1.0.1-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: tstar-datainterface-service-1.0.1-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/ws/tstar-datainterface-service-1.0.1-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Gradle: ojdbc6-11.2.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: tstar-common-1.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: tstar-datainterface-client-1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: tstar-datainterface-service-1.0.1-SNAPSHOT" level="project" />
   </component>
 </module>

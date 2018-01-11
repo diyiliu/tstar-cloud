@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: commons-configuration-1.10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/common/commons-configuration-1.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

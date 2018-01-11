@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: ojdbc6-11.2.0.3_2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/other/ojdbc6-11.2.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

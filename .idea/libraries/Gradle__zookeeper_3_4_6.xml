@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: zookeeper-3.4.6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/zookeeper-3.4.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

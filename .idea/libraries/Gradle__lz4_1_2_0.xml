@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: lz4-1.2.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/lz4-1.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

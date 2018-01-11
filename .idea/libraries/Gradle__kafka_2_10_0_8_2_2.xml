@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: kafka_2.10-0.8.2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/kafka_2.10-0.8.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

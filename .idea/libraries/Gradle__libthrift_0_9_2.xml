@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: libthrift-0.9.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/process/libthrift-0.9.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

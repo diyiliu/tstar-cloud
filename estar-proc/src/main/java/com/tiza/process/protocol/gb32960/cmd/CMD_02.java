@@ -128,8 +128,11 @@ public class CMD_02 extends GB32960DataProcess {
             }
         }
 
-        // 处理位置信息
-        updateGpsInfo(gb32960Header, paramValues);
+        // 舍弃空包
+        if(paramValues.size() < 3){
+            // 处理位置信息
+            updateGpsInfo(gb32960Header, paramValues);
+        }
 
         // 0x03为补发数据
         if (0x02 == gb32960Header.getCmd()) {

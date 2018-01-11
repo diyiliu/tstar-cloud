@@ -45,230 +45,30 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.7.3" level="project" />
     <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.10" level="project" />
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-configuration-1.10">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/commons-configuration-1.10.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-lang-2.6">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/commons-lang-2.6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-lang3-3.3.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/commons-lang3-3.3.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: jcl-over-slf4j-1.7.7">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/jcl-over-slf4j-1.7.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: junit-4.12">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/junit-4.12.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: log4j-over-slf4j-1.7.7">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/log4j-over-slf4j-1.7.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: logback-classic-1.1.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/logback-classic-1.1.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: logback-core-1.1.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/logback-core-1.1.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: mysql-connector-java-5.1.25">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/mysql-connector-java-5.1.25.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: ojdbc6-11.2.0.3">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/ojdbc6-11.2.0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: slf4j-api-1.7.7">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/slf4j-api-1.7.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: tstar-common-1.0.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/common/tstar-common-1.0.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-codec-1.6">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-codec-1.6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-collections-3.2.1">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-collections-3.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-exec-1.1">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-exec-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-fileupload-1.2.1">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-fileupload-1.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-io-2.4">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-io-2.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: commons-logging-1.1.3">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/commons-logging-1.1.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: dom4j-1.6.1">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/dom4j-1.6.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: fastjson-1.2.7">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/fastjson-1.2.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: HttpClientUtil-1.0-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/HttpClientUtil-1.0-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: jackson-databind-2.4.3">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/jackson-databind-2.4.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: jedis-2.7.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/jedis-2.7.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: libthrift-0.9.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/libthrift-0.9.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Gradle: tstar-rp-0.2-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/tstar/process/tstar-rp-0.2-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Gradle: commons-configuration-1.10" level="project" />
+    <orderEntry type="library" name="Gradle: commons-lang-2.6" level="project" />
+    <orderEntry type="library" name="Gradle: commons-lang3-3.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: jcl-over-slf4j-1.7.7" level="project" />
+    <orderEntry type="library" name="Gradle: junit-4.12" level="project" />
+    <orderEntry type="library" name="Gradle: log4j-over-slf4j-1.7.7" level="project" />
+    <orderEntry type="library" name="Gradle: logback-classic-1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: logback-core-1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: mysql-connector-java-5.1.25" level="project" />
+    <orderEntry type="library" name="Gradle: ojdbc6-11.2.0.3_1" level="project" />
+    <orderEntry type="library" name="Gradle: slf4j-api-1.7.7" level="project" />
+    <orderEntry type="library" name="Gradle: tstar-common-1.0.2_1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec-1.6" level="project" />
+    <orderEntry type="library" name="Gradle: commons-collections-3.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-exec-1.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-fileupload-1.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io-2.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-logging-1.1.3" level="project" />
+    <orderEntry type="library" name="Gradle: dom4j-1.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: fastjson-1.2.7" level="project" />
+    <orderEntry type="library" name="Gradle: HttpClientUtil-1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: jackson-databind-2.4.3" level="project" />
+    <orderEntry type="library" name="Gradle: jedis-2.7.2" level="project" />
+    <orderEntry type="library" name="Gradle: libthrift-0.9.2" level="project" />
+    <orderEntry type="library" name="Gradle: tstar-rp-0.2-SNAPSHOT" level="project" />
   </component>
 </module>

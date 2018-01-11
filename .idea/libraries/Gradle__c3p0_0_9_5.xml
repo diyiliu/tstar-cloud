@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: c3p0-0.9.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/gateway/c3p0-0.9.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

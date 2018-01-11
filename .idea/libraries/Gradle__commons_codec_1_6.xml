@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: commons-codec-1.6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/tstar/process/commons-codec-1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
