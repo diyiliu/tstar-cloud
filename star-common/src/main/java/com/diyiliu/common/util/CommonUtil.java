@@ -86,7 +86,6 @@ public class CommonUtil {
 
         if (bytes.length == 3 || bytes.length == 6) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(0);
             toDate(calendar, bytes);
 
             return calendar.getTime();
@@ -229,6 +228,20 @@ public class CommonUtil {
         decimal = decimal.setScale(digit, RoundingMode.HALF_UP);
 
         return decimal.doubleValue();
+    }
+
+    /**
+     * 保留小数
+     * @param num
+     * @param precision
+     * @param digit
+     * @return
+     */
+    public static double keepDecimal(Number num, double precision, int digit){
+        BigDecimal decimal = new BigDecimal(String.valueOf(num));
+        decimal =  decimal.multiply(new BigDecimal(precision)).setScale(digit, BigDecimal.ROUND_HALF_UP);
+
+        return  decimal.doubleValue();
     }
 
     public static String parseBytes(byte[] array, int offset, int lenght) {
@@ -440,9 +453,8 @@ public class CommonUtil {
          System.out.println(sim);
          */
 
-        // System.out.println(keepDecimal(12, 3));
+         System.out.println(keepDecimal(12.345,0.01, 1));
 
-        System.out.println(toHex(4353));
     }
 
     /**

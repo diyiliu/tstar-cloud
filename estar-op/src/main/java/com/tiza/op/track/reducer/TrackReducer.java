@@ -6,6 +6,8 @@ import com.tiza.op.model.TrackKey;
 import com.tiza.op.util.DateUtil;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,6 +20,8 @@ import java.util.Iterator;
  */
 public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, NullWritable> {
     private Date date;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
@@ -36,6 +40,8 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         double maxMileage = 0;
         // 当日最小里程
         double minMileage = 0;
+
+        int i = 0;
         for (Iterator iterator = values.iterator(); iterator.hasNext();){
             Position position = (Position) iterator.next();
 
@@ -44,16 +50,22 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
                 continue;
             }
 
-            if (mileage > maxMileage){
+            if (0 == i){
                 maxMileage = mileage;
-            }
-
-            if (mileage < minMileage){
-
                 minMileage = mileage;
-            }
-        }
+            }else {
+                if (mileage > maxMileage){
+                    maxMileage = mileage;
+                }
 
+                if (mileage < minMileage){
+
+                    minMileage = mileage;
+                }
+            }
+            i++;
+        }
+        logger.info("最大里程;[{}], 最小里程:[{}]。", maxMileage, minMileage);
         double dailyMileage = maxMileage - minMileage;
 
         MileageRecord record = new MileageRecord();

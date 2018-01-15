@@ -152,7 +152,7 @@ public class GB32960DataProcess implements IDataProcess {
                     continue;
                 }
                 strb.append(key).append("=?, ");
-                list.add(value);
+                list.add(formatValue(value));
             }
 
             if (!map.containsKey("position")) {
@@ -218,6 +218,16 @@ public class GB32960DataProcess implements IDataProcess {
         }
     }
 
+    public Object formatValue(Object obj){
+        if (obj instanceof Map ||
+                obj instanceof Collection){
+
+            return JacksonUtil.toJson(obj);
+        }
+
+        return obj;
+    }
+
     @Override
     public void init() {
         cmdCacheProvider.put(cmd, this);
@@ -226,7 +236,6 @@ public class GB32960DataProcess implements IDataProcess {
     public static void setHandler(BaseHandle parseHandler) {
         handler = parseHandler;
     }
-
 
 
       /*

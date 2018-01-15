@@ -194,7 +194,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("SpeedStatus", 1);
-            map.put("Speed", speed * 0.1);
+            map.put("Speed", CommonUtil.keepDecimal(speed, 0.1, 1));
         }
 
         // 里程
@@ -207,7 +207,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("ODOStatus", 1);
-            map.put("ODO", mile * 0.1);
+            map.put("ODO", CommonUtil.keepDecimal(mile, 0.1, 1));
         }
 
         // 电压
@@ -220,7 +220,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("VoltageStatus", 1);
-            map.put("Voltage", voltage * 0.1);
+            map.put("Voltage",  CommonUtil.keepDecimal(voltage, 0.1, 1));
         }
 
         // 电流
@@ -233,7 +233,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("AmpStatus", 1);
-            map.put("Amp", electricity * 0.1 - 1000);
+            map.put("Amp",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
         }
 
         // SOC
@@ -306,7 +306,7 @@ public class CMD_02 extends GB32960DataProcess {
             if (0xFFFE == torque || 0xFFFF == torque) {
                 m.put("torque", torque);
             } else {
-                m.put("torque", (torque - 20000) * 0.1);
+                m.put("torque",  CommonUtil.keepDecimal(torque - 20000, 0.1, 1));
             }
 
             if (0xFE == temp || 0xFF == temp) {
@@ -318,20 +318,20 @@ public class CMD_02 extends GB32960DataProcess {
             if (0xFFFE == voltage || 0xFFFF == voltage) {
                 m.put("cuVoltage", voltage);
             } else {
-                m.put("cuVoltage", voltage * 0.1);
+                m.put("cuVoltage",  CommonUtil.keepDecimal(voltage, 0.1, 1));
             }
 
             if (0xFFFE == electricity || 0xFFFF == electricity) {
                 m.put("dcBusCurrent", electricity);
             } else {
-                m.put("dcBusCurrent", electricity * 0.1 - 1000);
+                m.put("dcBusCurrent",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
             }
 
             list.add(m);
         }
         Map map = new HashMap();
         map.put("MOTORNUMBER", count);
-        map.put("MOTORSINFO", JacksonUtil.toJson(list));
+        map.put("MOTORSINFO", list);
         paramValues.add(map);
 
         return false;
@@ -361,7 +361,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYVOLTAGESTATUS", 1);
-            map.put("BATTERYVOLTAGE", voltage * 0.1);
+            map.put("BATTERYVOLTAGE",  CommonUtil.keepDecimal(voltage, 0.1, 1));
         }
 
         int electricity = byteBuf.readUnsignedShort();
@@ -374,7 +374,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYAMPSTATUS", 1);
-            map.put("BATTERYAMP", electricity * 0.1);
+            map.put("BATTERYAMP",  CommonUtil.keepDecimal(electricity, 0.1, 1));
         }
 
         int drain = byteBuf.readUnsignedShort();
@@ -387,7 +387,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYFUELCONSUMESTATUS", 1);
-            map.put("BATTERYFUELCONSUME", drain * 0.01);
+            map.put("BATTERYFUELCONSUME",  CommonUtil.keepDecimal(drain, 0.01, 2));
         }
 
         int count = byteBuf.readUnsignedShort();
@@ -422,7 +422,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("H2MAXTEMPSTATUS", 1);
-            map.put("H2MAXTEMP", maxTemp * 0.1 - 40);
+            map.put("H2MAXTEMP",  CommonUtil.keepDecimal(maxTemp, 0.1, 1) - 40);
         }
 
         int tempNumber = byteBuf.readUnsignedByte();
@@ -464,7 +464,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("H2MAXPRESSURESTATUS", 1);
-            map.put("H2MAXPRESSURE", maxPressure * 0.1);
+            map.put("H2MAXPRESSURE",  CommonUtil.keepDecimal(maxPressure, 0.1, 1));
         }
 
         int pressureNumber = byteBuf.readUnsignedByte();
@@ -518,7 +518,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("ENGINEFUELCONSUMESTATUS", 255);
         } else {
             map.put("ENGINEFUELCONSUMESTATUS", 1);
-            map.put("ENGINEFUELCONSUME", drain * 0.01);
+            map.put("ENGINEFUELCONSUME",  CommonUtil.keepDecimal(drain, 0.01, 2));
         }
 
         paramValues.add(map);
@@ -592,7 +592,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("BatteryUnitMaxVoltageStatus", maxVoltageValue);
         } else {
             map.put("BatteryUnitMaxVoltageStatus", 1);
-            map.put("BatteryUnitMaxVoltage", maxVoltageValue * 0.001);
+            map.put("BatteryUnitMaxVoltage",  CommonUtil.keepDecimal(maxVoltageValue, 0.001, 3));
         }
 
         // 最低电压
@@ -615,7 +615,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("BatteryUnitMinVoltageStatus", minVoltageValue);
         } else {
             map.put("BatteryUnitMinVoltageStatus", 1);
-            map.put("BatteryUnitMinVoltage", minVoltageValue * 0.001);
+            map.put("BatteryUnitMinVoltage",  CommonUtil.keepDecimal(minVoltageValue, 0.001, 3));
         }
 
         // 最高温度
@@ -806,7 +806,7 @@ public class CMD_02 extends GB32960DataProcess {
                 m.put("currentStatus", 255);
             } else {
                 m.put("currentStatus", 1);
-                m.put("current", electricity * 0.1 - 1000);
+                m.put("current",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
             }
 
             int battery = byteBuf.readUnsignedShort();
@@ -841,13 +841,13 @@ public class CMD_02 extends GB32960DataProcess {
                     vm.put("status", 255);
                 } else {
                     vm.put("status", 1);
-                    vm.put("value", kv * 0.001);
+                    vm.put("value",  CommonUtil.keepDecimal(kv, 0.001, 3));
                 }
                 vList.add(vm);
             }
             m.put("batteryVoltages", vList);
         }
-        map.put("BATTERYVOLTAGEINFO", JacksonUtil.toJson(list));
+        map.put("BATTERYVOLTAGEINFO", list);
 
         return false;
     }
@@ -912,7 +912,7 @@ public class CMD_02 extends GB32960DataProcess {
             }
             m.put("temps", l);
         }
-        map.put("BATTERYTEMPINFO", JacksonUtil.toJson(list));
+        map.put("BATTERYTEMPINFO", list);
 
         return false;
     }

@@ -49,6 +49,7 @@ public class M2ParseHandler extends BaseHandle{
 
         // 装载Spring容器
         SpringUtil.init();
+
         //
         M2DataProcess.setHandle(this);
     }

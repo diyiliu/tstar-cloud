@@ -33,9 +33,10 @@ public class TrackKey implements WritableComparable<TrackKey> {
     @Override
     public int compareTo(TrackKey o) {
         int result = vehicleId.compareTo(o.getVehicleId());
-        if (result == 0){
+
+        /*if (result == 0){
             return Long.compare(datetime, o.getDatetime());
-        }
+        }*/
 
         return result;
     }
@@ -44,14 +45,14 @@ public class TrackKey implements WritableComparable<TrackKey> {
     public void write(DataOutput out) throws IOException {
 
         Text.writeString(out, vehicleId);
-        out.writeLong(datetime);
+        //out.writeLong(datetime);
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
 
         this.vehicleId = Text.readString(in);
-        this.datetime = in.readLong();
+        //this.datetime = in.readLong();
     }
 
     public String getVehicleId() {

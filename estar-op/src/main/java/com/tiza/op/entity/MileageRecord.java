@@ -2,6 +2,8 @@ package com.tiza.op.entity;
 
 import org.apache.hadoop.mapreduce.lib.db.DBWritable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,7 +58,7 @@ public class MileageRecord implements DBWritable {
 	}
 
 	public void setMileage(double mileage) {
-		this.mileage = mileage;
+		this.mileage = keepDecimal(mileage, 1);
 	}
 
 	public double getTotalMileage() {
@@ -64,7 +66,7 @@ public class MileageRecord implements DBWritable {
 	}
 
 	public void setTotalMileage(double totalMileage) {
-		this.totalMileage = totalMileage;
+		this.totalMileage = keepDecimal(totalMileage, 1);
 	}
 
 	public Date getCreateTime() {
@@ -79,5 +81,13 @@ public class MileageRecord implements DBWritable {
 	public String toString() {
 
 		return "[vehicle: " + vehicleId + "; day: " + dateTime + "; mileage: " + mileage + "]";
+	}
+
+	public double keepDecimal(double d, int digit) {
+
+		BigDecimal decimal = new BigDecimal(d);
+		decimal = decimal.setScale(digit, RoundingMode.HALF_UP);
+
+		return decimal.doubleValue();
 	}
 }
