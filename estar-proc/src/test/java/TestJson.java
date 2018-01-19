@@ -3,6 +3,7 @@ import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,5 +29,27 @@ public class TestJson {
     public void test1(){
 
         System.out.println(CommonUtil.toHex(-51));
+    }
+
+
+    @Test
+    public void test2(){
+
+        Map m = new HashMap();
+        m.put(1, "abc");
+        m.put(2, "def");
+        m.put(3, new ArrayList(){
+            {
+                this.add(123);
+                this.add(456);
+                this.add(new HashMap(){
+                    {
+                        this.put("hello", "world");
+                    }
+                });
+            }
+        });
+
+        System.out.println(JacksonUtil.toJson(m));
     }
 }

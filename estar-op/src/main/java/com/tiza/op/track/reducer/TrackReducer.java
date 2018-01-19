@@ -42,32 +42,32 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         double minMileage = 0;
 
         int i = 0;
-        for (Iterator iterator = values.iterator(); iterator.hasNext();){
+        for (Iterator iterator = values.iterator(); iterator.hasNext(); ) {
             Position position = (Position) iterator.next();
 
             double mileage = position.getMileage();
-            if (mileage < 0){
+            if (mileage < 0) {
                 continue;
             }
 
-            if (0 == i){
+            if (0 == i) {
                 maxMileage = mileage;
                 minMileage = mileage;
-            }else {
-                if (mileage > maxMileage){
+            } else {
+                if (mileage > maxMileage) {
                     maxMileage = mileage;
                 }
 
-                if (mileage < minMileage){
+                if (mileage < minMileage) {
 
                     minMileage = mileage;
                 }
             }
             i++;
         }
+
         logger.info("最大里程;[{}], 最小里程:[{}]。", maxMileage, minMileage);
         double dailyMileage = maxMileage - minMileage;
-
         MileageRecord record = new MileageRecord();
         record.setVehicleId(Long.parseLong(key.getVehicleId()));
         record.setDateTime(date);
