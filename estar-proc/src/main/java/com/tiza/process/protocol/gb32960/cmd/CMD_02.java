@@ -129,10 +129,14 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         // 舍弃空包
-        if(paramValues.size() < 3){
-            // 处理位置信息
-            updateGpsInfo(gb32960Header, paramValues);
+        if (paramValues.size() < 3 && !paramValues.contains("position")) {
+
+            logger.warn("终端[{}]不处理空包数据[{}]!", gb32960Header.getVin(), JacksonUtil.toJson(paramValues));
+            return;
         }
+
+        // 处理位置信息
+        updateGpsInfo(gb32960Header, paramValues);
 
         // 0x03为补发数据
         if (0x02 == gb32960Header.getCmd()) {
@@ -220,7 +224,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("VoltageStatus", 1);
-            map.put("Voltage",  CommonUtil.keepDecimal(voltage, 0.1, 1));
+            map.put("Voltage", CommonUtil.keepDecimal(voltage, 0.1, 1));
         }
 
         // 电流
@@ -233,7 +237,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("AmpStatus", 1);
-            map.put("Amp",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
+            map.put("Amp", CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
         }
 
         // SOC
@@ -306,7 +310,7 @@ public class CMD_02 extends GB32960DataProcess {
             if (0xFFFE == torque || 0xFFFF == torque) {
                 m.put("torque", torque);
             } else {
-                m.put("torque",  CommonUtil.keepDecimal(torque - 20000, 0.1, 1));
+                m.put("torque", CommonUtil.keepDecimal(torque - 20000, 0.1, 1));
             }
 
             if (0xFE == temp || 0xFF == temp) {
@@ -318,13 +322,13 @@ public class CMD_02 extends GB32960DataProcess {
             if (0xFFFE == voltage || 0xFFFF == voltage) {
                 m.put("cuVoltage", voltage);
             } else {
-                m.put("cuVoltage",  CommonUtil.keepDecimal(voltage, 0.1, 1));
+                m.put("cuVoltage", CommonUtil.keepDecimal(voltage, 0.1, 1));
             }
 
             if (0xFFFE == electricity || 0xFFFF == electricity) {
                 m.put("dcBusCurrent", electricity);
             } else {
-                m.put("dcBusCurrent",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
+                m.put("dcBusCurrent", CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
             }
 
             list.add(m);
@@ -361,7 +365,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYVOLTAGESTATUS", 1);
-            map.put("BATTERYVOLTAGE",  CommonUtil.keepDecimal(voltage, 0.1, 1));
+            map.put("BATTERYVOLTAGE", CommonUtil.keepDecimal(voltage, 0.1, 1));
         }
 
         int electricity = byteBuf.readUnsignedShort();
@@ -374,7 +378,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYAMPSTATUS", 1);
-            map.put("BATTERYAMP",  CommonUtil.keepDecimal(electricity, 0.1, 1));
+            map.put("BATTERYAMP", CommonUtil.keepDecimal(electricity, 0.1, 1));
         }
 
         int drain = byteBuf.readUnsignedShort();
@@ -387,7 +391,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("BATTERYFUELCONSUMESTATUS", 1);
-            map.put("BATTERYFUELCONSUME",  CommonUtil.keepDecimal(drain, 0.01, 2));
+            map.put("BATTERYFUELCONSUME", CommonUtil.keepDecimal(drain, 0.01, 2));
         }
 
         int count = byteBuf.readUnsignedShort();
@@ -422,7 +426,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("H2MAXTEMPSTATUS", 1);
-            map.put("H2MAXTEMP",  CommonUtil.keepDecimal(maxTemp, 0.1, 1) - 40);
+            map.put("H2MAXTEMP", CommonUtil.keepDecimal(maxTemp, 0.1, 1) - 40);
         }
 
         int tempNumber = byteBuf.readUnsignedByte();
@@ -464,7 +468,7 @@ public class CMD_02 extends GB32960DataProcess {
         } else {
 
             map.put("H2MAXPRESSURESTATUS", 1);
-            map.put("H2MAXPRESSURE",  CommonUtil.keepDecimal(maxPressure, 0.1, 1));
+            map.put("H2MAXPRESSURE", CommonUtil.keepDecimal(maxPressure, 0.1, 1));
         }
 
         int pressureNumber = byteBuf.readUnsignedByte();
@@ -518,7 +522,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("ENGINEFUELCONSUMESTATUS", 255);
         } else {
             map.put("ENGINEFUELCONSUMESTATUS", 1);
-            map.put("ENGINEFUELCONSUME",  CommonUtil.keepDecimal(drain, 0.01, 2));
+            map.put("ENGINEFUELCONSUME", CommonUtil.keepDecimal(drain, 0.01, 2));
         }
 
         paramValues.add(map);
@@ -592,7 +596,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("BatteryUnitMaxVoltageStatus", maxVoltageValue);
         } else {
             map.put("BatteryUnitMaxVoltageStatus", 1);
-            map.put("BatteryUnitMaxVoltage",  CommonUtil.keepDecimal(maxVoltageValue, 0.001, 3));
+            map.put("BatteryUnitMaxVoltage", CommonUtil.keepDecimal(maxVoltageValue, 0.001, 3));
         }
 
         // 最低电压
@@ -615,7 +619,7 @@ public class CMD_02 extends GB32960DataProcess {
             map.put("BatteryUnitMinVoltageStatus", minVoltageValue);
         } else {
             map.put("BatteryUnitMinVoltageStatus", 1);
-            map.put("BatteryUnitMinVoltage",  CommonUtil.keepDecimal(minVoltageValue, 0.001, 3));
+            map.put("BatteryUnitMinVoltage", CommonUtil.keepDecimal(minVoltageValue, 0.001, 3));
         }
 
         // 最高温度
@@ -806,7 +810,7 @@ public class CMD_02 extends GB32960DataProcess {
                 m.put("currentStatus", 255);
             } else {
                 m.put("currentStatus", 1);
-                m.put("current",  CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
+                m.put("current", CommonUtil.keepDecimal(electricity, 0.1, 1) - 1000);
             }
 
             int battery = byteBuf.readUnsignedShort();
@@ -841,7 +845,7 @@ public class CMD_02 extends GB32960DataProcess {
                     vm.put("status", 255);
                 } else {
                     vm.put("status", 1);
-                    vm.put("value",  CommonUtil.keepDecimal(kv, 0.001, 3));
+                    vm.put("value", CommonUtil.keepDecimal(kv, 0.001, 3));
                 }
                 vList.add(vm);
             }

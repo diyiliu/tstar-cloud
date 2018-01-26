@@ -1,11 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hbase:hbase-common:0.98.12-hadoop2">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../../Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/1655ef8b76658508d5d6e94314e8eb0de60f16d8/hbase-common-0.98.12-hadoop2.jar!/" />
+      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/1655ef8b76658508d5d6e94314e8eb0de60f16d8/hbase-common-0.98.12-hadoop2.jar!/" />
+      <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/1655ef8b76658508d5d6e94314e8eb0de60f16d8/hbase-common-0.98.12-hadoop2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../../Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/95d498dd73a257c98c798a1198bf54f21b4f59af/hbase-common-0.98.12-hadoop2-sources.jar!/" />
+      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/95d498dd73a257c98c798a1198bf54f21b4f59af/hbase-common-0.98.12-hadoop2-sources.jar!/" />
+      <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/0.98.12-hadoop2/95d498dd73a257c98c798a1198bf54f21b4f59af/hbase-common-0.98.12-hadoop2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
