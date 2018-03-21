@@ -1,12 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hbase:hbase-client:0.98.12-hadoop2">
     <CLASSES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/0.98.12-hadoop2/69d410c37bf596f8aa3f1a1b089b217d534bc080/hbase-client-0.98.12-hadoop2.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/0.98.12-hadoop2/69d410c37bf596f8aa3f1a1b089b217d534bc080/hbase-client-0.98.12-hadoop2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/0.98.12-hadoop2/e9e15416428696f47249bd7209c66889797c2ae1/hbase-client-0.98.12-hadoop2-sources.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/0.98.12-hadoop2/e9e15416428696f47249bd7209c66889797c2ae1/hbase-client-0.98.12-hadoop2-sources.jar!/" />
     </SOURCES>
   </library>

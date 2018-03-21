@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.kafka:kafka-clients:0.8.2.2">
     <CLASSES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/0.8.2.2/a4903cb5fe087be183a50f6c2b08483cff1e8444/kafka-clients-0.8.2.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/0.8.2.2/kafka-clients-0.8.2.2.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/0.8.2.2/a4903cb5fe087be183a50f6c2b08483cff1e8444/kafka-clients-0.8.2.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/0.8.2.2/a6385adf1c5827021aa6b78e3f577eca4e6dc8be/kafka-clients-0.8.2.2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/0.8.2.2/kafka-clients-0.8.2.2-sources.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/0.8.2.2/a6385adf1c5827021aa6b78e3f577eca4e6dc8be/kafka-clients-0.8.2.2-sources.jar!/" />
     </SOURCES>
   </library>

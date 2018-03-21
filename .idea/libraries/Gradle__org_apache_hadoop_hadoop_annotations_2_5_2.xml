@@ -1,12 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hadoop:hadoop-annotations:2.5.2">
     <CLASSES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-annotations/2.5.2/7bf4cdb8c35cf4dd761726c02b7677a169162f0a/hadoop-annotations-2.5.2.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-annotations/2.5.2/7bf4cdb8c35cf4dd761726c02b7677a169162f0a/hadoop-annotations-2.5.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://E:/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-annotations/2.5.2/a56ba77e866095ce467f872ae774ca244b04f958/hadoop-annotations-2.5.2-sources.jar!/" />
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-annotations/2.5.2/a56ba77e866095ce467f872ae774ca244b04f958/hadoop-annotations-2.5.2-sources.jar!/" />
     </SOURCES>
   </library>

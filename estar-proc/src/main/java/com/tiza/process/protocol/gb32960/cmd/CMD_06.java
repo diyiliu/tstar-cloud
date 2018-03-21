@@ -5,6 +5,8 @@ import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import org.springframework.stereotype.Service;
 
 /**
+ * 平台登出
+ *
  * Description: CMD_06
  * Author: Wangw
  * Update: 2017-09-07 14:57

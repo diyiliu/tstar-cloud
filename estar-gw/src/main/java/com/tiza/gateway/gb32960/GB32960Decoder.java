@@ -1,6 +1,7 @@
 package com.tiza.gateway.gb32960;
 
 import cn.com.tiza.tstar.gateway.codec.CustomDecoder;
+import com.diyiliu.common.util.CommonUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,11 +49,28 @@ public class GB32960Decoder extends CustomDecoder {
             buf.resetReaderIndex();
             return;
         }
+        buf.readBytes(new byte[length]);
+
+        // 校验位
+        int last = buf.readByte();
+
         buf.resetReaderIndex();
+
+        byte[] content = new byte[2 + 20 + 2 + length];
+        buf.getBytes(0, content);
+
+        // 计算校验位
+        byte check = CommonUtil.getCheck(content);
 
         byte[] bytes = new byte[2 + 20 + 2 + length + 1];
         buf.readBytes(bytes);
 
+        // 验证校验位
+        if (last != check){
+            logger.error("校验位错误, 原始数据[{}]!", CommonUtil.bytesToStr(bytes));
+            ctx.close();
+            return;
+        }
         out.add(Unpooled.copiedBuffer(bytes));
     }
 }

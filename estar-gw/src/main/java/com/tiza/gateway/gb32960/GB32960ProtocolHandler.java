@@ -16,21 +16,23 @@ import org.slf4j.LoggerFactory;
  */
 
 public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public TStarData handleRecvMessage(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
-
         byte[] msgBody = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0, msgBody);
+        byteBuf.readBytes(msgBody);
 
-        byteBuf.readByte();
-        byteBuf.readByte();
-        int cmd = byteBuf.readUnsignedByte();
-        int resp = byteBuf.readUnsignedByte();
+        ByteBuf buf = Unpooled.copiedBuffer(msgBody);
+
+        // 协议头
+        buf.readShort();
+        // 命令标识
+        int cmd = buf.readUnsignedByte();
+        // 应答标识
+        int resp = buf.readUnsignedByte();
 
         byte[] vinArray = new byte[17];
-        byteBuf.readBytes(vinArray);
+        buf.readBytes(vinArray);
         String vin = new String(vinArray);
 
         TStarData tStarData = new TStarData();
@@ -39,28 +41,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         tStarData.setTerminalID(vin);
         tStarData.setTime(System.currentTimeMillis());
 
-        // 加密标识
-        byteBuf.readByte();
-        // 数据单元长度
-        int length = byteBuf.readUnsignedShort();
-        byteBuf.readBytes(new byte[length]);
-        // 校验位
-        int last = byteBuf.readByte();
-
-        byte[] content = new byte[msgBody.length - 3];
-        System.arraycopy(msgBody, 2, content, 0, content.length);
-        byte check = CommonUtil.getCheck(content);
-
-        // 验证校验位
-        /*if (last != check){
-            logger.error("校验位错误!");
-            // 数据错误
-            doResponse(channelHandlerContext, tStarData, 0x02);
-
-            return null;
-        }*/
-        logger.debug("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
-
+        logger.info("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
         // 需要应答
         if (resp == 0xFE){
 
@@ -80,6 +61,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         int cmd = tStarData.getCmdID();
 
         ByteBuf buf;
+        // 心跳指令
         if (0x07 == cmd){
             buf = Unpooled.buffer(25);
             buf.writeByte(0x23);
