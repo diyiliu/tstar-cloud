@@ -11,7 +11,8 @@
     </property>
     <property>
         <name>business.database.url</name>
-        <value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>
+        <!--<value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>-->
+        <value>jdbc:oracle:thin:@192.168.1.36:1521/hyora</value>
     </property>
     <property>
         <name>business.database.username</name>
@@ -35,7 +36,7 @@
     </property>
     <property>
         <name>redis.ip</name>
-        <value>192.168.1.156</value>
+        <value>192.168.1.37</value>
     </property>
     <property>
         <name>redis.port</name>
@@ -47,7 +48,7 @@
     </property>
     <property>
         <name>redis.password</name>
-        <value></value>
+        <value>Test123</value>
     </property>
     <property>
         <name>vehicleMove</name>

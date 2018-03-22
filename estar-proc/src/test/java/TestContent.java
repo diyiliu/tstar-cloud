@@ -24,17 +24,17 @@ public class TestContent {
 
     @Test
     public void test2(){
-        String str = "232305014C43314844394142354830303237303038010006110C15100401";
+        String str = "232301FE4C43465A314650423648305A313737353601001E12031611052E003138393836303742303031313730313038303437310100";
         byte[] bytes = CommonUtil.hexStringToBytes(str);
         System.out.println(CommonUtil.getCheck(bytes));
 
-        System.out.println((byte)0x56);
+        System.out.println((byte)0xC8);
     }
 
 
     @Test
     public void test3(){
-        String str = "232305FE4C43314844394142354830303237303038010029110C15100401000778676A74323031373030303078676A74323031373030303030303030303030300180";
+        String str = "232301FE4C43465A314650423648305A313737353601001E12031611052E003138393836303742303031313730313038303437310100C8";
         byte[] bytes = CommonUtil.hexStringToBytes(str);
 
         ByteBuf buf = Unpooled.copiedBuffer(bytes);

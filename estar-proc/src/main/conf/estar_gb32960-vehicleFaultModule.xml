@@ -11,7 +11,8 @@
     </property>
     <property>
         <name>business.database.url</name>
-        <value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>
+        <!--<value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>-->
+        <value>jdbc:oracle:thin:@192.168.1.36:1521/hyora</value>
     </property>
     <property>
         <name>business.database.username</name>

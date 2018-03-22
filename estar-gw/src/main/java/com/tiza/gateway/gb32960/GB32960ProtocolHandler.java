@@ -41,7 +41,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         tStarData.setTerminalID(vin);
         tStarData.setTime(System.currentTimeMillis());
 
-        logger.info("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
+        logger.debug("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
         // 需要应答
         if (resp == 0xFE){
 
@@ -111,7 +111,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         respData.setMsgBody(buf.array());
         respData.setTime(System.currentTimeMillis());
 
-        logger.info("下行, 终端[{}], 指令[{}], 内容[{}]...", respData.getTerminalID(), String.format("%02X", respData.getCmdID()), CommonUtil.bytesToStr(respData.getMsgBody()));
+        logger.debug("下行, 终端[{}], 指令[{}], 内容[{}]...", respData.getTerminalID(), String.format("%02X", respData.getCmdID()), CommonUtil.bytesToStr(respData.getMsgBody()));
         ctx.channel().writeAndFlush(respData);
     }
 
