@@ -3,6 +3,8 @@ package com.tiza.process.protocol.gb32960;
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
 import com.diyiliu.common.cache.ICache;
+import com.diyiliu.common.map.MapLocation;
+import com.diyiliu.common.map.MapUtil;
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.model.IDataProcess;
 import com.diyiliu.common.util.DateUtil;
@@ -125,11 +127,11 @@ public class GB32960DataProcess implements IDataProcess {
 
                     strb.append("LocationStatus").append("=?, ");
                     list.add(position.getStatus());
-
                     kafkaMap.put("LocationStatus", position.getStatus());
 
                     // 有效定位
                     if (position.getStatus() == 0) {
+
                         strb.append("WGS84LAT").append("=?, ");
                         strb.append("WGS84LNG").append("=?, ");
                         strb.append("GCJ02LAT").append("=?, ");
@@ -143,6 +145,21 @@ public class GB32960DataProcess implements IDataProcess {
                         kafkaMap.put("WGS84LNG", position.getLngD());
                         kafkaMap.put("GCJ02LAT", position.getEnLatD());
                         kafkaMap.put("GCJ02LNG", position.getEnLngD());
+
+                        //  解析省、市、区
+                        MapLocation location = MapUtil.getArea(position.getEnLatD(), position.getEnLngD());
+                        if (location != null){
+                            strb.append("PROVINCE").append("=?, ");
+                            strb.append("CITY").append("=?, ");
+                            strb.append("DISTRICT").append("=?, ");
+                            list.add(location.getProvince());
+                            list.add(location.getCity());
+                            list.add(location.getTown());
+
+                            kafkaMap.put("PROVINCE", location.getProvince());
+                            kafkaMap.put("CITY", location.getCity());
+                            kafkaMap.put("DISTRICT", location.getTown());
+                        }
 
                         // 发布redis
                         if (0x02 == header.getCmd()){
@@ -186,7 +203,7 @@ public class GB32960DataProcess implements IDataProcess {
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 
-        logger.info("终端[{}]写入Kafka位置信息...", header.getVin());
+        logger.debug("终端[{}]写入Kafka位置信息...", header.getVin());
         handler.storeInKafka(rpTuple, context.get(EStarConstant.Kafka.TRACK_TOPIC));
     }
 
@@ -204,7 +221,7 @@ public class GB32960DataProcess implements IDataProcess {
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 
-        logger.info("终端[{}]发布Redis位置信息...", header.getVin());
+        logger.debug("终端[{}]发布Redis位置信息...", header.getVin());
         Jedis jedis = handler.getJedis();
         try {
             String channel = context.get(EStarConstant.Redis.VEHICLE_MOVE);

@@ -35,6 +35,14 @@
         <value>1</value>
     </property>
     <property>
+        <name>thriftIp.ip</name>
+        <value>192.168.1.28</value>
+    </property>
+    <property>
+        <name>redis.ip</name>
+        <value>192.168.1.37</value>
+    </property>
+    <property>
         <name>redis.ip</name>
         <value>192.168.1.37</value>
     </property>

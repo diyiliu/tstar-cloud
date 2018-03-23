@@ -3,6 +3,7 @@ package com.tiza.process.protocol.handler;
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
 import com.diyiliu.common.cache.ICache;
+import com.diyiliu.common.map.MapUtil;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.SpringUtil;
 import com.tiza.process.common.config.EStarConstant;
@@ -43,12 +44,16 @@ public class GB32960ParseHandler extends BaseHandle {
 
     @Override
     public void init() throws Exception {
+        // 加载地图服务器
+        MapUtil.init(processorConf.get("thriftIp.ip"));
+
         // 加载配置信息
         EStarConstant.init("init-sql.xml", processorConf);
 
         // 装载Spring容器
         SpringUtil.init();
-        //
+
+        // 装载BaseHandler
         GB32960DataProcess.setHandler(this);
     }
 }
