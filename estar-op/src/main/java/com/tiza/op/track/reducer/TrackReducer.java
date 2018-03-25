@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Description: TrackReducer
@@ -35,39 +34,38 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
 
     @Override
     protected void reduce(TrackKey key, Iterable<Position> values, Context context) throws IOException, InterruptedException {
+        List<Position> positions = new ArrayList();
 
-        // 当日最大里程
-        double maxMileage = 0;
-        // 当日最小里程
-        double minMileage = 0;
+        for (Iterator<Position> iterator = values.iterator(); iterator.hasNext(); ) {
+            Position p = iterator.next();
 
-        int i = 0;
-        for (Iterator iterator = values.iterator(); iterator.hasNext(); ) {
-            Position position = (Position) iterator.next();
+            // 如果不手动new 对象, Reducer会复用对象得引用地址。
+            /*
+            Position position = new Position();
+            position.setDateTime(p.getDateTime());
+            position.setMileage(p.getMileage());
+            positions.add(position);
+            */
 
-            double mileage = position.getMileage();
-            if (mileage < 0) {
-                continue;
+            try {
+                positions.add((Position) p.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
             }
-
-            if (0 == i) {
-                maxMileage = mileage;
-                minMileage = mileage;
-            } else {
-                if (mileage > maxMileage) {
-                    maxMileage = mileage;
-                }
-
-                if (mileage < minMileage) {
-
-                    minMileage = mileage;
-                }
-            }
-            i++;
         }
 
-        logger.info("最大里程;[{}], 最小里程:[{}]。", maxMileage, minMileage);
+        // 按时间排序
+        Collections.sort(positions);
+
+        // 当日最小位置
+        double minMileage = positions.get(0).getMileage();
+        // 当日最大里程
+        double maxMileage = positions.get(positions.size() - 1).getMileage();
+
         double dailyMileage = maxMileage - minMileage;
+        logger.info("终端[{}], 最大里程;[{}], 最小里程:[{}], 当日里程[{}]。",
+                key.getVehicleId(), maxMileage, minMileage, dailyMileage);
+
         MileageRecord record = new MileageRecord();
         record.setVehicleId(Long.parseLong(key.getVehicleId()));
         record.setDateTime(date);

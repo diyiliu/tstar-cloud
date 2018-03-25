@@ -29,20 +29,21 @@
     </property>
 
     <property>
-        <name>tstar.op.database.username</name>
-        <value>ESTAR</value>
-    </property>
-    <property>
-        <name>tstar.op.database.password</name>
-        <value>ESTAR</value>
-    </property>
-    <property>
         <name>tstar.op.database.driver</name>
         <value>oracle.jdbc.driver.OracleDriver</value>
     </property>
     <property>
         <name>tstar.op.database.url</name>
         <!--<value>jdbc:oracle:thin:@10.3.12.41:1521/ortz</value>-->
-        <value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>
+        <!--<value>jdbc:oracle:thin:@192.168.1.156:1521/xgsid.xg156.com</value>-->
+        <value>jdbc:oracle:thin:@192.168.1.36:1521/hyora</value>
+    </property>
+    <property>
+        <name>tstar.op.database.username</name>
+        <value>ESTAR</value>
+    </property>
+    <property>
+        <name>tstar.op.database.password</name>
+        <value>ESTAR</value>
     </property>
 </configuration>
