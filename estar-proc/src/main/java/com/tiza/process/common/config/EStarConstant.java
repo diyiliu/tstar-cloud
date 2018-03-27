@@ -20,7 +20,7 @@ public final class EStarConstant extends ConstantUtil {
 
     public enum Redis {
         ;
-        public final static String VEHICLE_MOVE = "vehicleMove ";
+        public final static String VEHICLE_MOVE = "vehicleMove";
         public final static String VEHICLE_EVENT = "vehicleEvent";
     }
 

@@ -44,7 +44,6 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
 
     }
 
-
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         Map map = JacksonUtil.toObject(value.toString(), HashMap.class);
@@ -58,12 +57,12 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
         // 有效定位
         if (map.containsKey("GpsTime") &&
                 map.containsKey("ODOStatus") &&
-                map.containsKey("LocationStatus") ){
+                map.containsKey("LocationStatus")) {
 
             int odoStatus = (int) map.get("ODOStatus");
             int locationStatus = (int) map.get("LocationStatus");
             if (odoStatus == 1 && locationStatus == 0 && map.containsKey("ODO") &&
-                    map.containsKey("GCJ02LNG") && map.containsKey("GCJ02LAT")){
+                    map.containsKey("GCJ02LNG") && map.containsKey("GCJ02LAT")) {
 
                 Date date = DateUtil.stringToDate((String) map.get("GpsTime"));
                 long datetime = date.getTime();
@@ -71,9 +70,11 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
                 double lat = (Double) map.get("GCJ02LAT");
                 double mileage = (Double) map.get("ODO");
 
-                Position position = new Position(lng, lat, datetime, mileage);
-                TrackKey trackKey = new TrackKey(vehicleId, datetime);
-                context.write(trackKey, position);
+                if (mileage > 0) {
+                    Position position = new Position(lng, lat, datetime, mileage);
+                    TrackKey trackKey = new TrackKey(vehicleId, datetime);
+                    context.write(trackKey, position);
+                }
             }
         }
     }

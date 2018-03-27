@@ -35,7 +35,6 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
     @Override
     protected void reduce(TrackKey key, Iterable<Position> values, Context context) throws IOException, InterruptedException {
         List<Position> positions = new ArrayList();
-
         for (Iterator<Position> iterator = values.iterator(); iterator.hasNext(); ) {
             Position p = iterator.next();
 
@@ -57,10 +56,17 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         // 按时间排序
         Collections.sort(positions);
 
+        // 数据过滤
+        List<Position> list = dataFilter(positions);
+        if (list.size() < 1){
+
+            return;
+        }
+
         // 当日最小位置
-        double minMileage = positions.get(0).getMileage();
+        double minMileage = list.get(0).getMileage();
         // 当日最大里程
-        double maxMileage = positions.get(positions.size() - 1).getMileage();
+        double maxMileage = list.get(list.size() - 1).getMileage();
 
         double dailyMileage = maxMileage - minMileage;
         logger.info("终端[{}], 最大里程;[{}], 最小里程:[{}], 当日里程[{}]。",
@@ -74,5 +80,27 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         record.setCreateTime(new Date());
 
         context.write(record, NullWritable.get());
+    }
+
+
+    /**
+     * 过滤垃圾数据
+     *
+     * @param list
+     * @return
+     */
+    public List<Position> dataFilter(List<Position> list){
+        List<Position> positions = new ArrayList();
+
+        double mileage = 0;
+        for (Position p: list){
+            if (p.getMileage() > mileage){
+
+                positions.add(p);
+                mileage = p.getMileage();
+            }
+        }
+
+        return positions;
     }
 }

@@ -15,16 +15,16 @@ import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 
-import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Description: Main
  * Author: DIYILIU
  * Update: 2017-09-26 10:38
  */
-public class Main extends BaseJob{
+public class Main extends BaseJob {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         Job job = new Main().getJob();
         FileInputFormat.addInputPath(job, new Path(args[0]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
@@ -34,9 +34,7 @@ public class Main extends BaseJob{
     public Job getJob() throws Exception {
         job.setJobName("trackMileage");
         if (data_time == null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, -1);
-            data_time = DateUtil.date2Str(calendar.getTime());
+            data_time = DateUtil.date2Str(new Date());
         }
         job.getConfiguration().set("data_time", data_time);
 
@@ -56,7 +54,7 @@ public class Main extends BaseJob{
         job.setOutputFormatClass(DBOutputFormat.class);
         job.setNumReduceTasks(4);
 
-        DBOutputFormat.setOutput(job, table, new String[]{"VEHICLEID", "DAY", "ODO","DAYMILEAGE", "CREATETIME"});
+        DBOutputFormat.setOutput(job, table, new String[]{"VEHICLEID", "DAY", "ODO", "DAYMILEAGE", "CREATETIME"});
         return job;
     }
 }
