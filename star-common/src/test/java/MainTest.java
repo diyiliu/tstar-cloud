@@ -1,7 +1,10 @@
 import com.diyiliu.common.model.Circle;
+import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.DateUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.junit.Test;
 
 import javax.script.ScriptEngine;
@@ -22,7 +25,7 @@ public class MainTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void test(){
+    public void test() {
 
         String str = "[{\"lng\":\"121.458091\",\"lat\":\"31.217368\",\"radius\":\"139.749\"}]";
 
@@ -38,8 +41,9 @@ public class MainTest {
 
     /**
      * 获取泛型的Collection Type
+     *
      * @param collectionClass 泛型的Collection
-     * @param elementClasses 元素类
+     * @param elementClasses  元素类
      * @return JavaType Java类型
      * @since 1.0
      */
@@ -49,7 +53,7 @@ public class MainTest {
 
 
     @Test
-    public void test2(){
+    public void test2() {
 
         long mile = 999;
 
@@ -59,7 +63,7 @@ public class MainTest {
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         Date origin = DateUtil.stringToDate("2000-01-01 00:00:00");
 
         System.out.println(DateUtil.dateToString(origin, "9位数字的毫秒数（不足9位前面补0）:%tN%n"));
@@ -69,11 +73,27 @@ public class MainTest {
 
 
     @Test
-    public void testJs() throws Exception{
+    public void testJs() throws Exception {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
 
         System.out.println(engine.eval(1 + "*1").toString());
     }
 
+
+    @Test
+    public void test4() {
+        String str = "FE";
+
+        byte[] bytes = CommonUtil.hexStringToBytes(str);
+
+        ByteBuf buf = Unpooled.copiedBuffer(bytes);
+        int b = buf.readByte();
+
+        System.out.println(b);
+
+        System.out.println(0xFE);
+
+        System.out.println(b == 0xFE);
+    }
 }

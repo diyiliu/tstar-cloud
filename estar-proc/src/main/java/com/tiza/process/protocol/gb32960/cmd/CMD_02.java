@@ -689,7 +689,9 @@ public class CMD_02 extends GB32960DataProcess {
         // 有效报警值[0, 3]
         if (level > -1 && level < 4) {
             alarm.put("AlarmTime", currentTime);
-            realMode.put(EStarConstant.RealMode.ALARM_LEVEL, level);
+            if (level > 0){
+                realMode.put(EStarConstant.RealMode.ALARM_LEVEL, level);
+            }
             context.put(EStarConstant.FlowKey.ALARM_LEVEL, JacksonUtil.toJson(alarm));
         }
         paramValues.add(alarm);
