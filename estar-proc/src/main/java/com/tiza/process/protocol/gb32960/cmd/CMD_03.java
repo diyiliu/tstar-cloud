@@ -1,7 +1,7 @@
 package com.tiza.process.protocol.gb32960.cmd;
 
 import com.diyiliu.common.model.Header;
-import com.tiza.process.protocol.m2.bean.GB32960Header;
+import com.tiza.process.common.bean.GB32960Header;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import org.springframework.stereotype.Service;
 

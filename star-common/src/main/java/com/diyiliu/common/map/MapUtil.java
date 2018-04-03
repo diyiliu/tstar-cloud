@@ -59,7 +59,7 @@ public class MapUtil {
 				transport.open();
 				result = client.getLocation(longitude, latitude);
 				transport.close();
-			} catch (TException e) {
+			} catch (Exception e) {
 				System.out.println("获取省市区失败：" + e.getMessage());
 				result = new MapLocation();
 				result.setCountry("");
