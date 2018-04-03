@@ -1,6 +1,7 @@
 import com.diyiliu.common.model.Circle;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.DateUtil;
+import com.diyiliu.common.util.SpringUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
@@ -11,8 +12,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.ConcurrentMap;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Description: MainTest
@@ -95,5 +97,24 @@ public class MainTest {
         System.out.println(0xFE);
 
         System.out.println(b == 0xFE);
+    }
+
+
+    @Test
+    public void test5(){
+
+        String str = "2424002D02FE05AD1307E2031E0B2719FFFFFFFFFFFFFFFFFFFF00FF0764428001F10A3E0B6D270AFFFF4581B2";
+        int i =   Integer.parseInt(str.substring(12,18),16);
+
+        System.out.println(i);
+
+
+        System.out.println(Integer.parseInt("FE05AD"));
+    }
+
+
+    @Test
+    public void test6(){
+
     }
 }

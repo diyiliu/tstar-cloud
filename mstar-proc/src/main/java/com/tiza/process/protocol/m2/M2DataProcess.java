@@ -10,7 +10,7 @@ import com.diyiliu.common.util.DateUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import com.tiza.process.common.config.MStarConstant;
 import com.tiza.process.common.model.*;
-import com.tiza.process.protocol.bean.M2Header;
+import com.tiza.process.common.bean.M2Header;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
@@ -92,6 +92,7 @@ public class M2DataProcess implements IDataProcess{
     }
 
     public void init() {
+        logger.info("初始化指令[{}]...", CommonUtil.toHex(cmd));
         cmdCacheProvider.put(cmd, this);
     }
 

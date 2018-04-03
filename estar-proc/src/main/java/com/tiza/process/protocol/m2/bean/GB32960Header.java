@@ -1,4 +1,4 @@
-package com.tiza.process.protocol.bean;
+package com.tiza.process.protocol.m2.bean;
 
 import cn.com.tiza.tstar.common.entity.TStarData;
 import com.diyiliu.common.model.Header;

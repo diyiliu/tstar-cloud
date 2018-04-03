@@ -86,6 +86,7 @@ public class CommonUtil {
 
         if (bytes.length == 3 || bytes.length == 6) {
             Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(0));
             toDate(calendar, bytes);
 
             return calendar.getTime();

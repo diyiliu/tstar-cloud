@@ -31,7 +31,9 @@ public class Position {
     private Map statusMap;
 
     public Position() {
+
     }
+
 
     public Position(long lng, long lat, int speed, int direction, int height, long status, Date dateTime) {
         this.lng = lng;
@@ -40,6 +42,15 @@ public class Position {
         this.direction = direction;
         this.height = height;
         this.status = status;
+        this.dateTime = dateTime;
+    }
+
+    public Position(long lng, long lat, int speed, int direction, byte[] statusBytes, Date dateTime) {
+        this.lng = lng;
+        this.lat = lat;
+        this.speed = speed;
+        this.direction = direction;
+        this.statusBytes = statusBytes;
         this.dateTime = dateTime;
     }
 

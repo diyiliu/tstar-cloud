@@ -2,8 +2,7 @@ package com.tiza.process.protocol.m2.cmd;
 
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.util.CommonUtil;
-import com.diyiliu.common.util.DateUtil;
-import com.tiza.process.protocol.bean.M2Header;
+import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.protocol.m2.M2DataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -1,9 +1,9 @@
 package com.tiza.process.protocol.schwing.cmd;
 
 import com.diyiliu.common.model.Header;
+import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.common.model.Position;
 import com.tiza.process.common.model.Status;
-import com.tiza.process.protocol.bean.M2Header;
 import com.tiza.process.protocol.schwing.SchwingDataProcess;
 import org.springframework.stereotype.Service;
 

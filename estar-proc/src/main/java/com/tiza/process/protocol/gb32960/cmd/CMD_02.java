@@ -6,7 +6,7 @@ import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.JacksonUtil;
 import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.model.Position;
-import com.tiza.process.protocol.bean.GB32960Header;
+import com.tiza.process.protocol.m2.bean.GB32960Header;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

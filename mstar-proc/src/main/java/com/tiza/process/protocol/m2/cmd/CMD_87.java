@@ -6,7 +6,7 @@ import com.tiza.process.common.model.CanPackage;
 import com.tiza.process.common.model.FunctionInfo;
 import com.tiza.process.common.model.Parameter;
 import com.tiza.process.common.model.Position;
-import com.tiza.process.protocol.bean.M2Header;
+import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.protocol.m2.M2DataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

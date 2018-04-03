@@ -27,11 +27,6 @@ task copyJar(type: Copy) {
     }
 }
 
-task copyConf(type: Copy) {
-    from "$projectDir/src/main/conf"
-    into "$buildDir/libs/conf"
-}
-
 jar {
     archiveName = 'mstar_tiza.jar'
     from {
@@ -43,11 +38,37 @@ jar {
 }
 jar.dependsOn(copyJar)
 
-// 打包
-task zip(type: Zip, dependsOn: [copyConf, jar]) {
-    from 'build/libs'
+// 拷贝jar(适配不同的协议类型)
+task copyZt(type: Copy, dependsOn: jar) {
+    from "$buildDir/libs/mstar_tiza.jar"
+    into "$buildDir/libs/"
+    rename {
+        fileName -> 'mstar_zt.jar'
+    }
 }
 
+// 拷贝tstar配置文件
+task copyConf(type: Copy) {
+    from "$projectDir/src/main/conf"
+    into "$buildDir/libs/conf"
+}
+
+// 打包
+task zipM2(type: Zip, dependsOn: [copyConf, jar]) {
+    baseName 'mstar_tiza'
+    from("$buildDir/libs") {
+        include "conf/$baseName-*"
+        include "$baseName" + '.jar'
+    }
+}
+
+task zipZt(type: Zip, dependsOn: [copyConf, copyZt]) {
+    baseName 'mstar_zt'
+    from("$buildDir/libs") {
+        include "conf/$baseName-*"
+        include "$baseName" + '.jar'
+    }
+}
 
 // 设置编码
 tasks.withType(JavaCompile) {

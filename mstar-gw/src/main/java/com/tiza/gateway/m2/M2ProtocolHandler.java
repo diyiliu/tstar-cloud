@@ -11,6 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -23,8 +24,6 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
     private Properties properties = new Properties();
 
     public M2ProtocolHandler() {
-        super();
-
         // 响应指令
         respCmds = new ArrayList() {
             {
@@ -94,13 +93,14 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
         ByteBuf respBuf;
         byte[] respMsg;
         serial = getMsgSerial();
+        byte[] original = Arrays.copyOf(bytes, bytes.length);
         if (respCmds.contains(cmd)) {
             respBuf = Unpooled.buffer(4);
             respBuf.writeShort(serial);
             respBuf.writeByte(cmd);
             respBuf.writeByte(0);
 
-            respMsg = createResp(bytes, respBuf.array(), 0x02, serial);
+            respMsg = createResp(original, respBuf.array(), 0x02, serial);
             respData.setCmdID(0x02);
             respData.setMsgBody(respMsg);
             context.channel().writeAndFlush(respData);
@@ -120,7 +120,7 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
             respBuf.writeBytes(CommonUtil.ipToBytes(ip));
             respBuf.writeShort(port);
 
-            respMsg = createResp(bytes, respBuf.array(), 0x01, serial);
+            respMsg = createResp(original, respBuf.array(), 0x01, serial);
             respData.setCmdID(0x01);
             respData.setMsgBody(respMsg);
             context.channel().writeAndFlush(respData);

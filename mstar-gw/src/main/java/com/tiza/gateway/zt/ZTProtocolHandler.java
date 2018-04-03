@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Description: ZTProtocolHandler
@@ -17,75 +18,64 @@ import java.util.ArrayList;
 public class ZTProtocolHandler extends BaseProtocolHandler {
 
     public ZTProtocolHandler() {
-        super();
 
         // 需要返回0x30
         respCmds = new ArrayList() {
             {
-                this.add(0x82);
-                this.add(0x83);
-                this.add(0x84);
-                this.add(0x85);
-                this.add(0x86);
-                this.add(0x87);
-                this.add(0x88);
-                this.add(0x89);
+                this.add(0x7B);
+                this.add(0x7F);
             }
         };
     }
 
     @Override
     public TStarData handleRecvMessage(ChannelHandlerContext context, ByteBuf byteBuf) {
-        byteBuf.markReaderIndex();
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(bytes);
 
-        byte[] content = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(content);
-        // 验证数据是否合法
-        if (!isValid(content)){
+        if (!isValid(bytes)) {
 
             return null;
         }
 
-        byteBuf.resetReaderIndex();
-
+        ByteBuf buf = Unpooled.copiedBuffer(bytes);
         // 标识头 + 长度
-        byteBuf.readBytes(new byte[3]);
+        buf.readBytes(new byte[3]);
 
         // 终端ID
         byte[] terminalBytes = new byte[5];
-        byteBuf.readBytes(terminalBytes);
+        buf.readBytes(terminalBytes);
         String terminalId = CommonUtil.parseSIM(terminalBytes);
 
         // 协议版本号
-        byteBuf.readByte();
+        buf.readByte();
 
         // 命令序号
-        int cmdSerial = byteBuf.readUnsignedShort();
+        int cmdSerial = buf.readUnsignedShort();
 
         // 命令ID
-        int cmd = byteBuf.readByte();
+        int cmd = buf.readByte();
 
         TStarData tStarData = new TStarData();
         tStarData.setTerminalID(terminalId);
         tStarData.setCmdID(cmd);
         tStarData.setCmdSerialNo(cmdSerial);
-        tStarData.setMsgBody(content);
+        tStarData.setMsgBody(bytes);
         tStarData.setTime(System.currentTimeMillis());
 
-        logger.info("上行消息，终端[{}]指令[{}], 内容[{}]...", terminalId, CommonUtil.toHex(cmd), CommonUtil.bytesToStr(content));
+        logger.info("上行消息，终端[{}]指令[{}], 内容[{}]...", terminalId, CommonUtil.toHex(cmd), CommonUtil.bytesToStr(bytes));
         if (respCmds.contains(cmd)) {
             ByteBuf respBuf = Unpooled.buffer(4);
             respBuf.writeShort(cmdSerial);
             respBuf.writeByte(cmd);
             respBuf.writeByte(0);
 
-            int serial = getMsgSerial();
             TStarData respData = new TStarData();
             respData.setTerminalID(terminalId);
-            respData.setCmdSerialNo(serial);
+            respData.setCmdSerialNo(cmdSerial);
             respData.setTime(System.currentTimeMillis());
 
-            byte[] respMsg = createResp(content, respBuf.array(), 0x30, serial);
+            byte[] respMsg = createResp(Arrays.copyOf(bytes, bytes.length), respBuf.array(), 0x30, cmdSerial);
             respData.setCmdID(0x30);
             respData.setMsgBody(respMsg);
             context.channel().writeAndFlush(respData);
@@ -114,7 +104,7 @@ public class ZTProtocolHandler extends BaseProtocolHandler {
         ByteBuf header = Unpooled.copiedBuffer(recMsg, 0, 9);
 
         ByteBuf remainder = Unpooled.buffer(3 + content.length);
-        remainder.writeShort(getMsgSerial());
+        remainder.writeShort(serial);
         remainder.writeByte(cmd);
         remainder.writeBytes(content);
 
@@ -128,15 +118,15 @@ public class ZTProtocolHandler extends BaseProtocolHandler {
         return bytes;
     }
 
-    public boolean isValid(byte[] bytes){
+    public boolean isValid(byte[] bytes) {
         ByteBuf buf = Unpooled.copiedBuffer(bytes);
-        if (buf.readableBytes() < 14){
+        if (buf.readableBytes() < 14) {
 
             return false;
         }
 
         int start = buf.readUnsignedByte();
-        if (start != 0xFE){
+        if (start != 0xFE) {
 
             logger.error("封包标识符, 头[{}]错误!", CommonUtil.toHex(start));
             return false;
@@ -145,9 +135,9 @@ public class ZTProtocolHandler extends BaseProtocolHandler {
         // 消息长度
         int length = buf.readUnsignedShort();
 
-        if (buf.readableBytes() < length - 3){
+        if (buf.readableBytes() < length - 3) {
 
-           logger.error("数据内容不完整", CommonUtil.bytesToStr(bytes));
+            logger.error("数据内容不完整", CommonUtil.bytesToStr(bytes));
             return false;
         }
 
@@ -156,7 +146,7 @@ public class ZTProtocolHandler extends BaseProtocolHandler {
         buf.readBytes(content);
 
         int end = buf.readUnsignedByte();
-        if (end != 0xFD){
+        if (end != 0xFD) {
 
             logger.error("封包标识符, 尾[{}]错误!", CommonUtil.toHex(end));
             return false;

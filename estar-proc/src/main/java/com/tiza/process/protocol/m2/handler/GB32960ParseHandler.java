@@ -1,4 +1,4 @@
-package com.tiza.process.protocol.handler;
+package com.tiza.process.protocol.m2.handler;
 
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
@@ -7,7 +7,7 @@ import com.diyiliu.common.map.MapUtil;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.SpringUtil;
 import com.tiza.process.common.config.EStarConstant;
-import com.tiza.process.protocol.bean.GB32960Header;
+import com.tiza.process.protocol.m2.bean.GB32960Header;
 import com.tiza.process.protocol.gb32960.GB32960DataProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,17 +2,15 @@ package com.tiza.process.protocol.schwing.cmd;
 
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.util.CommonUtil;
+import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.common.model.*;
-import com.tiza.process.protocol.bean.M2Header;
 import com.tiza.process.protocol.schwing.SchwingDataProcess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Service;
 
-import javax.script.ScriptException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

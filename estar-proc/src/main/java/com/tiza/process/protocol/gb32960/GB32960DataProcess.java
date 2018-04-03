@@ -13,7 +13,7 @@ import com.tiza.process.common.config.EStarConstant;
 import com.tiza.process.common.dao.VehicleDao;
 import com.tiza.process.common.model.Position;
 import com.tiza.process.common.model.VehicleInfo;
-import com.tiza.process.protocol.bean.GB32960Header;
+import com.tiza.process.protocol.m2.bean.GB32960Header;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;

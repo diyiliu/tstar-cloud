@@ -1,4 +1,4 @@
-package com.tiza.process.protocol.handler;
+package com.tiza.process.protocol.zt.handler;
 
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;
@@ -6,18 +6,18 @@ import com.diyiliu.common.cache.ICache;
 import com.diyiliu.common.model.IDataProcess;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.SpringUtil;
+import com.tiza.process.common.bean.ZTHeader;
 import com.tiza.process.common.config.MStarConstant;
-import com.tiza.process.protocol.bean.M2Header;
 import com.tiza.process.protocol.m2.M2DataProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Description: M2ParseHandler
+ * Description: ZTParseHandler
  * Author: DIYILIU
- * Update: 2017-09-14 14:24
+ * Update: 2018-04-02 09:08
  */
-public class M2ParseHandler extends BaseHandle{
+public class ZTParseHandler extends BaseHandle{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -35,7 +35,8 @@ public class M2ParseHandler extends BaseHandle{
         rpTuple.getContext().put(MStarConstant.Kafka.TRACK_TOPIC, processorConf.get("trackTopic"));
         rpTuple.getContext().put(MStarConstant.Kafka.WORK_TIME_TOPIC, processorConf.get("workTimeTopic"));
 
-        M2Header header = (M2Header)process.dealHeader(rpTuple.getMsgBody());
+
+        ZTHeader header = (ZTHeader) process.dealHeader(rpTuple.getMsgBody());
         header.settStarData(rpTuple);
         process.parse(header.getContent(), header);
 
@@ -50,7 +51,7 @@ public class M2ParseHandler extends BaseHandle{
         // 装载Spring容器
         SpringUtil.init();
 
-        //
+        // 装载tstar handle
         M2DataProcess.setHandle(this);
     }
 }

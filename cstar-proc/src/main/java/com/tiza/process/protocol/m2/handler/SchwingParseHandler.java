@@ -1,4 +1,4 @@
-package com.tiza.process.protocol.handler;
+package com.tiza.process.protocol.m2.handler;
 
 import cn.com.tiza.tstar.common.process.BaseHandle;
 import cn.com.tiza.tstar.common.process.RPTuple;

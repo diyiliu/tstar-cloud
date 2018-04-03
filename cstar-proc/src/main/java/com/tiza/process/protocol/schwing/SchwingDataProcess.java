@@ -3,12 +3,12 @@ package com.tiza.process.protocol.schwing;
 import cn.com.tiza.tstar.common.process.RPTuple;
 import com.diyiliu.common.util.DateUtil;
 import com.diyiliu.common.util.JacksonUtil;
+import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.common.config.CStarConstant;
 import com.tiza.process.common.model.Parameter;
 import com.tiza.process.common.model.Position;
 import com.tiza.process.common.model.Status;
 import com.tiza.process.common.model.VehicleInfo;
-import com.tiza.process.protocol.bean.M2Header;
 import com.tiza.process.protocol.m2.M2DataProcess;
 
 import java.nio.charset.Charset;

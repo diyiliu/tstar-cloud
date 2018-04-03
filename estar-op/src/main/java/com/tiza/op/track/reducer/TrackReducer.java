@@ -69,8 +69,8 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         double maxMileage = list.get(list.size() - 1).getMileage();
 
         double dailyMileage = maxMileage - minMileage;
-        logger.info("终端[{}], 最大里程;[{}], 最小里程:[{}], 当日里程[{}]。",
-                key.getVehicleId(), maxMileage, minMileage, dailyMileage);
+//        logger.info("终端[{}], 最大里程;[{}], 最小里程:[{}], 当日里程[{}]。",
+//                key.getVehicleId(), maxMileage, minMileage, dailyMileage);
 
         MileageRecord record = new MileageRecord();
         record.setVehicleId(Long.parseLong(key.getVehicleId()));
@@ -79,6 +79,7 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         record.setTotalMileage(maxMileage);
         record.setCreateTime(new Date());
 
+        logger.info(record.toString());
         context.write(record, NullWritable.get());
     }
 
