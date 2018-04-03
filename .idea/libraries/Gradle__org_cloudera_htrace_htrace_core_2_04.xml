@@ -2,10 +2,12 @@
   <library name="Gradle: org.cloudera.htrace:htrace-core:2.04">
     <CLASSES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.cloudera.htrace/htrace-core/2.04/80f30d70dfa29c78b1db994b6d9124ae271e0249/htrace-core-2.04.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.cloudera.htrace/htrace-core/2.04/80f30d70dfa29c78b1db994b6d9124ae271e0249/htrace-core-2.04.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.cloudera.htrace/htrace-core/2.04/532b38789fff52f51dad1cdb4d5ce9353de92bf5/htrace-core-2.04-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.cloudera.htrace/htrace-core/2.04/532b38789fff52f51dad1cdb4d5ce9353de92bf5/htrace-core-2.04-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

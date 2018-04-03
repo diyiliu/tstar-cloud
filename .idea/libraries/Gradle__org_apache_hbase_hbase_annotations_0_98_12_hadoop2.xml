@@ -2,10 +2,12 @@
   <library name="Gradle: org.apache.hbase:hbase-annotations:0.98.12-hadoop2">
     <CLASSES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/0.98.12-hadoop2/354feec6ec2a3c00dc98d04a69f903340505be1c/hbase-annotations-0.98.12-hadoop2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/0.98.12-hadoop2/354feec6ec2a3c00dc98d04a69f903340505be1c/hbase-annotations-0.98.12-hadoop2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/0.98.12-hadoop2/b028de7bd6e0585f0ebaa24e6e05a83f6623a7d3/hbase-annotations-0.98.12-hadoop2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/0.98.12-hadoop2/b028de7bd6e0585f0ebaa24e6e05a83f6623a7d3/hbase-annotations-0.98.12-hadoop2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
