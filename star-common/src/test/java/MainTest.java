@@ -116,5 +116,12 @@ public class MainTest {
     @Test
     public void test6(){
 
+        String str = "FFFF";
+
+        byte[] bytes = CommonUtil.hexStringToBytes(str);
+
+        ByteBuf buf = Unpooled.copiedBuffer(bytes);
+
+        System.out.println(buf.readUnsignedShort());
     }
 }

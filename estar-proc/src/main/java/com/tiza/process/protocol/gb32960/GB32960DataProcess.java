@@ -146,23 +146,25 @@ public class GB32960DataProcess implements IDataProcess {
                         kafkaMap.put("GCJ02LAT", position.getEnLatD());
                         kafkaMap.put("GCJ02LNG", position.getEnLngD());
 
-                        //  解析省、市、区
-                        MapLocation location = MapUtil.getArea(position.getEnLatD(), position.getEnLngD());
-                        if (location != null){
-                            strb.append("PROVINCE").append("=?, ");
-                            strb.append("CITY").append("=?, ");
-                            strb.append("DISTRICT").append("=?, ");
-                            list.add(location.getProvince());
-                            list.add(location.getCity());
-                            list.add(location.getTown());
+                        if (position.getEnLatD() != null && position.getEnLngD() != null) {
+                            //  解析省、市、区
+                            MapLocation location = MapUtil.getArea(position.getEnLatD(), position.getEnLngD());
+                            if (location != null) {
+                                strb.append("PROVINCE").append("=?, ");
+                                strb.append("CITY").append("=?, ");
+                                strb.append("DISTRICT").append("=?, ");
+                                list.add(location.getProvince());
+                                list.add(location.getCity());
+                                list.add(location.getTown());
 
-                            kafkaMap.put("PROVINCE", location.getProvince());
-                            kafkaMap.put("CITY", location.getCity());
-                            kafkaMap.put("DISTRICT", location.getTown());
+                                kafkaMap.put("PROVINCE", location.getProvince());
+                                kafkaMap.put("CITY", location.getCity());
+                                kafkaMap.put("DISTRICT", location.getTown());
+                            }
                         }
 
                         // 发布redis
-                        if (0x02 == header.getCmd()){
+                        if (0x02 == header.getCmd()) {
                             toRedis(header, vehicleInfo, position);
                         }
                     }
@@ -235,9 +237,9 @@ public class GB32960DataProcess implements IDataProcess {
         }
     }
 
-    public Object formatValue(Object obj){
+    public Object formatValue(Object obj) {
         if (obj instanceof Map ||
-                obj instanceof Collection){
+                obj instanceof Collection) {
 
             return JacksonUtil.toJson(obj);
         }
