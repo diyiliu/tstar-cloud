@@ -30,7 +30,7 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
     private Set<String> vehicleSet = new HashSet();
 
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
+    protected void setup(Context context) {
         Configuration conf = context.getConfiguration();
         conf.addResource("op-core.xml");
         conf.addResource("track.xml");

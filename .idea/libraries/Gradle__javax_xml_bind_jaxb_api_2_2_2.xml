@@ -2,12 +2,10 @@
   <library name="Gradle: javax.xml.bind:jaxb-api:2.2.2">
     <CLASSES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.2.2/aeb3021ca93dde265796d82015beecdcff95bf09/jaxb-api-2.2.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.2.2/aeb3021ca93dde265796d82015beecdcff95bf09/jaxb-api-2.2.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.2.2/3016adffd4777795f8aebce4b97e159539e3ad36/jaxb-api-2.2.2-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.2.2/3016adffd4777795f8aebce4b97e159539e3ad36/jaxb-api-2.2.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -66,7 +66,7 @@ public class VehicleFaultModule extends BaseHandle {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
 
     }
 
@@ -81,7 +81,7 @@ public class VehicleFaultModule extends BaseHandle {
             Set currKeys = faultMap.keySet();
 
             Collection subKeys = CollectionUtils.subtract(hisKeys, currKeys);
-            for (Iterator iterator = subKeys.iterator(); iterator.hasNext();){
+            for (Iterator iterator = subKeys.iterator(); iterator.hasNext(); ) {
                 String key = (String) iterator.next();
 
                 List<VehicleFault> subList = unitMap.get(key);
@@ -274,10 +274,10 @@ public class VehicleFaultModule extends BaseHandle {
      * @param list
      * @return
      */
-    private List<VehicleFault> toFaultList(String faultUnit, List list){
+    private List<VehicleFault> toFaultList(String faultUnit, List list) {
         List<VehicleFault> faultList = new ArrayList();
-        if (CollectionUtils.isNotEmpty(list)){
-            for (int i = 0 ; i < list.size(); i++){
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (int i = 0; i < list.size(); i++) {
 
                 VehicleFault fault = new VehicleFault();
                 fault.setFaultUnit(faultUnit);

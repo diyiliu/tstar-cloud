@@ -124,4 +124,15 @@ public class MainTest {
 
         System.out.println(buf.readUnsignedShort());
     }
+
+
+    @Test
+    public void test7() {
+        String str = "0000557cbe03";
+        byte[] bytes = CommonUtil.hexStringToBytes(str);
+
+        bytes = CommonUtil.byteToByte(bytes, 2, 4, "little");
+
+        System.out.println(CommonUtil.bytesToLong(bytes));
+    }
 }

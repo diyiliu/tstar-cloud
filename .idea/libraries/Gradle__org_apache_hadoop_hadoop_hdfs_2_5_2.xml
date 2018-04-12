@@ -2,12 +2,10 @@
   <library name="Gradle: org.apache.hadoop:hadoop-hdfs:2.5.2">
     <CLASSES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-hdfs/2.5.2/7c555a887341e8abd95cec5815bb8d920db74969/hadoop-hdfs-2.5.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-hdfs/2.5.2/7c555a887341e8abd95cec5815bb8d920db74969/hadoop-hdfs-2.5.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-hdfs/2.5.2/852d105a66245c005ef0b5bee10ae6203cabfedf/hadoop-hdfs-2.5.2-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-hdfs/2.5.2/852d105a66245c005ef0b5bee10ae6203cabfedf/hadoop-hdfs-2.5.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

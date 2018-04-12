@@ -16,14 +16,12 @@ import java.util.Map;
 
 /**
  * 车辆实时状态
- *
+ * <p>
  * Description: CurrentStatusModule
  * Author: DIYILIU
  * Update: 2017-10-26 18:52
  */
 public class CurrentStatusModule extends BaseHandle {
-
-    private VehicleInfo vehicleInfo;
 
     @Override
     public RPTuple handle(RPTuple rpTuple) throws Exception {
@@ -37,11 +35,11 @@ public class CurrentStatusModule extends BaseHandle {
                 return rpTuple;
             }
 
-            vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
+            VehicleInfo  vehicleInfo = (VehicleInfo) vehicleCache.get(terminalId);
             vehicleInfo.setDateTime(rpTuple.getTime());
 
             Map modelMap = JacksonUtil.toObject(context.get(EStarConstant.FlowKey.REAL_MODE), HashMap.class);
-            dealRealModel(modelMap);
+            dealRealModel(modelMap, vehicleInfo);
         }
 
 
@@ -49,11 +47,11 @@ public class CurrentStatusModule extends BaseHandle {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
 
     }
 
-    public void dealRealModel(Map modelMap) {
+    public void dealRealModel(Map modelMap, VehicleInfo vehicleInfo) {
         String prefix = "model:gb32960:";
         Jedis jedis = getJedis();
         try {
@@ -61,10 +59,10 @@ public class CurrentStatusModule extends BaseHandle {
                 String key = (String) iterator.next();
                 int value = (int) modelMap.get(key);
 
-                String redisKey = prefix + key;
+                String redisKey = prefix + key + vehicleInfo.getId();
                 if (!jedis.exists(redisKey)) {
 
-                    createMessage(key, value);
+                    createMessage(key, value, vehicleInfo);
                     jedis.set(redisKey, String.valueOf(value));
                 } else {
                     int last = Integer.valueOf(jedis.get(redisKey));
@@ -72,7 +70,7 @@ public class CurrentStatusModule extends BaseHandle {
                     // 状态发生变化
                     if (value != last) {
 
-                        createMessage(key, value);
+                        createMessage(key, value, vehicleInfo);
                         jedis.set(redisKey, String.valueOf(value));
                     }
                 }
@@ -80,13 +78,13 @@ public class CurrentStatusModule extends BaseHandle {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } finally {
-            if(jedis != null){
+            if (jedis != null) {
                 jedis.close();
             }
         }
     }
 
-    public void createMessage(String key, int value) {
+    public void createMessage(String key, int value, VehicleInfo vehicleInfo) {
         Map message = new HashMap();
         message.put("vehicleId", vehicleInfo.getId());
         message.put("license", vehicleInfo.getLicense());
@@ -98,17 +96,17 @@ public class CurrentStatusModule extends BaseHandle {
         switch (key) {
             case EStarConstant.RealMode.IN_OUT:
                 category = "vehicle";
-                if (1 == value){
+                if (1 == value) {
                     content = "车辆登入";
-                }else if (0 == value){
+                } else if (0 == value) {
                     content = "车辆登出";
                 }
                 break;
             case EStarConstant.RealMode.ON_OFF:
                 category = "vehicle";
-                if (1 == value){
+                if (1 == value) {
                     content = "车辆启动";
-                }else if (2 == value){
+                } else if (2 == value) {
                     content = "车辆熄火";
                 }
                 break;
@@ -118,9 +116,9 @@ public class CurrentStatusModule extends BaseHandle {
                 break;
             case EStarConstant.RealMode.TOP_OFF:
                 category = "charge";
-                if (1 == value){
+                if (1 == value) {
                     content = "停车充电";
-                }else if (4 == value){
+                } else if (4 == value) {
                     content = "充电完成";
                 }
                 break;
@@ -138,7 +136,7 @@ public class CurrentStatusModule extends BaseHandle {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(jedis != null){
+            if (jedis != null) {
                 jedis.close();
             }
         }

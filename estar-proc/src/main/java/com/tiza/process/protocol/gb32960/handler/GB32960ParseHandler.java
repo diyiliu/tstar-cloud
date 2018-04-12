@@ -21,7 +21,7 @@ public class GB32960ParseHandler extends BaseHandle {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public RPTuple handle(RPTuple rpTuple) throws Exception {
+    public RPTuple handle(RPTuple rpTuple) {
         logger.debug("终端[{}], 指令[{}]...", rpTuple.getTerminalID(), CommonUtil.toHex(rpTuple.getCmdID()));
 
         ICache cmdCacheProvider = SpringUtil.getBean("cmdCacheProvider");

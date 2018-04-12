@@ -23,7 +23,7 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
+    protected void setup(Context context) {
         try {
             String datetime = context.getConfiguration().get("data_time");
             date = DateUtil.str2Date(datetime);
@@ -58,7 +58,7 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
 
         // 数据过滤
         List<Position> list = dataFilter(positions);
-        if (list.size() < 1){
+        if (list.size() < 1) {
 
             return;
         }
@@ -90,12 +90,12 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
      * @param list
      * @return
      */
-    public List<Position> dataFilter(List<Position> list){
+    public List<Position> dataFilter(List<Position> list) {
         List<Position> positions = new ArrayList();
 
         double mileage = 0;
-        for (Position p: list){
-            if (p.getMileage() > mileage){
+        for (Position p : list) {
+            if (p.getMileage() > mileage) {
 
                 positions.add(p);
                 mileage = p.getMileage();

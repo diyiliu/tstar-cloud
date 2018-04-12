@@ -2,12 +2,10 @@
   <library name="Gradle: org.jruby.jcodings:jcodings:1.0.8">
     <CLASSES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.jruby.jcodings/jcodings/1.0.8/33fa45fd853c277b888e3d5a2e6a4604b7c11e2c/jcodings-1.0.8.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.jruby.jcodings/jcodings/1.0.8/33fa45fd853c277b888e3d5a2e6a4604b7c11e2c/jcodings-1.0.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.jruby.jcodings/jcodings/1.0.8/c196942c4a319ba0bc1528d5eceec7bbf4f3b27a/jcodings-1.0.8-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.jruby.jcodings/jcodings/1.0.8/c196942c4a319ba0bc1528d5eceec7bbf4f3b27a/jcodings-1.0.8-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

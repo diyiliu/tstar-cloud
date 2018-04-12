@@ -71,7 +71,7 @@ public class StrategyAlarmModule extends BaseHandle {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
 
     }
 

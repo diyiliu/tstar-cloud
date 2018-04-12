@@ -108,7 +108,8 @@ public class GB32960DataProcess implements IDataProcess {
         Date gpsTime = null;
         List list = new ArrayList();
         StringBuilder strb = new StringBuilder("update BS_VEHICLEGPSINFO set ");
-        for (Map map : paramValues) {
+        for (int i = 0; i < paramValues.size(); i++) {
+            Map map = paramValues.get(i);
             for (Iterator iterator = map.keySet().iterator(); iterator.hasNext(); ) {
                 String key = (String) iterator.next();
                 Object value = map.get(key);
@@ -205,7 +206,7 @@ public class GB32960DataProcess implements IDataProcess {
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 
-        logger.debug("终端[{}]写入Kafka位置信息...", header.getVin());
+        logger.info("终端[{}]写入Kafka位置信息...", header.getVin());
         handler.storeInKafka(rpTuple, context.get(EStarConstant.Kafka.TRACK_TOPIC));
     }
 
@@ -223,7 +224,7 @@ public class GB32960DataProcess implements IDataProcess {
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 
-        logger.debug("终端[{}]发布Redis位置信息...", header.getVin());
+        logger.info("终端[{}]发布Redis位置信息...", header.getVin());
         Jedis jedis = handler.getJedis();
         try {
             String channel = context.get(EStarConstant.Redis.VEHICLE_MOVE);
@@ -255,115 +256,4 @@ public class GB32960DataProcess implements IDataProcess {
     public static void setHandler(BaseHandle parseHandler) {
         handler = parseHandler;
     }
-
-
-      /*
-      protected void updateGpsInfo(GB32960Header header, List<Map> paramValues) {
-
-        String vin = header.getVin();
-        if (!vehicleCacheProvider.containsKey(vin)) {
-            logger.warn("[{}] 车辆列表不存在!", vin);
-            return;
-        }
-        VehicleInfo vehicleInfo = (VehicleInfo) vehicleCacheProvider.get(vin);
-
-        Date gpsTime = null;
-        Double mileage = null;
-        Double speed = null;
-        List list = new ArrayList();
-        StringBuilder strb = new StringBuilder("update BS_VEHICLEGPSINFO set ");
-        for (Map map : paramValues) {
-
-            for (Iterator iterator = map.keySet().iterator(); iterator.hasNext(); ) {
-                String key = (String) iterator.next();
-                Object value = map.get(key);
-
-                if (key.equalsIgnoreCase("GPSTIME")) {
-                    gpsTime = (Date) value;
-                }
-
-                if (key.equalsIgnoreCase("ODO")) {
-                    mileage = (Double) value;
-                }
-
-                if (key.equalsIgnoreCase("SPEED")) {
-                    speed = (Double) value;
-                }
-
-                if (key.equalsIgnoreCase("VehicleStatus")) {
-                    vehicleInfo.setStatus((Integer) value);
-                }
-
-                if (key.equalsIgnoreCase("position")) {
-                    Position position = (Position) value;
-                    position.setDateTime(gpsTime);
-
-                    strb.append("LocationStatus").append("=?, ");
-                    strb.append("WGS84LAT").append("=?, ");
-                    strb.append("WGS84LNG").append("=?, ");
-
-
-                    list.add(position.getStatus());
-                    list.add(position.getLatD());
-                    list.add(position.getLngD());
-
-                    // 有效定位
-                    if (position.getStatus() == 0) {
-                        strb.append("GCJ02LAT").append("=?, ");
-                        strb.append("GCJ02LNG").append("=?, ");
-
-                        list.add(position.getEnLatD());
-                        list.add(position.getEnLngD());
-                    }
-
-                    position.setMileage(mileage);
-                    position.setSpeed(speed);
-
-                    toKafka(header, vehicleInfo, position);
-                    toRedis(header, vehicleInfo, position);
-
-                    continue;
-                }
-                strb.append(key).append("=?, ");
-                list.add(value);
-            }
-        }
-
-        String sql = strb.substring(0, strb.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
-        vehicleDao.update(sql, list.toArray());
-    }
-
-
-    private void toKafka(GB32960Header header, VehicleInfo vehicle, Position position) {
-
-        Map posMap = new HashMap();
-        posMap.put(EStarConstant.Location.GPS_TIME, DateUtil.dateToString(position.getDateTime()));
-        posMap.put(EStarConstant.Location.LOCATION_STATUS, position.getStatus());
-        posMap.put(EStarConstant.Location.ORIGINAL_LAT, position.getLatD());
-        posMap.put(EStarConstant.Location.ORIGINAL_LNG, position.getLngD());
-        posMap.put(EStarConstant.Location.LAT, position.getEnLatD());
-        posMap.put(EStarConstant.Location.LNG, position.getEnLngD());
-
-        posMap.put(EStarConstant.Location.MILEAGE, position.getMileage());
-        posMap.put(EStarConstant.Location.SPEED, position.getSpeed());
-
-        posMap.put(EStarConstant.Location.VEHICLE_ID, vehicle.getId());
-
-        RPTuple rpTuple = new RPTuple();
-        rpTuple.setCmdID(header.getCmd());
-        rpTuple.setCmdSerialNo(header.getSerial());
-        rpTuple.setTerminalID(String.valueOf(vehicle.getId()));
-
-        String msgBody = JacksonUtil.toJson(posMap);
-        rpTuple.setMsgBody(msgBody.getBytes(Charset.forName(EStarConstant.JSON_CHARSET)));
-        rpTuple.setTime(position.getDateTime().getTime());
-
-        // 获取上下文中的配置信息
-        RPTuple tuple = (RPTuple) header.gettStarData();
-        Map<String, String> context = tuple.getContext();
-
-        logger.info("终端[{}]写入Kafka位置信息...", header.getVin());
-        handler.storeInKafka(rpTuple, context.get(EStarConstant.Kafka.TRACK_TOPIC));
-    }
-    */
 }
