@@ -135,4 +135,11 @@ public class MainTest {
 
         System.out.println(CommonUtil.bytesToLong(bytes));
     }
+
+    @Test
+    public void test8(){
+        long l = 1523234236000l;
+
+        System.out.println(DateUtil.dateToString(new Date(l)));
+    }
 }

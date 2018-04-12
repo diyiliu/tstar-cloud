@@ -106,6 +106,7 @@ public class GB32960DataProcess implements IDataProcess {
         Map kafkaMap = new HashMap();
 
         Date gpsTime = null;
+        Double speed = null;
         List list = new ArrayList();
         StringBuilder strb = new StringBuilder("update BS_VEHICLEGPSINFO set ");
         for (int i = 0; i < paramValues.size(); i++) {
@@ -118,6 +119,11 @@ public class GB32960DataProcess implements IDataProcess {
                     gpsTime = (Date) value;
                     vehicleInfo.setDateTime(gpsTime.getTime());
                 }
+
+                if(key.equalsIgnoreCase("Speed")){
+                    speed = (Double) value;
+                }
+
                 if (key.equalsIgnoreCase("VehicleStatus")) {
                     vehicleInfo.setStatus((Integer) value);
                 }
@@ -125,6 +131,7 @@ public class GB32960DataProcess implements IDataProcess {
                 if (key.equalsIgnoreCase("position")) {
                     Position position = (Position) value;
                     position.setDateTime(gpsTime);
+                    position.setSpeed(speed);
 
                     strb.append("LocationStatus").append("=?, ");
                     list.add(position.getStatus());
@@ -216,6 +223,7 @@ public class GB32960DataProcess implements IDataProcess {
         posMap.put(EStarConstant.Location.GPS_TIME, DateUtil.dateToString(position.getDateTime()));
         posMap.put(EStarConstant.Location.LAT, position.getEnLatD());
         posMap.put(EStarConstant.Location.LNG, position.getEnLngD());
+        posMap.put(EStarConstant.Location.SPEED, position.getSpeed());
         posMap.put(EStarConstant.Location.VEHICLE_ID, vehicle.getId());
 
         posMap.put(EStarConstant.Location.STATUS, vehicle.getStatus() == null ? "" : vehicle.getStatus());

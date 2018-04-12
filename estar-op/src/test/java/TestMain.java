@@ -32,30 +32,32 @@ public class TestMain {
 
     @Test
     public void test1() {
-        List<Position> list = new ArrayList() {
+        List<Position> positions = new ArrayList() {
             {
-                this.add(new Position(11.1, 111.2, 1005l, 1.0));
-                this.add(new Position(11.2, 111.3, 1003l, 1.1));
-                this.add(new Position(11.3, 111.4, 1002l, 1.2));
-                this.add(new Position(11.4, 111.5, 1001l, 0.9));
-                this.add(new Position(11.5, 111.6, 1004l, 1.4));
+                this.add(new Position(11.1, 111.2, 1005l, 5.0));
+                this.add(new Position(11.2, 111.3, 1003l, 3.1));
+                this.add(new Position(11.3, 111.4, 1002l, 200.2));
+                this.add(new Position(11.4, 111.5, 1001l, 1.9));
+                this.add(new Position(11.5, 111.6, 1004l, 4.4));
             }
         };
 
         // 按时间排序
-        Collections.sort(list);
+        Collections.sort(positions);
+
+        List<Position> list = positions;
 
         // 当日最小位置
         double minMileage = list.get(0).getMileage();
         // 当日最大里程
         double maxMileage = list.get(list.size() - 1).getMileage();
 
-        System.out.println(list.get(0).getDateTime());
-        System.out.println(list.get(list.size() - 1).getDateTime());
         System.out.println(minMileage);
         System.out.println(maxMileage);
         double dailyMileage = maxMileage - minMileage;
 
         System.out.println(dailyMileage);
     }
+
+
 }

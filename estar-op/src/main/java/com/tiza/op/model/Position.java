@@ -11,7 +11,7 @@ import java.io.IOException;
  * Author: DIYILIU
  * Update: 2017-09-26 14:22
  */
-public class Position implements Writable, Comparable<Position>, Cloneable {
+public class Position implements Writable, Comparable<Position> {
 
     private Double lngD;
     private Double latD;
@@ -103,10 +103,5 @@ public class Position implements Writable, Comparable<Position>, Cloneable {
     public int compareTo(Position o) {
 
         return dateTime.compareTo(o.getDateTime());
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 }
