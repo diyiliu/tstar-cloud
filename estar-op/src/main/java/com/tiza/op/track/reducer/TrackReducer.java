@@ -109,13 +109,13 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
                 mile2 = p.getMileage() - lp.getMileage();
             } else {
                 // 首数据
-                if (i == 0){
+                if (i == 0) {
                     Position np = list.get(i + 1);
                     mile1 = np.getMileage() - p.getMileage();
 
                     Position nnp = list.get(i + 2);
                     mile2 = nnp.getMileage() - p.getMileage();
-                }else {
+                } else {
                     // 末尾数据
                     Position lp = list.get(i - 1);
                     mile1 = p.getMileage() - lp.getMileage();
@@ -125,7 +125,7 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
                 }
             }
 
-            if (isValid(mile1) || isValid(mile2)){
+            if (isValid(mile1) || isValid(mile2)) {
                 positions.add(p);
             }
         }
@@ -133,9 +133,9 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         return positions;
     }
 
-    public boolean isValid(double mile){
+    public boolean isValid(double mile) {
 
-        if (mile < 0 || mile > 100){
+        if (mile < 0 || mile > 100) {
 
             return false;
         }

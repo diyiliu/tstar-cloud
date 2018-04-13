@@ -22,6 +22,13 @@ public class Position implements Writable, Comparable<Position> {
     private Double mileage;
 
     public Position() {
+
+
+    }
+
+    public Position(Long dateTime, Double mileage) {
+        this.dateTime = dateTime;
+        this.mileage = mileage;
     }
 
     public Position(Double lngD, Double latD, Long dateTime, Double mileage) {
@@ -66,28 +73,23 @@ public class Position implements Writable, Comparable<Position> {
     @Override
     public void write(DataOutput dataOutput) throws IOException {
 
-        dataOutput.writeDouble(lngD);
-        dataOutput.writeDouble(latD);
         dataOutput.writeLong(dateTime);
         dataOutput.writeDouble(mileage);
     }
 
     @Override
     public void readFields(DataInput dataInput) throws IOException {
-        this.lngD = dataInput.readDouble();
-        this.latD = dataInput.readDouble();
+
         this.dateTime = dataInput.readLong();
         this.mileage = dataInput.readDouble();
     }
 
     @Override
     public boolean equals(Object obj) {
-
         if (obj != null) {
             if (obj instanceof Position) {
                 Position p = (Position) obj;
-                if (p.getLngD() == lngD &&
-                        p.getLatD() == latD &&
+                if (p.dateTime == dateTime &&
                         p.getMileage() == mileage) {
 
                     return true;

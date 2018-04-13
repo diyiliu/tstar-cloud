@@ -38,10 +38,9 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
         try {
             refreshVehicle(conf);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("TrackMapper查询车辆错误！");
+            e.printStackTrace();
         }
-
     }
 
     @Override
@@ -54,24 +53,17 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
             return;
         }
 
-        // 有效定位
         if (map.containsKey("GpsTime") &&
-                map.containsKey("ODOStatus") &&
-                map.containsKey("LocationStatus")) {
+                map.containsKey("ODOStatus")) {
 
             int odoStatus = (int) map.get("ODOStatus");
-            int locationStatus = (int) map.get("LocationStatus");
-            if (odoStatus == 1 && locationStatus == 0 && map.containsKey("ODO") &&
-                    map.containsKey("GCJ02LNG") && map.containsKey("GCJ02LAT")) {
-
+            if (odoStatus == 1 && map.containsKey("ODO")) {
                 Date date = DateUtil.stringToDate((String) map.get("GpsTime"));
                 long datetime = date.getTime();
-                double lng = (Double) map.get("GCJ02LNG");
-                double lat = (Double) map.get("GCJ02LAT");
                 double mileage = (Double) map.get("ODO");
 
                 if (mileage > 0) {
-                    Position position = new Position(lng, lat, datetime, mileage);
+                    Position position = new Position(datetime, mileage);
                     TrackKey trackKey = new TrackKey(vehicleId, datetime);
                     context.write(trackKey, position);
                 }
