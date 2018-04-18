@@ -11,9 +11,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../mstar-gw">
       <sourceFolder url="file://$MODULE_DIR$/../../mstar-gw/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../mstar-gw/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../mstar-gw/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../mstar-gw/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../../mstar-gw/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../mstar-gw/build" />
       <excludeFolder url="file://$MODULE_DIR$/../../mstar-gw/out" />

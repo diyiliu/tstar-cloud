@@ -22,8 +22,7 @@ public class GB32960Decoder extends CustomDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception {
-
-        if (buf.readableBytes() < 25){
+        if (buf.readableBytes() < 25) {
 
             return;
         }
@@ -34,43 +33,58 @@ public class GB32960Decoder extends CustomDecoder {
         byte header2 = buf.readByte();
 
         // 头标识
-        if (header1 != 0x23 || header2 != 0x23){
+        if (header1 != 0x23 || header2 != 0x23) {
 
             logger.error("协议头校验失败，断开连接!");
-            ctx.disconnect();
+            ctx.close();
             return;
         }
+
         buf.readBytes(new byte[20]);
 
         // 数据单元长度
-        int length = buf.readShort();
-        if (buf.readableBytes() < length + 1){
+        int length = buf.readUnsignedShort();
+        if (buf.readableBytes() < length + 1) {
 
             buf.resetReaderIndex();
             return;
         }
-        buf.readBytes(new byte[length]);
-
-        // 校验位
-        int last = buf.readByte();
-
         buf.resetReaderIndex();
-
-        byte[] content = new byte[2 + 20 + 2 + length];
-        buf.getBytes(0, content);
-
-        // 计算校验位
-        byte check = CommonUtil.getCheck(content);
 
         byte[] bytes = new byte[2 + 20 + 2 + length + 1];
         buf.readBytes(bytes);
 
         // 验证校验位
-        if (last != check){
-            logger.error("校验位错误, 原始数据[{}]!", CommonUtil.bytesToStr(bytes));
-            ctx.close();
-            return;
+        if (!check(bytes)) {
+            // 关闭连接
+            //ctx.close();
         }
+
         out.add(Unpooled.copiedBuffer(bytes));
+    }
+
+    /**
+     * 验证校验位
+     *
+     * @param bytes
+     * @return
+     */
+    private boolean check(byte[] bytes) {
+        ByteBuf buf = Unpooled.buffer(bytes.length);
+        buf.writeBytes(bytes);
+
+        byte[] content = new byte[bytes.length - 1];
+        buf.readBytes(content);
+
+        byte last = buf.readByte();
+        byte check = CommonUtil.getCheck(content);
+
+        if (last == check) {
+
+            return true;
+        }
+        logger.error("校验位错误, [实际值{}, 计算值{}, 原始指令[{}]]!", last, check, CommonUtil.bytesToStr(bytes));
+
+        return false;
     }
 }

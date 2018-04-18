@@ -11,9 +11,6 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../estar-gw">
       <sourceFolder url="file://$MODULE_DIR$/../../estar-gw/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../estar-gw/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../estar-gw/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../estar-gw/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../../estar-gw/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../estar-gw/build" />
       <excludeFolder url="file://$MODULE_DIR$/../../estar-gw/out" />

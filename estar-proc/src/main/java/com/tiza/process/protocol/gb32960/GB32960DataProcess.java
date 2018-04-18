@@ -55,8 +55,10 @@ public class GB32960DataProcess implements IDataProcess {
         // 读取头标志[0x23,0x23]
         buf.readBytes(new byte[2]);
 
-        int cmd = buf.readByte();
-        int resp = buf.readByte();
+        // 命令标识
+        int cmd = buf.readUnsignedByte();
+        // 应答标识
+        int resp = buf.readUnsignedByte();
 
         byte[] vinBytes = new byte[17];
         buf.readBytes(vinBytes);
