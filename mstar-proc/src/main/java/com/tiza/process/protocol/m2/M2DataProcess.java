@@ -13,6 +13,7 @@ import com.tiza.process.common.model.*;
 import com.tiza.process.common.bean.M2Header;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +93,7 @@ public class M2DataProcess implements IDataProcess{
     }
 
     public void init() {
-        logger.info("初始化指令[{}]...", CommonUtil.toHex(cmd));
+        // logger.info("初始化指令[{}]...", CommonUtil.toHex(cmd));
         cmdCacheProvider.put(cmd, this);
     }
 
@@ -122,6 +123,10 @@ public class M2DataProcess implements IDataProcess{
         posMap.put(MStarConstant.Location.ORIGINAL_LAT, position.getLatD());
         posMap.put(MStarConstant.Location.LNG, position.getEnLngD());
         posMap.put(MStarConstant.Location.LAT, position.getEnLatD());
+        // 状态位数据
+        if (MapUtils.isNotEmpty(position.getStatusMap())){
+            posMap.putAll(position.getStatusMap());
+        }
 
         posMap.put(MStarConstant.Location.VEHICLE_ID, vehicle.getId());
 

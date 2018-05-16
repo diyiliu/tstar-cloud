@@ -60,7 +60,6 @@ public class CurrentStatusModule  extends BaseHandle {
             if (MapUtils.isNotEmpty(position.getStatusMap())){
                 toUpdate(sqlBuilder, position.getStatusMap());
             }
-
             // 更新工况信息
             if (MapUtils.isNotEmpty(canValue)){
                 toUpdate(sqlBuilder, canValue);
@@ -68,7 +67,7 @@ public class CurrentStatusModule  extends BaseHandle {
 
             String sql = sqlBuilder.substring(0, sqlBuilder.length() - 2) + " WHERE t.vehicleid =" + vehicleId;
             if (vehicleDao.update(sql, values)) {
-                //logger.info("车辆[{}]更新车辆当前表信息...", vehicleId);
+                logger.info("车辆[{}]更新车辆当前表信息...", vehicleId);
             } else {
                 logger.error("车辆[{}]更新车辆当前表信息失败!", vehicleId);
             }

@@ -34,8 +34,8 @@ public class GB32960Decoder extends CustomDecoder {
 
         // 头标识
         if (header1 != 0x23 || header2 != 0x23) {
-
-            logger.error("协议头校验失败，断开连接!");
+            String host = ctx.channel().remoteAddress().toString().trim().replaceFirst("/", "");
+            logger.error("协议头校验失败，断开连接[{}]!", host);
             ctx.close();
             return;
         }

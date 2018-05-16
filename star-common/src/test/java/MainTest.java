@@ -176,8 +176,21 @@ public class MainTest {
         System.out.println(b);
 
 
-        str = "4C43465A314650425848305A3137383038";
+
+        str = "4C43465A314650423348305A3138303431";
 
         System.out.println(new String(CommonUtil.hexStringToBytes(str)));
     }
+
+
+
+    @Test
+    public void  test10(){
+        String str = "";
+        byte[] bytes = null;
+
+        byte[] content = CommonUtil.hexStringToBytes("0000000F");
+        bytes = CommonUtil.byteToByte(content, 4, 1, "big");
+    }
+
 }

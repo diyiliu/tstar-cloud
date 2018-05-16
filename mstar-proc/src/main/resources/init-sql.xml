@@ -20,7 +20,7 @@
             SELECT s.code, s.description, s.modelcode, t.xml
               FROM bs_functionset t
              INNER JOIN bs_gpssoftversion s
-                ON s.code = t.code
+                ON s.dcsfunctionset = t.id
         ]]>
     </sql>
 
