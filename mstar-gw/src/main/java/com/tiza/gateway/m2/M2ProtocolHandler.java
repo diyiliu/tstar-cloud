@@ -20,7 +20,6 @@ import java.util.Properties;
  * Update: 2017-09-13 17:23
  */
 public class M2ProtocolHandler extends BaseProtocolHandler {
-
     private Properties properties = new Properties();
 
     public M2ProtocolHandler() {
@@ -82,25 +81,28 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
         tStarData.setCmdID(cmd);
         tStarData.setCmdSerialNo(serial);
         tStarData.setTime(System.currentTimeMillis());
-
         logger.debug("上行消息，终端[{}]指令[{}], 内容[{}]...", terminal, CommonUtil.toHex(cmd), CommonUtil.bytesToStr(bytes));
 
+        // 下行自动生成得 序列号
+        int msgSerial = getMsgSerial();
         TStarData respData = new TStarData();
         respData.setTerminalID(terminal);
-        respData.setCmdSerialNo(serial);
+        respData.setCmdSerialNo(msgSerial);
         respData.setTime(System.currentTimeMillis());
 
         ByteBuf respBuf;
         byte[] respMsg;
-        serial = getMsgSerial();
         byte[] original = Arrays.copyOf(bytes, bytes.length);
+
+        // 回复0x02
         if (respCmds.contains(cmd)) {
             respBuf = Unpooled.buffer(4);
+            // 响应对应的序列号
             respBuf.writeShort(serial);
             respBuf.writeByte(cmd);
             respBuf.writeByte(0);
 
-            respMsg = createResp(original, respBuf.array(), 0x02, serial);
+            respMsg = createResp(original, respBuf.array(), 0x02, msgSerial);
             respData.setCmdID(0x02);
             respData.setMsgBody(respMsg);
             context.channel().writeAndFlush(respData);
@@ -127,6 +129,9 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
 
             logger.debug("下行消息，终端[{}]指令[{}], 内容[{}]...", terminal, CommonUtil.toHex(respData.getCmdID()), CommonUtil.bytesToStr(respData.getMsgBody()));
         }
+
+        // 发送心跳
+        sendHeart(context, tStarData);
 
         return tStarData;
     }
@@ -186,6 +191,43 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
         return ackData;
     }
 
+
+
+    /**
+     * 终端离线
+     *
+     * @param terminalId
+     */
+    @Override
+    public void logout(String terminalId) {
+
+    }
+
+
+    /**
+     * 发送心跳
+     *
+     * @param ctx
+     * @param tStarData
+     */
+    private void sendHeart(ChannelHandlerContext ctx, TStarData tStarData){
+        byte[] bytes = tStarData.getMsgBody();
+
+        // 下行自动生成得 序列号
+        int msgSerial = getMsgSerial();
+
+        TStarData respData = new TStarData();
+        respData.setTerminalID(tStarData.getTerminalID());
+        respData.setCmdSerialNo(msgSerial);
+        respData.setTime(System.currentTimeMillis());
+
+        byte[] respMsg = createResp(bytes, new byte[0], 0x00, msgSerial);
+        respData.setCmdID(0x00);
+        respData.setMsgBody(respMsg);
+
+        ctx.channel().writeAndFlush(respData);
+    }
+
     /**
      * 生成回复指令内容
      *
@@ -195,7 +237,7 @@ public class M2ProtocolHandler extends BaseProtocolHandler {
      * @param serial  下行的序列号
      * @return
      */
-    public byte[] createResp(byte[] recMsg, byte[] content, int cmd, int serial) {
+    private byte[] createResp(byte[] recMsg, byte[] content, int cmd, int serial) {
 
         int length = 14 + content.length;
         recMsg[0] = (byte) ((length >> 8) & 0xff);

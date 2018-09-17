@@ -17,7 +17,6 @@ import java.util.List;
  */
 
 public class GB32960Decoder extends CustomDecoder {
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -35,7 +34,7 @@ public class GB32960Decoder extends CustomDecoder {
         // 头标识
         if (header1 != 0x23 || header2 != 0x23) {
             String host = ctx.channel().remoteAddress().toString().trim().replaceFirst("/", "");
-            logger.error("协议头校验失败，断开连接[{}]!", host);
+            logger.error("协议头校验失败, 断开连接[{}]!", host);
             ctx.close();
             return;
         }
@@ -57,7 +56,9 @@ public class GB32960Decoder extends CustomDecoder {
         // 验证校验位
         if (!check(bytes)) {
             // 关闭连接
-            //ctx.close();
+            logger.error("校验位错误, 断开连接!");
+            ctx.close();
+            return;
         }
 
         out.add(Unpooled.copiedBuffer(bytes));

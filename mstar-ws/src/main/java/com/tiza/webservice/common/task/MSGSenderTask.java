@@ -70,7 +70,7 @@ public class MSGSenderTask implements ITask {
                     if (errorCode == 1905){
                         status = Constant.SendStatus.OFFLINE;
                     }
-                    logger.error("指令下发失败，错误代码[{}]", errorCode);
+                    logger.info("指令下发失败，错误代码[{}]", errorCode);
                 }
 
                 String sql = "UPDATE bs_instructionlog t" +

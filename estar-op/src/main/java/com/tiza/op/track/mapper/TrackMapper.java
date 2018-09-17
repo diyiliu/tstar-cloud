@@ -62,11 +62,14 @@ public class TrackMapper extends Mapper<LongWritable, Text, TrackKey, Position> 
                 long datetime = date.getTime();
                 double mileage = (Double) map.get("ODO");
 
-                if (mileage > 0) {
-                    Position position = new Position(datetime, mileage);
-                    TrackKey trackKey = new TrackKey(vehicleId, datetime);
-                    context.write(trackKey, position);
+                if (mileage < 0 || mileage > 10000000) {
+                    logger.error("错误数据[车辆: {}, 里程: {}]", vehicleId, mileage);
+                    return;
                 }
+
+                Position position = new Position(datetime, mileage);
+                TrackKey trackKey = new TrackKey(vehicleId, datetime);
+                context.write(trackKey, position);
             }
         }
     }

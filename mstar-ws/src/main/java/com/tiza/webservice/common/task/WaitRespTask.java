@@ -63,7 +63,7 @@ public class WaitRespTask implements ITask {
 
             // 超时未响应
             if (count > waitCount) {
-                logger.warn("指令流水号[{}]，超时未响应！", sendMSG.getSerial());
+                logger.info("指令流水号[{}]，超时未响应！", sendMSG.getSerial());
                 waitRespCacheProvider.remove(key);
 
                 // 持久化数据库

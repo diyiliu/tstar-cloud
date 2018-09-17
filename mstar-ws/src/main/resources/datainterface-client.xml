@@ -4,11 +4,11 @@
     <!-- Override Common.xml -->
     <property>
         <name>tstar.common.database.pool.max.connections</name>
-        <value>2</value>
+        <value>5</value>
     </property>
     <property>
         <name>tstar.common.database.pool.initial.connections</name>
-        <value>1</value>
+        <value>3</value>
     </property>
     <property>
         <name>tstar.common.database.pool.incremental</name>

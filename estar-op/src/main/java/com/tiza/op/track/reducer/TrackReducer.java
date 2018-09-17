@@ -64,8 +64,8 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
         double maxMileage = list.get(list.size() - 1).getMileage();
 
         double dailyMileage = maxMileage - minMileage;
-        if (dailyMileage < 0 || dailyMileage > 200) {
-            logger.info("错误数据:{}", JacksonUtil.toJson(list));
+        if (dailyMileage < 0 || dailyMileage > 1000) {
+            logger.info("错误数据[车辆: {}, 数据: {}]", key.getVehicleId(), JacksonUtil.toJson(list));
             return;
         }
 

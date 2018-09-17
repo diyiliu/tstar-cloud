@@ -4,6 +4,8 @@
       <root url="jar://$MAVEN_REPOSITORY$/com/jcraft/jsch/0.1.42/jsch-0.1.42.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/jcraft/jsch/0.1.42/jsch-0.1.42-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

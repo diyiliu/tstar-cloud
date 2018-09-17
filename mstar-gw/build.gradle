@@ -30,6 +30,7 @@ task copyJar(type: Copy) {
 
 task zip(type: Zip, dependsOn: [jar, copyJar]) {
     from 'build/libs'
+    version = ''
 }
 
 // 设置编码

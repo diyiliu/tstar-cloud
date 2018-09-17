@@ -63,7 +63,6 @@ public class CommonUtil {
     }
 
     public static byte[] dateToBytes(Date date) {
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 

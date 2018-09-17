@@ -1,11 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hbase:hbase-protocol:0.98.12-hadoop2">
     <CLASSES>
-      <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-protocol/0.98.12-hadoop2/cb4948db4669e33869f635c68ea485f1cdc63a38/hbase-protocol-0.98.12-hadoop2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/hbase/hbase-protocol/0.98.12-hadoop2/hbase-protocol-0.98.12-hadoop2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://E:/Develop/Local/repo/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-protocol/0.98.12-hadoop2/da4160b2b6ee5972333c10dbe64cb210cfaa731e/hbase-protocol-0.98.12-hadoop2-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

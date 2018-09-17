@@ -106,7 +106,7 @@ public class M2DataProcess implements IDataProcess {
 
         M2DataProcess process = (M2DataProcess) m2CMDCacheProvider.get(cmd);
         if (process == null){
-            logger.error("指令下发异常, 无此命令[{}]解析器!", CommonUtil.toHex(cmd));
+            logger.info("指令下发异常, 无此命令[{}]解析器!", CommonUtil.toHex(cmd));
             return;
         }
         byte[] content = process.pack(header, argus);
