@@ -86,4 +86,12 @@ public class TestContent {
         }
 
     }
+
+
+    @Test
+    public void test4(){
+        String str = "3131313131313131313131313131313131";
+
+        System.out.println(new String(CommonUtil.hexStringToBytes(str)));
+    }
 }

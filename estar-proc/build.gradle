@@ -36,7 +36,8 @@ task copyConf(type: Copy) {
 }
 
 jar {
-    archiveName = 'estar_gb32960.jar'
+//    archiveName = 'estar_gb32960.jar'
+    archiveName = 'nev_gb32960.jar'
     from {
         File srcDir = file("$buildDir/dist")
         // 使用闭合创建一个文件集合
@@ -48,9 +49,9 @@ jar.dependsOn(copyJar)
 
 // 打包
 task zip(type: Zip, dependsOn: [copyConf, jar]) {
+    archiveName = 'nev_gb32960.zip'
     from 'build/libs'
 }
-
 
 // 设置编码
 tasks.withType(JavaCompile) {

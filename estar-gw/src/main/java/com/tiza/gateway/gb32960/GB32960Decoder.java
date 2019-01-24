@@ -27,7 +27,6 @@ public class GB32960Decoder extends CustomDecoder {
         }
 
         buf.markReaderIndex();
-
         byte header1 = buf.readByte();
         byte header2 = buf.readByte();
 
@@ -40,7 +39,6 @@ public class GB32960Decoder extends CustomDecoder {
         }
 
         buf.readBytes(new byte[20]);
-
         // 数据单元长度
         int length = buf.readUnsignedShort();
         if (buf.readableBytes() < length + 1) {

@@ -69,69 +69,73 @@ public class CMD_02 extends GB32960DataProcess {
         realMode = new HashMap();
         // 中断标识
         boolean interrupt = false;
-        while (buf.readableBytes() > 0) {
-            int flag = buf.readByte();
-            switch (flag) {
+        try {
+            while (buf.readableBytes() > 0) {
+                int flag = buf.readByte();
+                switch (flag) {
 
-                case 0x01:
+                    case 0x01:
 
-                    interrupt = parseVehicle(buf);
-                    break;
-                case 0x02:
+                        interrupt = parseVehicle(buf);
+                        break;
+                    case 0x02:
 
-                    interrupt = parseMotor(buf);
-                    break;
-                case 0x03:
+                        interrupt = parseMotor(buf);
+                        break;
+                    case 0x03:
 
-                    interrupt = parseBattery(buf);
-                    break;
-                case 0x04:
+                        interrupt = parseBattery(buf);
+                        break;
+                    case 0x04:
 
-                    interrupt = parseEngine(buf);
-                    break;
-                case 0x05:
+                        interrupt = parseEngine(buf);
+                        break;
+                    case 0x05:
 
-                    interrupt = parsePosition(buf);
-                    break;
-                case 0x06:
+                        interrupt = parsePosition(buf);
+                        break;
+                    case 0x06:
 
-                    interrupt = parseExtreme(buf);
-                    break;
-                case 0x07:
+                        interrupt = parseExtreme(buf);
+                        break;
+                    case 0x07:
 
-                    interrupt = parseAlarm(buf);
-                    break;
+                        interrupt = parseAlarm(buf);
+                        break;
 
-                case 0x08:
+                    case 0x08:
 
-                    interrupt = parseStorageVoltage(buf);
-                    break;
-                case 0x09:
+                        interrupt = parseStorageVoltage(buf);
+                        break;
+                    case 0x09:
 
-                    interrupt = parseStorageTemp(buf);
-                    break;
-                default:
-                    if (buf.readableBytes() > 2) {
-                        int length = buf.readUnsignedShort();
-                        if (buf.readableBytes() < length) {
-                            interrupt = true;
-                            break;
+                        interrupt = parseStorageTemp(buf);
+                        break;
+                    default:
+                        if (buf.readableBytes() > 2) {
+                            int length = buf.readUnsignedShort();
+                            if (buf.readableBytes() < length) {
+                                interrupt = true;
+                                break;
+                            }
+                            buf.readBytes(new byte[length]);
                         }
-                        buf.readBytes(new byte[length]);
-                    }
-                    break;
+                        break;
 
+                }
+                if (interrupt) {
+                    logger.info("终端[{}]指令cmd[{}], 解析中断错误[{}]!", gb32960Header.getVin(), CommonUtil.toHex(flag), CommonUtil.bytesToStr(content));
+                    break;
+                }
             }
-            if (interrupt) {
-                logger.error("终端[{}]指令cmd[{}], 解析中断错误[{}]!", gb32960Header.getVin(), CommonUtil.toHex(flag), CommonUtil.bytesToStr(content));
-                break;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // 舍弃空包
         if (paramValues.size() < 3 && !paramValues.contains("position")) {
 
-            logger.warn("终端[{}]不处理空包数据[{}]!", gb32960Header.getVin(), JacksonUtil.toJson(paramValues));
+            logger.info("终端[{}]不处理空包数据[{}]!", gb32960Header.getVin(), JacksonUtil.toJson(paramValues));
             return;
         }
 
@@ -689,7 +693,7 @@ public class CMD_02 extends GB32960DataProcess {
         // 有效报警值[0, 3]
         if (level > -1 && level < 4) {
             alarm.put("AlarmTime", currentTime);
-            if (level > 0){
+            if (level > 0) {
                 realMode.put(EStarConstant.RealMode.ALARM_LEVEL, level);
             }
             context.put(EStarConstant.FlowKey.ALARM_LEVEL, JacksonUtil.toJson(alarm));

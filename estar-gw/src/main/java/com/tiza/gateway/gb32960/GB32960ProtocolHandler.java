@@ -3,12 +3,9 @@ package com.tiza.gateway.gb32960;
 import cn.com.tiza.tstar.common.entity.TStarData;
 import cn.com.tiza.tstar.gateway.handler.BaseUserDefinedHandler;
 import com.diyiliu.common.util.CommonUtil;
-import com.diyiliu.common.util.DateUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -19,30 +16,27 @@ import java.util.Date;
  */
 
 public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public TStarData handleRecvMessage(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
         byte[] msgBody = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(msgBody);
-
-        ByteBuf buf = Unpooled.copiedBuffer(msgBody);
+        byteBuf.getBytes(0, msgBody);
 
         // 协议头
-        buf.readShort();
+        byteBuf.readShort();
         // 命令标识
-        int cmd = buf.readUnsignedByte();
+        int cmd = byteBuf.readUnsignedByte();
         // 应答标识
-        int resp = buf.readUnsignedByte();
+        int resp = byteBuf.readUnsignedByte();
 
         // VIN码
         byte[] vinArray = new byte[17];
-        buf.readBytes(vinArray);
+        byteBuf.readBytes(vinArray);
         String vin = new String(vinArray);
 
         // 加密方式
-        buf.readByte();
+        byteBuf.readByte();
         // 数据单元长度
-        int length = buf.readUnsignedShort();
+        int length = byteBuf.readUnsignedShort();
 
         TStarData tStarData = new TStarData();
         tStarData.setMsgBody(msgBody);
@@ -50,7 +44,6 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         tStarData.setTerminalID(vin);
         tStarData.setTime(System.currentTimeMillis());
 
-        logger.debug("上行: 终端[{}] 指令[{}], 内容[{}]...", vin, String.format("%02X", cmd), CommonUtil.bytesToStr(msgBody));
         // 需要应答
         if (resp == 0xFE) {
 
@@ -91,12 +84,6 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
 
             buf.writeByte(check);
         } else {
-            byte[] msgBody = tStarData.getMsgBody();
-            if (length < 6) {
-                logger.error("数据[{}]长度异常, 无法完成应答!", CommonUtil.bytesToStr(msgBody));
-                return;
-            }
-
             buf = Unpooled.buffer(31);
             buf.writeByte(0x23);
             buf.writeByte(0x23);
@@ -109,10 +96,6 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
             buf.writeShort(6);
 
             // 时间
-            /*  车辆数据 改为 平台数据(原来的数据改为系统时间)
-            byte[] dateArray = new byte[6];
-            System.arraycopy(msgBody, 24, dateArray, 0, 6);
-            */
             byte[] dateArray = CommonUtil.dateToBytes(new Date());
             buf.writeBytes(dateArray);
 
@@ -129,24 +112,6 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         respData.setCmdID(tStarData.getCmdID());
         respData.setMsgBody(buf.array());
         respData.setTime(System.currentTimeMillis());
-
-        logger.debug("下行, 终端[{}], 指令[{}], 内容[{}]...", respData.getTerminalID(), String.format("%02X", respData.getCmdID()), CommonUtil.bytesToStr(respData.getMsgBody()));
         ctx.channel().writeAndFlush(respData);
     }
-
-
-    /**
-     * 命令序号
-     *
-     private static AtomicLong msgSerial = new AtomicLong(0);
-     private static int getMsgSerial() {
-     Long serial = msgSerial.incrementAndGet();
-     if (serial > 65535) {
-     msgSerial.set(0);
-     serial = msgSerial.incrementAndGet();
-     }
-
-     return serial.intValue();
-     }
-     **/
 }

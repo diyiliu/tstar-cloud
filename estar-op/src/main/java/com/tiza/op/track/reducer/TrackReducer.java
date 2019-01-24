@@ -43,7 +43,6 @@ public class TrackReducer extends Reducer<TrackKey, Position, MileageRecord, Nul
             Position position = new Position();
             position.setDateTime(p.getDateTime());
             position.setMileage(p.getMileage());
-            positions.add(position);
 
             positions.add(position);
         }
