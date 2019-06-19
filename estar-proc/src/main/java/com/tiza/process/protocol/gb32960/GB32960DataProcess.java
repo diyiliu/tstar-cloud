@@ -100,7 +100,7 @@ public class GB32960DataProcess implements IDataProcess {
 
         String vin = header.getVin();
         if (!vehicleCacheProvider.containsKey(vin)) {
-            logger.warn("[{}] 车辆列表不存在!", vin);
+            logger.info("[{}] 车辆列表不存在!", vin);
             return;
         }
         VehicleInfo vehicleInfo = (VehicleInfo) vehicleCacheProvider.get(vin);
@@ -110,13 +110,18 @@ public class GB32960DataProcess implements IDataProcess {
         Date gpsTime = null;
         Double speed = null;
         List list = new ArrayList();
-        StringBuilder strb = new StringBuilder("update BS_VEHICLEGPSINFO set ");
+        List keys = new ArrayList();
+        StringBuilder strBuf = new StringBuilder("update BS_VEHICLEGPSINFO set ");
         for (int i = 0; i < paramValues.size(); i++) {
             Map map = paramValues.get(i);
             for (Iterator iterator = map.keySet().iterator(); iterator.hasNext(); ) {
                 String key = (String) iterator.next();
                 Object value = map.get(key);
-
+                // 过滤重复数据
+                if (keys.contains(key)){
+                    continue;
+                }
+                keys.add(key);
                 if (key.equalsIgnoreCase("GpsTime")) {
                     gpsTime = (Date) value;
                     vehicleInfo.setDateTime(gpsTime.getTime());
@@ -135,17 +140,16 @@ public class GB32960DataProcess implements IDataProcess {
                     position.setDateTime(gpsTime);
                     position.setSpeed(speed);
 
-                    strb.append("LocationStatus").append("=?, ");
+                    strBuf.append("LocationStatus").append("=?, ");
                     list.add(position.getStatus());
                     kafkaMap.put("LocationStatus", position.getStatus());
 
                     // 有效定位
                     if (position.getStatus() == 0) {
-
-                        strb.append("WGS84LAT").append("=?, ");
-                        strb.append("WGS84LNG").append("=?, ");
-                        strb.append("GCJ02LAT").append("=?, ");
-                        strb.append("GCJ02LNG").append("=?, ");
+                        strBuf.append("WGS84LAT").append("=?, ");
+                        strBuf.append("WGS84LNG").append("=?, ");
+                        strBuf.append("GCJ02LAT").append("=?, ");
+                        strBuf.append("GCJ02LNG").append("=?, ");
                         list.add(position.getLatD());
                         list.add(position.getLngD());
                         list.add(position.getEnLatD());
@@ -160,9 +164,9 @@ public class GB32960DataProcess implements IDataProcess {
                             //  解析省、市、区
                             MapLocation location = MapUtil.getArea(position.getEnLatD(), position.getEnLngD());
                             if (location != null) {
-                                strb.append("PROVINCE").append("=?, ");
-                                strb.append("CITY").append("=?, ");
-                                strb.append("DISTRICT").append("=?, ");
+                                strBuf.append("PROVINCE").append("=?, ");
+                                strBuf.append("CITY").append("=?, ");
+                                strBuf.append("DISTRICT").append("=?, ");
                                 list.add(location.getProvince());
                                 list.add(location.getCity());
                                 list.add(location.getTown());
@@ -180,7 +184,7 @@ public class GB32960DataProcess implements IDataProcess {
                     }
                     continue;
                 }
-                strb.append(key).append("=?, ");
+                strBuf.append(key).append("=?, ");
                 list.add(formatValue(value));
             }
 
@@ -194,7 +198,7 @@ public class GB32960DataProcess implements IDataProcess {
 
         // 更新当前位置信息
         if (0x02 == header.getCmd()) {
-            String sql = strb.substring(0, strb.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
+            String sql = strBuf.substring(0, strBuf.length() - 2) + " where VEHICLEID=" + vehicleInfo.getId();
             vehicleDao.update(sql, list.toArray());
         }
     }
@@ -234,7 +238,7 @@ public class GB32960DataProcess implements IDataProcess {
         RPTuple tuple = (RPTuple) header.gettStarData();
         Map<String, String> context = tuple.getContext();
 
-        logger.info("终端[{}]发布Redis位置信息...", header.getVin());
+        //logger.info("终端[{}]发布Redis位置信息...", header.getVin());
         Jedis jedis = handler.getJedis();
         try {
             String channel = context.get(EStarConstant.Redis.VEHICLE_MOVE);

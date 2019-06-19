@@ -123,12 +123,15 @@ public class M2DataProcess implements IDataProcess{
         posMap.put(MStarConstant.Location.ORIGINAL_LAT, position.getLatD());
         posMap.put(MStarConstant.Location.LNG, position.getEnLngD());
         posMap.put(MStarConstant.Location.LAT, position.getEnLatD());
+        posMap.put(MStarConstant.Location.VEHICLE_ID, vehicle.getId());
         // 状态位数据
         if (MapUtils.isNotEmpty(position.getStatusMap())){
             posMap.putAll(position.getStatusMap());
         }
-
-        posMap.put(MStarConstant.Location.VEHICLE_ID, vehicle.getId());
+        // 轨迹加入工况数据
+        if (MapUtils.isNotEmpty(header.getCanData())){
+            posMap.put("can", header.getCanData());
+        }
 
         RPTuple rpTuple = new RPTuple();
         rpTuple.setCmdID(header.getCmd());
@@ -163,8 +166,7 @@ public class M2DataProcess implements IDataProcess{
         VehicleInfo vehicle = (VehicleInfo) vehicleCacheProvider.get(terminalId);
 
         Map posMap = new HashMap();
-        posMap.put(MStarConstant.Location.GPS_TIME,
-                DateUtil.dateToString(position.getDateTime()));
+        posMap.put(MStarConstant.Location.GPS_TIME, DateUtil.dateToString(position.getDateTime()));
         posMap.put(MStarConstant.Location.SPEED, position.getSpeed());
         posMap.put(MStarConstant.Location.ALTITUDE, position.getHeight());
         posMap.put(MStarConstant.Location.DIRECTION, position.getDirection());
@@ -174,7 +176,6 @@ public class M2DataProcess implements IDataProcess{
         posMap.put(MStarConstant.Location.ORIGINAL_LAT, position.getLatD());
         posMap.put(MStarConstant.Location.LNG, position.getEnLngD());
         posMap.put(MStarConstant.Location.LAT, position.getEnLatD());
-
         posMap.put(MStarConstant.Location.VEHICLE_ID, vehicle.getId());
 
         RPTuple rpTuple = new RPTuple();

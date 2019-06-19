@@ -133,8 +133,7 @@ public class CMD_02 extends GB32960DataProcess {
         }
 
         // 舍弃空包
-        if (paramValues.size() < 3 && !paramValues.contains("position")) {
-
+        if (paramValues.size() < 1) {
             logger.info("终端[{}]不处理空包数据[{}]!", gb32960Header.getVin(), JacksonUtil.toJson(paramValues));
             return;
         }

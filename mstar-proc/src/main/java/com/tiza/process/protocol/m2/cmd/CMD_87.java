@@ -2,6 +2,7 @@ package com.tiza.process.protocol.m2.cmd;
 
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.util.CommonUtil;
+import com.diyiliu.common.util.JacksonUtil;
 import com.tiza.process.common.model.CanPackage;
 import com.tiza.process.common.model.FunctionInfo;
 import com.tiza.process.common.model.Parameter;
@@ -78,12 +79,16 @@ public class CMD_87 extends M2DataProcess {
             } catch (Exception e) {
                 logger.error("没有can数据");
             }
+
+            logger.info("设备[{}]功能配置[{}, {}]", m2Header.getTerminalId(), JacksonUtil.toJson(parameters.keySet()), functionInfo.getModelCode());
             if (parameters.containsKey(functionInfo.getModelCode())) {
                 byte[] bytes = parameters.get(functionInfo.getModelCode());
                 Map<String, CanPackage> canPackages = functionInfo.getCanPackages();
 
                 try {
                     Map canValues = parseCan(bytes, canPackages, functionInfo.getPidLength());
+                    m2Header.setCanData(canValues);
+                    logger.info("设备[{}] CAN 数据[{}]", m2Header.getTerminalId(), JacksonUtil.toJson(canValues));
                     emptyValues.putAll(canValues);
                 } catch (Exception e) {
                     logger.error("can数据 解析异常！" + e.getMessage());

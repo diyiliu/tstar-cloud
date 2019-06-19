@@ -3,6 +3,8 @@ package com.tiza.process.common.bean;
 import cn.com.tiza.tstar.common.entity.TStarData;
 import com.diyiliu.common.model.Header;
 
+import java.util.Map;
+
 /**
  * Description: M2Header
  * Author: DIYILIU
@@ -24,6 +26,8 @@ public class M2Header extends Header{
     private byte[] end = new byte[]{0x0D, 0x0A};
 
     private TStarData tStarData;
+
+    private Map canData;
 
     public M2Header() {
 
@@ -133,6 +137,14 @@ public class M2Header extends Header{
 
     public void setEnd(byte[] end) {
         this.end = end;
+    }
+
+    public Map getCanData() {
+        return canData;
+    }
+
+    public void setCanData(Map canData) {
+        this.canData = canData;
     }
 
     public TStarData gettStarData() {

@@ -7,8 +7,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.Date;
-
 /**
  * Description: GB32960ProtocolHandler
  * Author: Wangw
@@ -37,6 +35,9 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         byteBuf.readByte();
         // 数据单元长度
         int length = byteBuf.readUnsignedShort();
+        // 指令内容
+        byte[] bytes = new byte[length];
+        byteBuf.readBytes(bytes);
 
         TStarData tStarData = new TStarData();
         tStarData.setMsgBody(msgBody);
@@ -47,7 +48,7 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
         // 需要应答
         if (resp == 0xFE) {
 
-            doResponse(channelHandlerContext, tStarData, length);
+            doResponse(channelHandlerContext, vin, cmd, bytes);
         }
 
         return tStarData;
@@ -57,61 +58,58 @@ public class GB32960ProtocolHandler extends BaseUserDefinedHandler {
      * 指令应答
      *
      * @param ctx
-     * @param tStarData
-     * @param length
+     * @param terminal
+     * @param cmd
+     * @param bytes
      */
-    private void doResponse(ChannelHandlerContext ctx, TStarData tStarData, int length) {
-        int cmd = tStarData.getCmdID();
-        int respCmd = 0x01;
-
-        ByteBuf buf;
-        if (length == 0) {
-            buf = Unpooled.buffer(25);
-            buf.writeByte(0x23);
-            buf.writeByte(0x23);
-            buf.writeByte(cmd);
-            buf.writeByte(respCmd);
-            // VIN
-            buf.writeBytes(tStarData.getTerminalID().getBytes());
-            // 不加密
-            buf.writeByte(0x01);
-            buf.writeShort(0);
-
-            // 获取校验位
-            byte[] content = new byte[22];
-            buf.getBytes(2, content);
-            int check = CommonUtil.getCheck(content);
-
-            buf.writeByte(check);
-        } else {
-            buf = Unpooled.buffer(31);
-            buf.writeByte(0x23);
-            buf.writeByte(0x23);
-            buf.writeByte(cmd);
-            buf.writeByte(respCmd);
-            // VIN
-            buf.writeBytes(tStarData.getTerminalID().getBytes());
-            // 不加密
-            buf.writeByte(0x01);
-            buf.writeShort(6);
-
-            // 时间
-            byte[] dateArray = CommonUtil.dateToBytes(new Date());
-            buf.writeBytes(dateArray);
-
-            // 获取校验位
-            byte[] content = new byte[28];
-            buf.getBytes(2, content);
-            int check = CommonUtil.getCheck(content);
-
-            buf.writeByte(check);
+    private void doResponse(ChannelHandlerContext ctx, String terminal, int cmd, byte[] bytes) {
+        byte[] respArr = new byte[0];
+        if (bytes.length > 5) {
+            byte[] dateArray = new byte[6];
+            System.arraycopy(bytes, 0, dateArray, 0, 6);
+            respArr = dateArray;
         }
 
+        // 应答内容
+        byte[] content = packResp(terminal, cmd, respArr);
+
         TStarData respData = new TStarData();
-        respData.setTerminalID(tStarData.getTerminalID());
-        respData.setCmdID(tStarData.getCmdID());
-        respData.setMsgBody(buf.array());
+        respData.setTerminalID(terminal);
+        respData.setCmdID(cmd);
+        respData.setMsgBody(content);
         respData.setTime(System.currentTimeMillis());
         ctx.channel().writeAndFlush(respData);
+    }
+
+    /**
+     * 生成应答数据
+     *
+     * @param terminal
+     * @param cmd
+     * @param bytes
+     * @return
+     */
+    private byte[] packResp(String terminal, int cmd, byte[] bytes) {
+        int length = bytes.length;
+        ByteBuf buf = Unpooled.buffer(25 + length);
+        buf.writeByte(0x23);
+        buf.writeByte(0x23);
+        buf.writeByte(cmd);
+        buf.writeByte(0x01);
+        // VIN
+        buf.writeBytes(terminal.getBytes());
+        // 不加密
+        buf.writeByte(0x01);
+        buf.writeShort(length);
+        // 返回数据
+        buf.writeBytes(bytes);
+
+        // 获取校验位
+        byte[] content = new byte[22 + length];
+        buf.getBytes(2, content);
+        int check = CommonUtil.getCheck(content);
+        buf.writeByte(check);
+
+        return buf.array();
     }
 }
