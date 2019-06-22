@@ -1,6 +1,7 @@
 import com.diyiliu.common.model.Circle;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.DateUtil;
+import com.diyiliu.common.util.JacksonUtil;
 import com.diyiliu.common.util.SpringUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,9 +13,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
 
 /**
  * Description: MainTest
@@ -193,4 +195,35 @@ public class MainTest {
         bytes = CommonUtil.byteToByte(content, 4, 1, "big");
     }
 
+
+    @Test
+    public void test11() throws Exception{
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+
+        int val = 805306400;
+        final  String retVal = CommonUtil.parseExp(val, "*1+0", "decimal");
+
+        Map m = new HashMap(){
+            {
+                this.put("abc", retVal);
+            }
+        };
+
+        System.out.println(retVal);
+
+        System.out.println(JacksonUtil.toJson(m));
+    }
+
+
+    @Test
+    public void test12(){
+        Double d = 805306400.123;
+        System.out.println(d.toString());
+
+        BigDecimal bd = new BigDecimal(d);
+        System.out.println(bd.toString());
+
+        System.out.println(CommonUtil.formatDecimal(d));
+    }
 }

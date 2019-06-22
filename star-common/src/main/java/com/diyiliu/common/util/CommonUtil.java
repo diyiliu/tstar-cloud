@@ -9,6 +9,7 @@ import javax.script.ScriptException;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -78,6 +79,7 @@ public class CommonUtil {
 
     /**
      * 创建时间，修改对应时间
+     *
      * @param bytes
      * @return
      */
@@ -95,7 +97,6 @@ public class CommonUtil {
     }
 
     /**
-     *
      * @param date
      * @param bytes
      * @return
@@ -114,7 +115,7 @@ public class CommonUtil {
     }
 
 
-    public static void toDate(Calendar calendar, byte[] bytes){
+    public static void toDate(Calendar calendar, byte[] bytes) {
 
         calendar.set(Calendar.YEAR, 2000 + bytes[0]);
         calendar.set(Calendar.MONTH, bytes[1] - 1);
@@ -132,7 +133,6 @@ public class CommonUtil {
             calendar.set(Calendar.SECOND, 0);
         }
     }
-
 
 
     public static long bytesToLong(byte[] bytes) {
@@ -223,25 +223,30 @@ public class CommonUtil {
     }
 
     public static double keepDecimal(double d, int digit) {
-
         BigDecimal decimal = new BigDecimal(d);
         decimal = decimal.setScale(digit, RoundingMode.HALF_UP);
 
         return decimal.doubleValue();
     }
 
+    public static String formatDecimal(double d) {
+
+        return new BigDecimal(d).toString();
+    }
+
     /**
      * 保留小数
+     *
      * @param num
      * @param precision
      * @param digit
      * @return
      */
-    public static double keepDecimal(Number num, double precision, int digit){
+    public static double keepDecimal(Number num, double precision, int digit) {
         BigDecimal decimal = new BigDecimal(String.valueOf(num));
-        decimal =  decimal.multiply(new BigDecimal(precision)).setScale(digit, BigDecimal.ROUND_HALF_UP);
+        decimal = decimal.multiply(new BigDecimal(precision)).setScale(digit, BigDecimal.ROUND_HALF_UP);
 
-        return  decimal.doubleValue();
+        return decimal.doubleValue();
     }
 
     public static String parseBytes(byte[] array, int offset, int lenght) {
@@ -377,17 +382,18 @@ public class CommonUtil {
         return tempBytes;
     }
 
-    public static int getNosin2int(byte[] array){
-        int res =0;
-        if(array.length==1){
-            res =getNonSign(array[0]);
+    public static int getNosin2int(byte[] array) {
+        int res = 0;
+        if (array.length == 1) {
+            res = getNonSign(array[0]);
         }
-        if(array.length==2){
-            res =getNonSign(array[0])*256+getNonSign(array[1]);
+        if (array.length == 2) {
+            res = getNonSign(array[0]) * 256 + getNonSign(array[1]);
         }
 
         return res;
     }
+
     public static int byte2int(byte[] array) {
 
         if (array.length < 4) {
@@ -429,7 +435,12 @@ public class CommonUtil {
         if (type.equalsIgnoreCase("hex")) {
             retVal = String.format("%02X", val);
         } else if (type.equalsIgnoreCase("decimal")) {
-            retVal = engine.eval(val + exp).toString();
+            Object obj = engine.eval(val + exp);
+            if (obj instanceof Double) {
+                retVal = CommonUtil.formatDecimal((Double) obj);
+            } else {
+                retVal = obj + "";
+            }
         } else {
             //表达式解析会出现类型问题
             retVal = engine.eval(val + exp).toString();
@@ -453,7 +464,7 @@ public class CommonUtil {
          System.out.println(sim);
          */
 
-         System.out.println(keepDecimal(12.345,0.01, 1));
+        System.out.println(keepDecimal(12.345, 0.01, 1));
 
     }
 
@@ -525,17 +536,16 @@ public class CommonUtil {
     }
 
     /**
-     *
      * @param val
      * @param start
      * @param len
      * @param byteslen 夸字节的长度
      * @return
      */
-    public static int wirelessbits(int val, int start, int len ,int byteslen){
+    public static int wirelessbits(int val, int start, int len, int byteslen) {
         int res = 0;
         String BinaryString = addZeroForNum(Integer.toBinaryString(val), byteslen);
-        String subBinaryString=BinaryString.substring(start, len);
+        String subBinaryString = BinaryString.substring(start, len);
         res = BinaryString2int(subBinaryString);
         return res;
     }
