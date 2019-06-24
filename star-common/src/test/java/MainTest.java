@@ -103,10 +103,10 @@ public class MainTest {
 
 
     @Test
-    public void test5(){
+    public void test5() {
 
         String str = "2424002D02FE05AD1307E2031E0B2719FFFFFFFFFFFFFFFFFFFF00FF0764428001F10A3E0B6D270AFFFF4581B2";
-        int i =   Integer.parseInt(str.substring(12,18),16);
+        int i = Integer.parseInt(str.substring(12, 18), 16);
 
         System.out.println(i);
 
@@ -116,7 +116,7 @@ public class MainTest {
 
 
     @Test
-    public void test6(){
+    public void test6() {
 
         String str = "FFFF";
 
@@ -139,7 +139,7 @@ public class MainTest {
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         String str = "232303FE4C43465A314650423248305A313737373101014F12041209252101020101000000001F3211CE267D620220C3500E00020101033B4E204E203A0000267D050006F86190021F09300700000000000000000008010111CD267D006E00016E1030103110321034103410321031103110321031103210311030103210311033103210321032102F1034103310311032102C102B102B102D102E102D102D102E102C102A102B102D103310311032103410351032103310331034103110351032102D102C102D102E102E102E102E103310351035103410351035103410341035103410341032103210311031103410311031103310301033103110311031102C102C102A102C102C102C102D102B102D102B102C102C102F102F102F1031103310301031102F102E1030102F1030102A102B102E102A102C102A102B0901010016414142414140414141414141414241424141424142410601401035016D102A01154201064046";
 
         byte[] bytes = CommonUtil.hexStringToBytes(str);
@@ -154,22 +154,22 @@ public class MainTest {
 
         buf.resetReaderIndex();*/
 
-       // buf.readByte();
+        // buf.readByte();
 
         byte[] content1 = new byte[bytes.length - 1];
         buf.getBytes(0, content1);
 
         byte b1 = CommonUtil.getCheck(content1);
 
-       // byte b = CommonUtil.getCheck(content);
+        // byte b = CommonUtil.getCheck(content);
 
         System.out.println(b1);
         //System.out.println(b);
-       // System.out.println(last);
+        // System.out.println(last);
     }
 
     @Test
-    public void test9(){
+    public void test9() {
         String str = "232304FE4C43465A314650425848305A31373830380100081204120A05300008";
         byte[] bytes = CommonUtil.hexStringToBytes(str);
 
@@ -178,16 +178,14 @@ public class MainTest {
         System.out.println(b);
 
 
-
         str = "4C43465A314650423348305A3138303431";
 
         System.out.println(new String(CommonUtil.hexStringToBytes(str)));
     }
 
 
-
     @Test
-    public void  test10(){
+    public void test10() {
         String str = "";
         byte[] bytes = null;
 
@@ -197,14 +195,11 @@ public class MainTest {
 
 
     @Test
-    public void test11() throws Exception{
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
+    public void test11() throws Exception {
+        int val = 1;
+        final String retVal = CommonUtil.parseExp(val, "*1+0", "decimal");
 
-        int val = 805306400;
-        final  String retVal = CommonUtil.parseExp(val, "*1+0", "decimal");
-
-        Map m = new HashMap(){
+        Map m = new HashMap() {
             {
                 this.put("abc", retVal);
             }
@@ -216,11 +211,10 @@ public class MainTest {
 
 
     @Test
-    public void test12(){
-        Double d = 805306400.123;
-        System.out.println(d.toString());
+    public void test12() throws Exception {
 
-        BigDecimal bd = new BigDecimal(d);
-        System.out.println(bd.toString());
+        String str = "1.0";
+
+        System.out.println(new BigDecimal(str).intValue());
     }
 }

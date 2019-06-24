@@ -9,7 +9,6 @@ import javax.script.ScriptException;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -20,6 +19,7 @@ import java.util.regex.Pattern;
  * Author: DIYILIU
  * Update: 2015-09-17 9:15
  */
+
 public class CommonUtil {
 
 
@@ -422,19 +422,21 @@ public class CommonUtil {
      * @return
      */
     public static String parseExp(int val, String exp, String type) throws ScriptException {
-
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
 
         String retVal;
         if (type.equalsIgnoreCase("hex")) {
             retVal = String.format("%02X", val);
+        } else if (type.equalsIgnoreCase("int")) {
+            Object obj = engine.eval(val + exp);
+            retVal = new BigDecimal(String.valueOf(obj)).intValue() + "";
         } else if (type.equalsIgnoreCase("decimal")) {
             Object obj = engine.eval(val + exp);
-            if (obj instanceof Double) {
+            if (obj instanceof Double){
                 retVal = String.format("%.2f", obj);
-            } else {
-                retVal = obj + "";
+            }else {
+                retVal = engine.eval(val + exp).toString();
             }
         } else {
             //表达式解析会出现类型问题

@@ -30,7 +30,7 @@ import java.util.Map;
  * Author: DIYILIU
  * Update: 2017-09-14 14:25
  */
-public class M2DataProcess implements IDataProcess{
+public class M2DataProcess implements IDataProcess {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected int cmd = 0xFF;
 
@@ -100,6 +100,7 @@ public class M2DataProcess implements IDataProcess{
 
     /**
      * 位置、工况信息
+     *
      * @param header
      * @param position
      * @param parameter
@@ -125,11 +126,11 @@ public class M2DataProcess implements IDataProcess{
         posMap.put(MStarConstant.Location.LAT, position.getEnLatD());
         posMap.put(MStarConstant.Location.VEHICLE_ID, vehicle.getId());
         // 状态位数据
-        if (MapUtils.isNotEmpty(position.getStatusMap())){
+        if (MapUtils.isNotEmpty(position.getStatusMap())) {
             posMap.putAll(position.getStatusMap());
         }
         // 轨迹加入工况数据
-        if (MapUtils.isNotEmpty(header.getCanData())){
+        if (MapUtils.isNotEmpty(header.getCanData())) {
             posMap.put("can", header.getCanData());
         }
 
@@ -204,10 +205,11 @@ public class M2DataProcess implements IDataProcess{
 
     /**
      * 开关机信息(统计累计工作时间)
+     *
      * @param header
      * @param dateList
      */
-    public void toKafka(M2Header header, List<Date> dateList){
+    public void toKafka(M2Header header, List<Date> dateList) {
         String terminalId = header.getTerminalId();
         if (!vehicleCacheProvider.containsKey(terminalId)) {
             logger.warn("该终端[{}]不存在车辆列表中...", terminalId);
@@ -221,7 +223,7 @@ public class M2DataProcess implements IDataProcess{
         Map<String, String> context = tuple.getContext();
 
         Map wtMap = new HashMap();
-        for (int i = 0; i < dateList.size(); i += 2){
+        for (int i = 0; i < dateList.size(); i += 2) {
 
             Date starTime = dateList.get(i);
             Date endTime = dateList.get(i + 1);
@@ -317,7 +319,6 @@ public class M2DataProcess implements IDataProcess{
     }
 
     protected String parseItem(byte[] data, NodeItem item) throws ScriptException {
-
         String tVal;
 
         byte[] val = CommonUtil.byteToByte(data, item.getByteStart(), item.getByteLen(), item.getEndian());
@@ -339,18 +340,18 @@ public class M2DataProcess implements IDataProcess{
      * @param terminalId
      * @return
      */
-    protected FunctionInfo getFunctionInfo(String terminalId){
+    protected FunctionInfo getFunctionInfo(String terminalId) {
 
-        if (vehicleCacheProvider.containsKey(terminalId)){
+        if (vehicleCacheProvider.containsKey(terminalId)) {
 
             VehicleInfo vehicleInfo = (VehicleInfo) vehicleCacheProvider.get(terminalId);
-            if (functionCacheProvider.containsKey(vehicleInfo.getSoftVersion())){
+            if (functionCacheProvider.containsKey(vehicleInfo.getSoftVersion())) {
 
                 return (FunctionInfo) functionCacheProvider.get(vehicleInfo.getSoftVersion());
             }
         }
 
-            return null;
+        return null;
     }
 
     private int statusBit(long l, int offset) {
