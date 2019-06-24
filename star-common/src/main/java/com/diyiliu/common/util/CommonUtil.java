@@ -229,11 +229,6 @@ public class CommonUtil {
         return decimal.doubleValue();
     }
 
-    public static String formatDecimal(double d) {
-
-        return new BigDecimal(d).toString();
-    }
-
     /**
      * 保留小数
      *
@@ -437,7 +432,7 @@ public class CommonUtil {
         } else if (type.equalsIgnoreCase("decimal")) {
             Object obj = engine.eval(val + exp);
             if (obj instanceof Double) {
-                retVal = CommonUtil.formatDecimal((Double) obj);
+                retVal = String.format("%.2f", obj);
             } else {
                 retVal = obj + "";
             }

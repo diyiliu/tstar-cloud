@@ -38,14 +38,6 @@ jar {
 }
 jar.dependsOn(copyJar)
 
-// 拷贝jar(适配不同的协议类型)
-task copyZt(type: Copy, dependsOn: jar) {
-    from "$buildDir/libs/mstar_tiza.jar"
-    into "$buildDir/libs/"
-    rename {
-        fileName -> 'mstar_zt.jar'
-    }
-}
 
 // 拷贝tstar配置文件
 task copyConf(type: Copy) {
@@ -56,14 +48,7 @@ task copyConf(type: Copy) {
 // 打包
 task zipM2(type: Zip, dependsOn: [copyConf, jar]) {
     baseName 'mstar_tiza'
-    from("$buildDir/libs") {
-        include "conf/$baseName-*"
-        include "$baseName" + '.jar'
-    }
-}
-
-task zipZt(type: Zip, dependsOn: [copyConf, copyZt]) {
-    baseName 'mstar_zt'
+    version ''
     from("$buildDir/libs") {
         include "conf/$baseName-*"
         include "$baseName" + '.jar'

@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: org.springframework:spring-test:4.1.3.RELEASE">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/4.1.3.RELEASE/568425b60fef6a88ece8e21bd1bdb7d8e4a25d36/spring-test-4.1.3.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/caches/modules-2/files-2.1/org.springframework/spring-test/4.1.3.RELEASE/568425b60fef6a88ece8e21bd1bdb7d8e4a25d36/spring-test-4.1.3.RELEASE.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/4.1.3.RELEASE/dff79d9577858cda943828cc99e5f29ed0517043/spring-test-4.1.3.RELEASE-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/caches/modules-2/files-2.1/org.springframework/spring-test/4.1.3.RELEASE/dff79d9577858cda943828cc99e5f29ed0517043/spring-test-4.1.3.RELEASE-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hadoop:hadoop-common:2.5.2">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.5.2/d4a60ca549b1f9064578a4ac0a2340624e2440bd/hadoop-common-2.5.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.5.2/d4a60ca549b1f9064578a4ac0a2340624e2440bd/hadoop-common-2.5.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.5.2/23ddf73b4a25ff854a4898d285e4942871046e97/hadoop-common-2.5.2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.5.2/23ddf73b4a25ff854a4898d285e4942871046e97/hadoop-common-2.5.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -211,7 +211,6 @@ public class MainTest {
         };
 
         System.out.println(retVal);
-
         System.out.println(JacksonUtil.toJson(m));
     }
 
@@ -223,7 +222,5 @@ public class MainTest {
 
         BigDecimal bd = new BigDecimal(d);
         System.out.println(bd.toString());
-
-        System.out.println(CommonUtil.formatDecimal(d));
     }
 }

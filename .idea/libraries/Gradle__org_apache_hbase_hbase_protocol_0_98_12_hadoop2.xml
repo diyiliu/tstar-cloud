@@ -4,6 +4,8 @@
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/hbase/hbase-protocol/0.98.12-hadoop2/hbase-protocol-0.98.12-hadoop2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/hbase/hbase-protocol/0.98.24-hadoop2/hbase-protocol-0.98.24-hadoop2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
