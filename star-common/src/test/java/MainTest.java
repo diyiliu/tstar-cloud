@@ -217,4 +217,12 @@ public class MainTest {
 
         System.out.println(new BigDecimal(str).intValue());
     }
+
+    @Test
+    public void test13(){
+        String str = "0117";
+        byte[] bytes = CommonUtil.hexStringToBytes(str);
+
+        System.out.println(CommonUtil.bytesToStr(bytes));
+    }
 }

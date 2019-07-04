@@ -3,10 +3,9 @@ package com.tiza.process.protocol.m2.cmd;
 import com.diyiliu.common.model.Header;
 import com.diyiliu.common.util.CommonUtil;
 import com.diyiliu.common.util.JacksonUtil;
-import com.tiza.process.common.model.CanPackage;
-import com.tiza.process.common.model.FunctionInfo;
-import com.tiza.process.common.model.Parameter;
-import com.tiza.process.common.model.Position;
+import com.diyiliu.common.util.SpringUtil;
+import com.tiza.process.common.dao.VehicleDao;
+import com.tiza.process.common.model.*;
 import com.tiza.process.common.bean.M2Header;
 import com.tiza.process.protocol.m2.M2DataProcess;
 import io.netty.buffer.ByteBuf;
@@ -14,8 +13,7 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description: CMD_87
@@ -30,16 +28,20 @@ public class CMD_87 extends M2DataProcess {
         this.cmd = 0x87;
     }
 
+    private Date gpsTime;
+
+    private M2Header m2Header;
+
     @Override
     public void parse(byte[] content, Header header) {
-        M2Header m2Header = (M2Header) header;
-
+        m2Header = (M2Header) header;
         ByteBuf buf = Unpooled.copiedBuffer(content);
 
         byte[] positionArray = new byte[22];
         buf.readBytes(positionArray);
 
         Position position = renderPosition(positionArray);
+        gpsTime = position.getDateTime();
 
         /*Status status = renderStatus(position.getStatus());
         // 车辆在线
@@ -88,8 +90,8 @@ public class CMD_87 extends M2DataProcess {
                 try {
                     Map canValues = parseCan(bytes, canPackages, functionInfo.getPidLength());
                     m2Header.setCanData(canValues);
-                    logger.info("设备[{}] CAN 数据[{}]", m2Header.getTerminalId(), JacksonUtil.toJson(canValues));
                     emptyValues.putAll(canValues);
+                    logger.info("设备[{}] CAN 数据[{}]", m2Header.getTerminalId(), JacksonUtil.toJson(canValues));
                 } catch (Exception e) {
                     logger.error("can数据 解析异常！" + e.getMessage());
                 }
@@ -143,9 +145,44 @@ public class CMD_87 extends M2DataProcess {
             buf.readBytes(content);
 
             Map values = parsePackage(content, canPackage.getItemList());
+            // 九合泵送数据统计
+            if ("0117".equals(packageId)){
+                String key = "STRING1";
+                String flag = (String) values.get(key);
+                if ("255".equals(flag)){
+                    values.remove(key);
+                    pumpData(values);
+                }
+            }
+
             canValues.putAll(values);
         }
 
         return canValues;
+    }
+
+    private void pumpData(Map map){
+        VehicleInfo vehicle = (VehicleInfo) vehicleCacheProvider.get(m2Header.getTerminalId());
+
+        List list = new ArrayList();
+        Set<String> set = map.keySet();
+        StringBuilder str1 = new StringBuilder();
+        StringBuilder str2 = new StringBuilder();
+        for (Iterator<String> iterator = set.iterator(); iterator.hasNext();){
+            String field = iterator.next();
+            Object value = map.get(field);
+            list.add(value);
+            str1.append(field).append(",");
+            str2.append("?,");
+        }
+        str1.append("WORKTIME,CREATETIME,VEHICLEID");
+        str2.append("?,?,?");
+        list.add(gpsTime);
+        list.add(new Date());
+        list.add(vehicle.getId());
+
+        String sql = "INSERT INTO ALY_QDJH_DETAILS(" +  str1 + ")VALUES(" +  str2 + ")";
+        VehicleDao vehicleDao = SpringUtil.getBean("vehicleDao");
+        vehicleDao.update(sql, list.toArray());
     }
 }

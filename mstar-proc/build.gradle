@@ -46,7 +46,7 @@ task copyConf(type: Copy) {
 }
 
 // 打包
-task zipM2(type: Zip, dependsOn: [copyConf, jar]) {
+task zip(type: Zip, dependsOn: [copyConf, jar]) {
     baseName 'mstar_tiza'
     version ''
     from("$buildDir/libs") {
